@@ -1,0 +1,234 @@
+openapi: "3.0.0"
+info:
+  title: NIST BRSKI controller server API
+  description: |
+    An OpenAPI spec of the @nqminds/nist-brski-controller-server API
+  contact:
+    name: "NquiringMinds"
+    email: "info@nquiringminds.com"
+    url: "https://nquiringminds.com/contact/"
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+    description: Development Server
+security: [] # TODO: add HTTP Basic authentication?
+paths:
+  /devices:
+    get:
+      summary: Return list of all devices
+      description: |
+        Return a list of all device IDs.
+      tags: [devices]
+      operationId: getDevices
+      responses:
+        "200":
+          description: The list of devices.
+          "content":
+            "application/json":
+              schema:
+                type: object
+                required: [clients]
+                example:
+                  clients: ["client-a", "client-b"]
+                properties:
+                  clients:
+                    type: array
+                    items:
+                      type: string
+                      title: "The unique hostname of the device"
+        "5XX":
+          $ref: "#/components/responses/GenericError"
+
+  /devices/{device}:
+    get:
+      summary: Get information about a device
+      description: |
+        Gets the information about a given device.
+      tags: [devices]
+      operationId: getDevice
+      parameters:
+        - $ref: "#/components/parameters/DeviceHostname"
+      responses:
+        "200":
+          description: Information about the device.
+          "content":
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Device"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "5XX":
+          $ref: "#/components/responses/GenericError"
+
+  /devices/{device}/brski:
+    get:
+      summary: Get relevant BRSKI statuis from the device.
+      description: |
+        Gets brski status from the device.
+      tags: [brski]
+      operationId: getBrskiStatus
+      parameters:
+        - $ref: "#/components/parameters/DeviceHostname"
+      responses:
+        "200":
+          description: BRSKI Status from the device.
+          "content":
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/DeviceBrskiStatus"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "5XX":
+          $ref: "#/components/responses/GenericError"
+
+  /devices/{device}/brski/logs:
+    get:
+      summary: Get relevant BRSKI logs from the device.
+      description: |
+        Gets logs from the device.
+      tags: [brski]
+      operationId: getBrskiLogs
+      parameters:
+        - $ref: "#/components/parameters/DeviceHostname"
+      responses:
+        "200":
+          description: BRSKI Logs from the device.
+          "content":
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/DeviceBrskiLogs"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "5XX":
+          $ref: "#/components/responses/GenericError"
+
+  /devices/{device}/brski/reset:
+    post:
+      summary: Reset the BRSKI device info.
+      description: |
+        Reset the BRSKI device info, and go through the BRSKI protocol again.
+      tags: [brski]
+      operationId: resetBrski
+      parameters:
+        - $ref: "#/components/parameters/DeviceHostname"
+      responses:
+        "200":
+          description: Success.
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "5XX":
+          $ref: "#/components/responses/GenericError"
+
+  /logs:
+    get:
+      summary: Get the server logs.
+      description: |
+        Get the server logs. This is mostly useful to check for any issues with communicating with the devices.
+      tags: [server]
+      operationId: getServerLogs
+      responses:
+        "200":
+          description: Server Logs.
+          "content":
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  logs:
+                    type: string
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "5XX":
+          $ref: "#/components/responses/GenericError"
+
+components:
+  parameters:
+    DeviceHostname:
+      in: path
+      name: device
+      schema:
+        type: string
+      required: true
+      description: |
+        The unique hostname of the device (returned from `getDevices()`)
+
+  responses:
+    GenericError:
+      description: Default error handler
+      content:
+        text/html:
+          schema:
+            $ref: "#/components/schemas/GenericHTMLError"
+    
+    NotFoundError:
+      description: "Device not found"
+
+  schemas:
+    GenericHTMLError:
+      description: |
+        Default HTML error response from Express.
+        
+        When running the server in development mode, this will contain the full stack of the exception.
+
+        See <https://expressjs.com/en/guide/error-handling.html#the-default-error-handler>
+      type: string
+
+    Device:
+      description: |
+        Information about a client device.
+      type: object
+      required: [hostname]
+      example: {hostname: "client-a", onlineSince: "1970-01-01T00:00:01Z"}
+      properties:
+        hostname:
+          type: string
+          description: |
+            The unique hostname of the device (returned from `getDevices()`)
+        onlineSince:
+          type: string
+          format: "date-time"
+          description: |
+            If given, how long the device has been up for.
+    
+    DeviceBrskiStatus:
+      description: |
+        BRSKI status from the client device.
+      type: object
+      required: [status]
+      example: {status: "connected"}
+      properties:
+        status:
+          type: string
+          enum:
+            - connected
+            - connecting
+          description: |
+            - **connected:**
+              BRSKI protocol has succeeded and the client device is connected to the server over WiFi.
+            - **connecting:**
+              BRSKI protocol is running.
+
+    DeviceBrskiLogs:
+      description: |
+        BRSKI Logs from the client device.
+      type: object
+      required: [hostname]
+      example: {
+          hostname: "client-a",
+          time: "2023-06-02T10:24:57.451Z",
+          logs: "string",
+        }
+      properties:
+        hostname:
+          type: string
+          description: |
+            The unique hostname of the device (returned from `getDevices()`)
+        time:
+          type: string
+          format: "date-time"
+          description: |
+            When the logs were last updated or generated.
+        logs:
+          type: string
+          description: |
+            The logs.
