@@ -1,0 +1,33 @@
+{
+  "name": "@nqminds/nist-brski-controller-server",
+  "version": "1.0.0",
+  "description": "RESTFul API server for controlling the NIST BRSKI demo",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node ./bin/nist-brski-controller-server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nqminds/nist-brski.git",
+    "directory": "node-packages/controller-server"
+  },
+  "type": "module",
+  "keywords": [
+    "nist",
+    "brski",
+    "restful",
+    "rest",
+    "openapi"
+  ],
+  "author": "Alois Klink <alois@nquiringminds.com> (https://aloisklink.com)",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/nqminds/nist-brski/issues"
+  },
+  "homepage": "https://github.com/nqminds/nist-brski#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-openapi-validator": "^5.0.4",
+    "js-yaml": "^4.1.0"
+  }
+}
