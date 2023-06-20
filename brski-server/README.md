@@ -90,8 +90,10 @@ mDNS does not work for some reason).
 
 ### Configuring USB-C connection
 
-In order to enable the USB-C connection for data, you must making the following
-change in your `/boot/firmware/config.txt` (`/boot/config.txt` on Raspbian):
+The Raspberry Pi Model 4B supports USB Gadget mode, which can be used to
+communicate from one Pi to another Pi without the usage of a router and switch.
+
+Some of this guide is adapted from the steps in https://lozworld.com/lozwords/raspberry-pi-4b-as-an-ubuntu-2110-usb-gadget-tethered-to-an-ipad-pro.
 
 #### Host
 
@@ -189,7 +191,7 @@ Then, make a `/etc/default/dnsmasq.usb0` file with the following contents
 ```
 DNSMASQ_EXCEPT="lo"
 DNSMASQ_INTERFACE='usb0'
-DNSMASQ_OPTS='--bind-interfaces --dhcp-range=192.168.48.2,192.168.48.7,4h'
+DNSMASQ_OPTS='--bind-interfaces --dhcp-option=3 --dhcp-range=192.168.48.2,192.168.48.6,255.255.255.248,1h'
 ```
 
 Finally, you can start `dnsmasq` using:
