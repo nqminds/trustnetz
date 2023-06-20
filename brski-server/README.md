@@ -1,13 +1,203 @@
-# Server node for the NIST BRSKI demo
+# NIST BRSKI demo setup
 
 The server device for the NIST BRSKI demo has the following requirements:
   - Capability for two independent WiFi APs
 
+The client devices must have the following requirements:
+  - Capability for WiFi STA that can connect to the WiFi APs
+  - USB Ethernet Gadget mode connectivity
+
 For the BRSKI demo, we're setting up a Raspberry Pi 4B running Ubuntu 22.04
 server edition called `nqm-britannic-brski`. For the two WiFi APs, we're using
-two Ralink RT5370 USB adapters.
+two Ralink RT5370 USB adapters. That then connects to two Ubuntu 22.04 clients
+using a USB-C hub, which are both acting a USB Ethernet devices.
+
+```mermaid
+flowchart TD
+    subgraph "USB-C hub"
+      upstreamUsbC["`**USB-C** upstream fa:fa-desktop`"]
+      power["`DC in fa:fa-plug`"]
+      downstreamUsbA["`**USB-A** downstream (unused)`"]
+      downstreamUsbC1["`**USB-C** downstream`"]
+      downstreamUsbC2["`**USB-C** downstream`"]
+      downstreamUsbC3["`**USB-C** downstream (unused)`"]
+      upstreamUsbC ~~~ downstreamUsbC1
+      upstreamUsbC ~~~ downstreamUsbC2
+      upstreamUsbC ~~~ downstreamUsbC3
+    end
+
+    hubPsu["Hub PSU fa:fa-plug"] <----> power
+
+    subgraph "nqm-brittanic-brski"
+      hostUsbC["`**USB-C** connection`"]
+      hostrj465["`RJ45 (Ethernet) connection`"]
+      hostUsb3A1["`**USB-A 3.0** connection`"]
+      hostUsb3A2["`**USB-A 3.0** connection (unused)`"]
+      hostUsb2A1["`**USB-A 2.0** connection`"]
+      hostUsb2A2["`**USB-A 2.0** connection`"]
+    end
+
+    hostUsb3A1 <--"`USB-C to USB-A cable`"--> upstreamUsbC
+
+    hostUsb2A1 --> usbWifiAp1["`USB Wifi AP`"]
+    hostUsb2A2 --> usbWifiAp2["`USB Wifi AP`"]
+
+    subgraph "nqm-benign-brski"
+        benignUsbC["`**USB-C** connection`"]
+    end
+
+    subgraph "nqm-biddable-brski"
+        biddableUsbC["`**USB-C** connection`"]
+    end
+
+    downstreamUsbC1  <--"`USB-C to USB-C cable`"--> benignUsbC
+    downstreamUsbC2  <--"`USB-C to USB-C cable`"--> biddableUsbC
+
+    rasperryPiPsu["`Raspberry Pi 4 PSU fa:fa-plug`"] <--"USB-C power cable"--> hostUsbC
+
+    nistUpstreamPort["`NIST upstream Ethernet port`"] <-- "Ethernet" --> hostrj465
+```
+
+## SSH Connection through brittanic brski
+
+Only `nqm-britannic-brski` is directly connected to the network.
+
+If you want to SSH into `nqm-benign-brski` or `nqm-biddable-brski`, you must
+use `ssh 192.168.48.1 -J nqm-britannic-brski.local` (use the IP address, since
+mDNS does not work for some reason).
 
 ## Setup
+
+### Configuring USB-C connection
+
+In order to enable the USB-C connection for data, you must making the following
+change in your `/boot/firmware/config.txt` (`/boot/config.txt` on Raspbian):
+
+#### Host
+
+The Raspberry Pi 4B's USB-C connector does **NOT** support DRD (Dual-Role-Data).
+This means that if you use a USB-C to USB-C cable, the Raspberry Pi 4B can only
+be peripheral/UFP (upstream-facing port).
+
+There is support for USB 2.0 OTG (USB On-The-Go) in host-mode, but it requires
+that you use a USB-C to USB-A/USB-B adapter.
+
+**USB-C to USB-C only works as a periperal**.
+
+Because of this, to connect the Raspberry Pi 4B to a USB-C hub as a host,
+**you must plug the hub into one of the Raspberry Pi 4B's USB-A ports**.
+
+See [_RPi 4 USB-C socket as host - Raspberry Pi Forums_][246348]  and
+[Texas Instruments. _Transition Existing Products from USB 2.0 OTG to USB Type-CTM_][slly017]
+for more info.
+
+[246348]: https://forums.raspberrypi.com/viewtopic.php?t=246348
+[slly017]: https://www.ti.com/lit/wp/slly017/slly017.pdf
+
+#### Client USB-C Ethernet
+
+The Raspberry Pi 4B's USB-C connector can be used in
+peripheral/UFP (upstream-facing port) mode.
+
+##### Enabling USB peripheral mode in `/boot/firmware/config.txt`
+
+In `/boot/firmware/config.txt`, add the following line, to turn the Raspberry
+Pi 4B into a USB gadget:
+
+```
+[cm4]
+# Enable the USB2 outputs on the IO board (assuming your CM4 is plugged into
+# such a board)
+dtoverlay=dwc2,dr_mode=peripheral
+```
+
+Place it in the `[cm4]` section if it exists.
+
+##### Make the Raspberry Pi a USB Gadget Ethernet using `/boot/firmware/cmdline.txt`
+
+In `/boot/firmware/cmdline.txt`, add
+
+```
+modules-load=dwc2,g_ether g_ether.dev_addr=e6:5f:01:00:48:01 g_ether.host_addr=e6:5f:01:00:48:02
+```
+
+between `rootwait` and `fixrtc`, in order to enable the `g_ether` Linux kernel
+module.
+
+This makes a new interface called `usb0` on the Raspberry Pi, and makes
+the Raspberry Pi 4B act like a USB Ethernet adapter. On the device side, the MAC
+address is given by `g_ether.dev_addr`, while on the host side, it will be
+`g_ether.host_addr`.
+
+Important, make sure that the second character of your MAC address is one of
+`2`/`6`/`a`/`e` (e.g. `x6:00:00:00:00:00`), as this is the
+[Local bit in RFC5342 § 2.1][rfc5342§2.1].
+
+[rfc5342§2.1]: https://datatracker.ietf.org/doc/html/rfc5342#section-2.1
+
+##### Give `usb0` a static IP address
+
+Make a new file called `/etc/netplan/51-usb0.yaml` with contents:
+
+```yaml
+# Setup a static IP address for the USB ethernet gadget mode
+# See https://github.com/nqminds/nist-brski
+network:
+  # only set static IP addresses here
+  # The DHCP server we create manually using dnsmasq
+  ethernets: # treat these as ethernet devices
+    usb0:
+      dhcp4: false # we use a static IP
+      optional: true
+      addresses: [192.168.48.1/29]
+```
+
+Make sure that the static IP address is unique.
+
+##### Setup `dnsmasq` on `usb0` only using `/etc/default/dnsmasq.usb0`
+
+Install `dnsmasq`, then disable it using:
+
+```
+sudo apt install dnsmasq
+sudo systemctl disable dnsmasq.service
+```
+
+Then, make a `/etc/default/dnsmasq.usb0` file with the following contents
+(change the IP address)
+
+```
+DNSMASQ_EXCEPT="lo"
+DNSMASQ_INTERFACE='usb0'
+DNSMASQ_OPTS='--bind-interfaces --dhcp-range=192.168.48.2,192.168.48.7,4h'
+```
+
+Finally, you can start `dnsmasq` using:
+
+```bash
+systemctl start dnsmasq@usb0.service
+```
+
+and do enable the service (so that it runs automatically on boot) using:
+
+```bash
+systemctl enable dnsmasq@usb0.service
+```
+
+##### Blacklisting `cdc_subset`
+
+Add `blacklist cdc_subset` to `/etc/modprobe.d/blacklist.conf` on the host.
+
+For some reason, the `cdc_subset` kernel module sometimes takes precendence over
+`cdc_ether`. However, `cdc_subset` ignores the MAC address of our USB Ethernet
+device, which breaks our network config,
+see https://github.com/raspberrypi/firmware/issues/843#issuecomment-1597841959.
+
+```
+# unlike cdc_ether, cdc_subset seems to be ignoring the really nice MAC
+# addresses we setup. blacklist it so the kernel always uses cdc_ether instead.
+blacklist cdc_subset
+```
 
 ### Configuring APs
 
@@ -32,25 +222,32 @@ Since [`netplan` v0.105's `wifis`](https://netplan.readthedocs.io/en/0.105/netpl
 However, it's still the easiest way to setup a static IP address for our
 AP interfaces.
 
-To do this, make a new file called `/etc/netplan/51-wifi-ap-static-ips.yaml`,
+To do this, make a new file called `/etc/netplan/51-brski.yaml`,
 with the contents like:
 
 ```yaml
 network:
-    # only set static IP addresses here
-    # The access point we create manually using hostapd
-    # The DHCP server we create manually using dnsmasq
-    ethernets: # treat these as ethernet devices
-      wlx1cbfce699b7f:
-        addresses:
-          - "192.168.16.1/24"
-      wlx1cbfce651dc4:
-        addresses:
-          - "192.168.17.1/24"
-    version: 2
-```
+  # only set static IP addresses here
+  # The access point we create manually using hostapd
+  # The DHCP server we create manually using dnsmasq
+  ethernets: # treat these as ethernet devices
+    wlx1cbfce699b7f:
+      addresses:
+        - "192.168.16.1/24"
+    wlx1cbfce651dc4:
+      addresses:
+        - "192.168.17.1/24"
 
-Afterwards,
+    # USB Ethernet Gadget mode
+    # (aka client Raspberry Pi 4)
+    enxe45f01053833:
+      dhcp4: true # find IP address automatically
+      optional: true
+    enxe45f0105389e:
+      dhcp4: true # find IP address automatically
+      optional: true
+  version: 2
+```
 
 #### Configuring hostapd
 
