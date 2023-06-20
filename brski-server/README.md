@@ -12,6 +12,26 @@ server edition called `nqm-britannic-brski`. For the two WiFi APs, we're using
 two Ralink RT5370 USB adapters. That then connects to two Ubuntu 22.04 clients
 using a USB-C hub, which are both acting a USB Ethernet devices.
 
+## Physical setup
+
+### Parts
+
+- 1x Powered USB-C hub
+  - 1x Powered USB-C hub Power Supply + IEC C13 cable.
+    - Todo, buy an IEC C13 US cable, or get a UK to US power adapter.
+- 3x Raspberry Pi 4Bs:
+  - `nqm-brittanic-brski` (server)
+  - `nqm-benign-brski` (client)
+  - `nqm-biddable-brski` (client)
+- 1x Raspberry Pi Power supply unit
+  - Maybe bring one with a US plug?
+- 2x USB-C to USB-C cables (ideally capable of 5V 3A)
+- 1x USB-C to USB-A cable (ideally USB-3.0 for higher speed, and capable of 5V 3A)
+- 1x RJ45 Ethernet cable
+- 2x USB-A WiFi AP adapters
+
+### Connections
+
 ```mermaid
 flowchart TD
     subgraph "USB-C hub"
