@@ -2,7 +2,9 @@
 
 apt install hostapd dnsmasq iptables
 
-/usr/share/doc/hostapd/README.Debian
-
 service hostapd stop
 service dnsmasq stop
+
+systemctl stop wpa_supplicant
+systemctl disable wpa_supplicant
+
