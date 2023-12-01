@@ -1,56 +1,53 @@
-document.getElementById('onboard').onclick = function() {
-    var onboardLog = document.getElementById('onboardLog');
-    var onboardStatus = document.getElementById('onboardStatus');
-    var offboardStatus = document.getElementById('offboardStatus');
-
-    onboardLog.style.display = onboardLog.style.display === 'none' ? 'block' : 'none';
-    
-    // Reset offboard status
-    offboardStatus.textContent = '';
-
-    // Send an AJAX POST request to onboard
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:8081/onboard", true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                onboardLog.textContent = xhr.responseText; // add logs here
-                onboardStatus.textContent = 'Onboarded';
-                onboardStatus.classList.add('status-green');
+function getServerPort(callback) {
+    fetch('server.conf')
+        .then(response => response.text())
+        .then(text => {
+            const match = text.match(/port=(\d+)/);
+            if (match && match[1]) {
+                callback(match[1]);
             } else {
-                onboardStatus.textContent = 'Status: Error during onboard';
-                offboardStatus.classList.remove('status-green');
+                throw new Error('Port not found in server configuration.');
             }
-        }
-    };
-    xhr.send();
+        })
+        .catch(error => {
+            console.error('Error fetching server config:', error);
+        });
+}
+
+function sendRequest(endpoint, logElementId, statusElementId, statusText, clearLogElementId, clearStatusElementId) {
+    getServerPort(function(port) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:" + port + endpoint, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                var logElement = document.getElementById(logElementId);
+                var statusElement = document.getElementById(statusElementId);
+                var clearLogElement = document.getElementById(clearLogElementId);
+                var clearStatusElement = document.getElementById(clearStatusElementId);
+
+                if (xhr.status === 200) {
+                    logElement.textContent = xhr.responseText; // add logs here
+                    statusElement.textContent = statusText;
+                    statusElement.classList.add('status-green');
+
+                    // clear the opposite status and log
+                    clearLogElement.textContent = '';
+                    clearStatusElement.textContent = '';
+                    clearStatusElement.classList.remove('status-green');
+                } else {
+                    statusElement.textContent = 'Status: Error';
+                    statusElement.classList.remove('status-green');
+                }
+            }
+        };
+        xhr.send();
+    });
+}
+
+document.getElementById('onboard').onclick = function() {
+    sendRequest('/onboard', 'onboardLog', 'onboardStatus', 'Onboarded', 'offboardLog', 'offboardStatus');
 };
 
 document.getElementById('offboard').onclick = function() {
-    var offboardLog = document.getElementById('offboardLog');
-    var offboardStatus = document.getElementById('offboardStatus');
-    var onboardStatus = document.getElementById('onboardStatus');
-
-    offboardLog.style.display = offboardLog.style.display === 'none' ? 'block' : 'none';
-    
-    // Reset onboard status
-    onboardStatus.textContent = '';
-
-    // Send an AJAX POST request to offboard
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:8081/offboard", true);
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                offboardLog.textContent = xhr.responseText; // add logs here
-                offboardStatus.textContent = 'Offboarded';
-                offboardStatus.classList.add('status-green');
-            } else {
-                offboardStatus.textContent = 'Status: Error during offboard'
-                onboardStatus.classList.remove('status-green'); 
-
-            }
-        }
-    };
-    xhr.send();
+    sendRequest('/offboard', 'offboardLog', 'offboardStatus', 'Offboarded', 'onboardLog', 'onboardStatus');
 };
