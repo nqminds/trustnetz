@@ -2,16 +2,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
-#define PORT 8081
+#define DEFAULT_PORT 8082
+
+int write_port_to_conf_file(int port) {
+    FILE *file = fopen("../html/server.conf", "w");
+    if (file == NULL) {
+        perror("Failed to open config file");
+        return -1;
+    }
+
+    fprintf(file, "port=%d\n", port);
+    fclose(file);
+    return 0;
+}
+
+void logging_function(void *cls, const char *fmt, va_list ap) {
+    // handle a varying number of args
+    vfprintf(stderr, fmt, ap);
+}
 
 static int execute_script(const char *script) {
-    printf("Attempting to execute script: %s\n", script); // Log script execution attempt
+    fprintf(stdout, "Attempting to execute script: %s\n", script); // Log script execution attempt
     int result = system(script);
     if(result != 0) {
         fprintf(stderr, "Error executing script: %s\n", script);
     } else {
-        printf("Script executed successfully: %s\n", script); // Log successful script execution
+        fprintf(stdout, "Script executed successfully: %s\n", script); // Log successful script execution
     }
     return result;
 }
@@ -86,10 +104,10 @@ static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *co
                                                                         MHD_RESPMEM_PERSISTENT);
 
         if (strcmp(url, "/onboard") == 0) {
-            printf("Received onboard request\n"); 
+            fprintf(stdout, "Received onboard request\n"); 
             execute_script("bash-scripts/onboard.sh");
         } else if (strcmp(url, "/offboard") == 0) {
-            printf("Received offboard request\n"); 
+            fprintf(stdout, "Received offboard request\n"); 
             execute_script("bash-scripts/offboard.sh");
         } else {
             const char *not_found_page = "Not Found";
@@ -118,20 +136,40 @@ static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *co
     }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+
+    int port = DEFAULT_PORT;
+
+    // cmd line args
+    for (int i = 1; i< argc; i++) {
+        if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) {
+            port = atoi(argv[i + 1]);
+            if (port <= 0) {
+                fprintf(stderr, "Invalid port number: %s\n", argv[i + 1]);
+                return 1;
+            }
+            i++; // skip port number
+        }
+    }
+
+    // write port number to config
+    if (write_port_to_conf_file(port) != 0) {
+        return 1; // exit if failed to write
+    }
+
     struct MHD_Daemon *daemon;
 
-    daemon = MHD_start_daemon(MHD_USE_INTERNAL_POLLING_THREAD, PORT, NULL, NULL,
-                              &answer_to_connection, NULL, MHD_OPTION_END);
+    daemon = MHD_start_daemon(MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_ERROR_LOG, port, NULL, NULL,
+                              &answer_to_connection, NULL, MHD_OPTION_EXTERNAL_LOGGER, logging_function, NULL, MHD_OPTION_END);
     if (NULL == daemon) {
         fprintf(stderr, "Failed to start the server\n");
         return 1;
     }
 
-    printf("Server running on port %d\n", PORT);
-    getchar(); // Press Enter to terminate the server
+    fprintf(stdout, "Server running on port %d\n", port);
+    getchar();
 
     MHD_stop_daemon(daemon);
-    printf("Server has been stopped\n");
+    fprintf(stdout,"Server has been stopped\n");
     return 0;
 }
