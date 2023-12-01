@@ -16,20 +16,22 @@ gcc -o server server.c -lmicrohttpd
 ## Run server
 
 ```sh
-./server
+# default port 8082
+./server 
+```
+```sh
+# select port
+./server -p <port-number>
 ```
 
 # Web Interface Usage
 
-can change the port if needed
 ```
-http://localhost:8081
+http://localhost:<port-number>
 ```
 
 ### Onboard / Offboard
 
- - When you click "onboard" button a POST request is sent to `http://localhost:8081/onboard`. If succesful the server will run the onboard script, and status will update to Onboarded on the web page.
+ - When you click "onboard" button a POST request is sent to `http://localhost:<port-number>/onboard`. If successful the server will run the onboard script, display logs, and status will update to Onboarded on the web page.
 
- - When you click "offboard" button a POST request is sent to `http://localhost:8081/offboard`. If succesful the server will run the offboard script, and status will update to Offboarded on the web page.
-
- - After onboarding/offboarding click buttun will hide/show logs. 
+ - When you click "offboard" button a POST request is sent to `http://localhost:<port-number>/offboard`. If successful the server will run the offboard script, display logs, and status will update to Offboarded on the web page.
