@@ -1,0 +1,41 @@
+#!/bin/bash
+
+IF0="wlan0"
+IF1="wlan1"
+
+ip a show dev $IF0
+
+if [ $? -ne 0 ]; then
+    echo "Couldn't find interface $IF0"
+    exit 1
+fi
+
+ip a show dev $IF1
+
+if [ $? -ne 0 ]; then
+    echo "Couldn't find interface $IF1"
+    exit 1
+fi
+
+
+apt install hostapd dnsmasq iptables -y
+
+service hostapd stop
+service dnsmasq stop
+
+systemctl stop wpa_supplicant
+systemctl disable wpa_supplicant
+
+systemctl disable hostapd@$IF0.service 
+systemctl disable hostapd@$IF1.service 
+
+cp $IF0.conf /etc/hostapd/$IF0.conf
+cp $IF1.conf /etc/hostapd/$IF1.conf
+
+cp dnsmasq.$IF0 /etc/default
+cp dnsmasq.$IF1 /etc/default
+
+sudo systemctl disable dnsmasq@$IF0.service
+sudo systemctl disable dnsmasq@$IF1.service
+
+
