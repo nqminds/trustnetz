@@ -1,0 +1,5 @@
+# ignore binaries
+brski-demo-app-deb/opt/demo-server*.o 
+
+# ignore packages
+*.deb
