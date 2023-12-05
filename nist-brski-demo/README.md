@@ -5,7 +5,13 @@
 ```sh
 sudo apt-get install libmicrohttpd-dev
 ```
+## install static libraries
 
+```sh
+sudo apt-get install libgcrypt20-dev libgpg-error-dev
+sudo apt-get install libnettle-dev nettle-bin libgmp-dev
+
+```
 
 ## Compile server for x86 dynamically linked
 
@@ -55,6 +61,21 @@ make clean  # Clean the previous build attempts
 LDFLAGS="-L/home/<user>/zlib-1.3" CPPFLAGS="-I/home/<user>/zlib-1.3" ./configure --host=aarch64-linux-gnu --disable-shared --enable-static
 make
 ```
+
+### Configure libmicrohttpd for x86 statically linked
+```sh
+cd libmicrohttpd-*
+./configure --enable-static --disable-shared
+make
+sudo make install
+```
+
+### Compile server for X86 -static
+```
+gcc -o server_x86 server.c -I/home/<user>/libmicrohttpd_x64/src/include -L/home/<user>/libmicrohttpd_x64/src/microhttpd/.libs -lmicrohttpd -lgnutls -lgcrypt -lgpg-error -lnettle -lgmp -ltasn1 -lunistring -lp11-kit -lz -static
+```
+
+
 ### Compile server for ARM64 -static
 
 ```sh

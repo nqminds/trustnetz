@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <sys/select.h>
+#include <sys/time.h>
+#include <unistd.h>
+#include <errno.h>
 
 #define DEFAULT_PORT 8082
 
@@ -159,7 +163,7 @@ int main(int argc, char *argv[]) {
 
     struct MHD_Daemon *daemon;
 
-    daemon = MHD_start_daemon(MHD_USE_INTERNAL_POLLING_THREAD | MHD_USE_ERROR_LOG, port, NULL, NULL,
+    daemon = MHD_start_daemon(MHD_USE_ERROR_LOG, port, NULL, NULL,
                               &answer_to_connection, NULL, MHD_OPTION_EXTERNAL_LOGGER, logging_function, NULL, MHD_OPTION_END);
     if (NULL == daemon) {
         fprintf(stderr, "Failed to start the server\n");
@@ -167,7 +171,45 @@ int main(int argc, char *argv[]) {
     }
 
     fprintf(stdout, "Server running on port %d\n", port);
-    getchar();
+
+   // Server loop using select
+    fd_set rs, ws, es;
+    MHD_socket maxfd;
+    struct timeval tv;
+    struct timeval *tvp;
+    unsigned long long timeout;
+
+    while (1) {
+        maxfd = 0;
+        FD_ZERO(&rs);
+        FD_ZERO(&ws);
+        FD_ZERO(&es);
+
+        if (MHD_get_fdset(daemon, &rs, &ws, &es, &maxfd) != MHD_YES) {
+            fprintf(stderr, "Failed to get file descriptor set\n");
+            break;
+        }
+
+        if (MHD_get_timeout(daemon, &timeout) == MHD_YES) {
+            tv.tv_sec = timeout / 1000;
+            tv.tv_usec = (timeout % 1000) * 1000;
+            tvp = &tv;
+        } else {
+            tvp = NULL;
+        }
+
+        int activity = select(maxfd + 1, &rs, &ws, &es, tvp);
+        if (activity == -1) {
+            if (errno != EINTR) {
+                fprintf(stderr, "Select error: %s\n", strerror(errno));
+                break;
+            }
+        } else if (activity == 0) {
+            fprintf(stdout, "Select timeout\n");
+        } else {
+            MHD_run(daemon);
+        }
+    }
 
     MHD_stop_daemon(daemon);
     fprintf(stdout,"Server has been stopped\n");
