@@ -29,7 +29,7 @@ jobs:
           ls -l
 
       - name: Build ARM64 Server
-        run: aarch64-linux-gnu-gcc -o server_arm64 nist-brski/debian-brski/brski-demo-app-deb/opt/demo-server/server.c -L/libmicrohttpd/src/microhttpd/.libs -L/zlib -lmicrohttpd -lz -static
+        run: aarch64-linux-gnu-gcc -o server_arm64 debian-brski/brski-demo-app-deb/opt/demo-server/server.c -L/libmicrohttpd/src/microhttpd/.libs -L/zlib -lmicrohttpd -lz -static
    
       - name: Upload server binary as an artifact
         uses: actions/upload-artifact@v2
@@ -54,7 +54,7 @@ jobs:
         run: mkdir -p brski-demo-app-deb/opt/demo-server/
 
       - name: Build x86_64 Server
-        run: gcc -o server_x86_64 nist-brski/debian-brski/brski-demo-app-deb/opt/demo-server/server.c -lmicrohttpd
+        run: gcc -o server_x86_64 debian-brski/brski-demo-app-deb/opt/demo-server/server.c -lmicrohttpd
 
       - name: List files after build
         run: |
