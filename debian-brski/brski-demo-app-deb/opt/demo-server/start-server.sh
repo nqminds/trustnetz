@@ -1,23 +1,17 @@
 #!/bin/bash
 
-ARCH=$(uname -m)
-
 # Read port number from configuration file
 source /opt/demo-server/html/server.conf
 
-case "$ARCH" in
-    "x86_64")
-        echo "used x86"
-        /opt/demo-server/server_x86 -p $PORT
-        ;;
-    "aarch64")
-        echo "used arm64"
-        /opt/demo-server/server_arm64 -p $PORT
-        ;;
-    *)
-        echo "Unsupported architecture: $ARCH"
-        exit 1
-        ;;
-esac
+# Check for the existence of the x86_64 or ARM64 version of the server
+if [ -f "/opt/demo-server/server_x86_64" ]; then
+    server_binary="/opt/demo-server/server_x86_64"
+elif [ -f "/opt/demo-server/server_arm64" ]; then
+    server_binary="/opt/demo-server/server_arm64"
+else
+    echo "Server binary not found!"
+    exit 1
+fi
 
-
+# Start the server
+$server_binary -p $PORT
