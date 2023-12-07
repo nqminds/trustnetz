@@ -84,13 +84,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: server-arm64-binary
-          path: brski-demo-app-deb/opt/demo-server/
+          path: debian-brski/
 
       - name: Download x86_64 server binary
         uses: actions/download-artifact@v2
         with:
           name: server-x86_64-binary
-          path: brski-demo-app-deb/opt/demo-server/
+          path: debian-brski/
 
       - name: Build ARM64 Debian Package
         run: dpkg-deb --build brski-demo-app-deb brski-demo-app-deb_arm64.deb
@@ -122,7 +122,7 @@ jobs:
         id: release_info
         run: |
           echo "RELEASE_TAG=v0.0.1" >> $GITHUB_ENV
-          echo "RELEASE_NAME=Brski-demo-app v0.0.1" >> $GITHUB_ENV
+          echo "RELEASE_NAME=Brski-demo-app v0.0.1.alpha.0" >> $GITHUB_ENV
 
       - name: Create Release
         id: create_release
