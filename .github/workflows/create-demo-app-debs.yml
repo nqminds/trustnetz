@@ -84,19 +84,22 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: server-arm64-binary
-          path: debian-brski/
+          path: debian-brski/brski-demo-app-deb/opt/demo-server/
+
+      - name: Build ARM64 Debian Package
+        run: dpkg-deb --build debian-brski/brski-demo-app-deb brski-demo-app-deb_arm64.deb
+
+      - name: Remove ARM64 binary
+        run: rm debian-brski/brski-demo-app-deb/opt/demo-server/server_arm64
 
       - name: Download x86_64 server binary
         uses: actions/download-artifact@v2
         with:
           name: server-x86_64-binary
-          path: debian-brski/
-
-      - name: Build ARM64 Debian Package
-        run: dpkg-deb --build brski-demo-app-deb brski-demo-app-deb_arm64.deb
+          path: debian-brski/brski-demo-app-deb/opt/demo-server/
 
       - name: Build x86_64 Debian Package
-        run: dpkg-deb --build brski-demo-app-deb brski-demo-app-deb-x86_64.deb
+        run: dpkg-deb --build debian-brski/brski-demo-app-deb brski-demo-app-deb-x86_64.deb
 
       - name: Upload ARM64 .deb Package to Artifacts
         uses: actions/upload-artifact@v2
