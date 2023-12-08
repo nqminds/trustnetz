@@ -114,59 +114,59 @@ jobs:
           path: brski-demo-app-deb-x86_64.deb
   # changed to only update the assets of current release instead of creating a new release
   release-debs:
-  name: Update Release Assets for Debian Packages
-  runs-on: ubuntu-latest
-  needs: [build-arm64, build-x86_64]
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    name: Update Release Assets for Debian Packages
+    runs-on: ubuntu-latest
+    needs: [build-arm64, build-x86_64]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up release information
-      run: |
-        echo "RELEASE_TAG=v0.0.1" >> $GITHUB_ENV
-        echo "RELEASE_NAME=Brski-demo-app v0.0.1" >> $GITHUB_ENV
+      - name: Set up release information
+        run: |
+          echo "RELEASE_TAG=v0.0.1" >> $GITHUB_ENV
+          echo "RELEASE_NAME=Brski-demo-app v0.0.1" >> $GITHUB_ENV
 
-    - name: Check if Release Exists
-      id: check_release
-      run: |
-        RELEASE_DATA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ env.RELEASE_TAG }}")
-        RELEASE_ID=$(echo "$RELEASE_DATA" | jq -r '.id')
-        UPLOAD_URL=$(echo "$RELEASE_DATA" | jq -r '.upload_url')
-        if [[ "$RELEASE_ID" != "null" ]]; then
-          echo "UPLOAD_URL=${UPLOAD_URL}" >> $GITHUB_ENV
-          echo "::set-output name=exists::true"
-        else
-          echo "::set-output name=exists::false"
-        fi
+      - name: Check if Release Exists
+        id: check_release
+        run: |
+          RELEASE_DATA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ env.RELEASE_TAG }}")
+          RELEASE_ID=$(echo "$RELEASE_DATA" | jq -r '.id')
+          UPLOAD_URL=$(echo "$RELEASE_DATA" | jq -r '.upload_url')
+          if [[ "$RELEASE_ID" != "null" ]]; then
+            echo "UPLOAD_URL=${UPLOAD_URL}" >> $GITHUB_ENV
+            echo "::set-output name=exists::true"
+          else
+            echo "::set-output name=exists::false"
+          fi
 
-    - name: Download ARM64 Debian Package
-      if: steps.check_release.outputs.exists == 'true'
-      uses: actions/download-artifact@v2
-      with:
-        name: brski-demo-app-deb-arm64
-        path: .
+      - name: Download ARM64 Debian Package
+        if: steps.check_release.outputs.exists == 'true'
+        uses: actions/download-artifact@v2
+        with:
+          name: brski-demo-app-deb-arm64
+          path: .
 
-    - name: Download AMD64 Debian Package
-      if: steps.check_release.outputs.exists == 'true'
-      uses: actions/download-artifact@v2
-      with:
-        name: brski-demo-app-deb-x86_64
-        path: .
+      - name: Download AMD64 Debian Package
+        if: steps.check_release.outputs.exists == 'true'
+        uses: actions/download-artifact@v2
+        with:
+          name: brski-demo-app-deb-x86_64
+          path: .
 
-    - name: Upload ARM64 Debian Package to Release
-      if: steps.check_release.outputs.exists == 'true'
-      run: |
-        curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Content-Type: application/vnd.debian.binary-package" \
-          --data-binary @./brski-demo-app-deb_arm64.deb \
-          "${UPLOAD_URL}?name=brski-demo-app-deb_arm64.deb"
+      - name: Upload ARM64 Debian Package to Release
+        if: steps.check_release.outputs.exists == 'true'
+        run: |
+          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/vnd.debian.binary-package" \
+            --data-binary @./brski-demo-app-deb_arm64.deb \
+            "${UPLOAD_URL}?name=brski-demo-app-deb_arm64.deb"
 
-    - name: Upload AMD64 Debian Package to Release
-      if: steps.check_release.outputs.exists == 'true'
-      run: |
-        curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Content-Type: application/vnd.debian.binary-package" \
-          --data-binary @./brski-demo-app-deb-x86_64.deb \
-          "${UPLOAD_URL}?name=brski-demo-app-deb-x86_64.deb"
+      - name: Upload AMD64 Debian Package to Release
+        if: steps.check_release.outputs.exists == 'true'
+        run: |
+          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/vnd.debian.binary-package" \
+            --data-binary @./brski-demo-app-deb-x86_64.deb \
+            "${UPLOAD_URL}?name=brski-demo-app-deb-x86_64.deb"
 
