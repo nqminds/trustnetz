@@ -1,0 +1,18 @@
+Package: demo-server
+Version: 1.0
+Section: net
+Priority: optional
+Architecture: all
+Depends: libmicrohttpd12 (>= 0.9.70), libgcrypt20, libgpg-error0, libnettle8, libgmp10
+Maintainer: Ionut Bostan <ionut@nquiringminds.com>
+Description: NQM Brski Demo APP
+ When you click "onboard" button a POST request is sent to `http://localhost:<port-number>/onboard`. 
+ If successful the server will run the onboard script, display logs, and status will update to Onboarded on the web page.
+ When you click "offboard" button a POST request is sent to `http://localhost:<port-number>/offboard`. 
+ If successful the server will run the offboard script, display logs, and status will update to Offboarded on the web page.
+Homepage: https://github.com/nqminds/nist-brski
+Vcs-Browser: https://github.com/nqminds/nist-brski
+Vcs-Git: git@github.com:nqminds/nist-brski.git
+Standards-Version: [appropriate standards version]
+Build-Depends: debhelper-compat (= 12), gcc, g++, make, libmicrohttpd-dev, libgcrypt20-dev, libgpg-error-dev, libnettle-dev, nettle-bin, libgmp-dev
+

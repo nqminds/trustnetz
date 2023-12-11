@@ -1,0 +1,12 @@
+[Unit]
+Description=brski-demo-app
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/demo-server/start-server.sh
+Restart=on-failure
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target

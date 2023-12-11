@@ -1,0 +1,8 @@
+# ignore binaries
+brski-demo-app-deb/opt/demo-server/server_x86_64
+brski-demo-app-deb/opt/demo-server/server_arm64
+
+# ignore packages
+*.deb
+
+libs/*
