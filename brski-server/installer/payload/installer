@@ -17,6 +17,10 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+wget https://github.com/nqminds/brski/releases/download/0.2.1/brski_0.2.0-1_arm64.deb
+dpkg -i brski_0.2.0-1_arm64.deb
+
+cp certs/* /etc/brski
 
 apt install hostapd dnsmasq iptables -y
 
