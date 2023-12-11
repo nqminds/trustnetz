@@ -119,7 +119,7 @@ jobs:
           name: brski-demo-app-deb-x86_64
           path: brski-demo-app-deb-x86_64.deb
   # changed to only update the assets of current release instead of creating a new release
-   release-debs:
+  release-debs:
     name: Update Release Assets for Debian Packages
     runs-on: ubuntu-latest
     needs: [build-arm64, build-x86_64, package-deb]
