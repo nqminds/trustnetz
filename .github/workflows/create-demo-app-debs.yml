@@ -170,23 +170,25 @@ jobs:
         if: env.exists == 'true'
         run: |
           echo "Uploading ARM64 Debian Package..."
-          echo "URL: ${UPLOAD_URL}?name=brski-demo-app-deb_arm64.deb"
+          UPLOAD_URL="${UPLOAD_URL/\{?name,label\}/}?name=brski-demo-app-deb_arm64.deb"
+          echo "URL: $UPLOAD_URL"
           
           curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: multipart/form-data" \
             -F "label=ARM64 Debian Package" \
             -F "data=@./brski-demo-app-deb_arm64.deb" \
-            "${UPLOAD_URL}?name=brski-demo-app-deb_arm64.deb" -v
+            "$UPLOAD_URL" -v
 
 
       - name: Upload AMD64 Debian Package to Release
         if: env.exists == 'true'
         run: |
           echo "Uploading AMD64 Debian Package..."
-          echo "URL: ${UPLOAD_URL}?name=brski-demo-app-deb-x86_64.deb"
+          UPLOAD_URL="${UPLOAD_URL/\{?name,label\}/}?name=brski-demo-app-deb-x86_64.deb"
+          echo "URL: ${UPLOAD_URL}"
           
           curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: multipart/form-data" \
             -F "label=AMD64 Debian Package" \
             -F "data=@./brski-demo-app-deb-x86_64.deb" \
-            "${UPLOAD_URL}?name=brski-demo-app-deb-x86_64.deb" -v
+            "${UPLOAD_URL}" -v
