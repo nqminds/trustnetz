@@ -30,7 +30,10 @@ jobs:
 
       - name: Build ARM64 Server
         run: aarch64-linux-gnu-gcc -o server_arm64 debian-brski/brski-demo-app-deb/opt/demo-server/server.c -L/libmicrohttpd/src/microhttpd/.libs -L/zlib -lmicrohttpd -lz -static
-   
+
+      - name: Set execute permission on ARM64 Server Binary
+        run: chmod +x server_arm64
+
       - name: Upload server binary as an artifact
         uses: actions/upload-artifact@v2
         with:
@@ -65,6 +68,9 @@ jobs:
 
       - name: Rename x86_64 binary for packaging
         run: mv server_x86_64 brski-demo-app-deb/opt/demo-server/server_x86_64
+      
+      - name: Set execute permission on x86_64 Server Binary
+        run: chmod +x brski-demo-app-deb/opt/demo-server/server_x86_64
 
       - name: Upload x86_64 server binary as an artifact
         uses: actions/upload-artifact@v2
@@ -146,7 +152,7 @@ jobs:
         with:
           name: brski-demo-app-deb-arm64
           path: .
-          
+
       - name: Download AMD64 Debian Package
         if: steps.check_release.outputs.exists == 'true'
         uses: actions/download-artifact@v2
@@ -154,19 +160,25 @@ jobs:
           name: brski-demo-app-deb-x86_64
           path: .
 
+      - name: List files in current directory
+        run: ls -lah
+
       - name: Upload ARM64 Debian Package to Release
         if: steps.check_release.outputs.exists == 'true'
         run: |
           curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: application/vnd.debian.binary-package" \
-            --data-binary @./brski-demo-app-deb_arm64.deb \
+            -H "Content-Type: multipart/form-data" \
+            -F "name=brski-demo-app-deb_arm64.deb" \
+            -F "label=ARM64 Debian Package" \
+            -F "file=@./brski-demo-app-deb_arm64.deb" \
             "${UPLOAD_URL}?name=brski-demo-app-deb_arm64.deb"
 
       - name: Upload AMD64 Debian Package to Release
         if: steps.check_release.outputs.exists == 'true'
         run: |
           curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: application/vnd.debian.binary-package" \
-            --data-binary @./brski-demo-app-deb-x86_64.deb \
+            -H "Content-Type: multipart/form-data" \
+            -F "name=brski-demo-app-deb-x86_64.deb" \
+            -F "label=x86_64 Debian Package" \
+            -F "file=@./brski-demo-app-deb-x86_64.deb" \
             "${UPLOAD_URL}?name=brski-demo-app-deb-x86_64.deb"
-
