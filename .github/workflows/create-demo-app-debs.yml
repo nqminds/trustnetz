@@ -167,7 +167,6 @@ jobs:
         run: |
           curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: multipart/form-data" \
-            -F "name=brski-demo-app-deb_arm64.deb" \
             -F "label=ARM64 Debian Package" \
             -F "data=@./brski-demo-app-deb_arm64.deb" \
             "${UPLOAD_URL}?name=brski-demo-app-deb_arm64.deb" -v
@@ -178,7 +177,6 @@ jobs:
         run: |
           curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: multipart/form-data" \
-            -F "name=brski-demo-app-deb-x86_64.deb" \
             -F "label=AMD64 Debian Package" \
             -F "data=@./brski-demo-app-deb-x86_64.deb" \
             "${UPLOAD_URL}?name=brski-demo-app-deb-x86_64.deb" -v
