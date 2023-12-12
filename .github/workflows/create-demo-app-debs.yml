@@ -143,6 +143,7 @@ jobs:
           if [[ "$RELEASE_ID" != "null" ]]; then
             echo "UPLOAD_URL=${UPLOAD_URL}" >> $GITHUB_ENV
             echo "exists=true" >> $GITHUB_ENV
+            echo "RELEASE_ID=$RELEASE_ID" >> $GITHUB_ENV
           else
             echo "exists=false" >> $GITHUB_ENV
           fi
