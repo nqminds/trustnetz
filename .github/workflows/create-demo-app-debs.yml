@@ -186,11 +186,14 @@ jobs:
               const { owner, repo } = context.repo;
               const release_id = process.env.RELEASE_ID;
 
+              console.log(`release_id: ${process.env.RELEASE_ID}`);
+
               // Delete existing asset with the same name
               const assets = await github.rest.repos.listReleaseAssets({ owner, repo, release_id });
               const existingAsset = assets.data.find(asset => asset.name === asset_name);
 
               console.log(`Existing assets: ${existingAsset}`);
+              console.log(`UPLOAD URL: ${context.payload.release.upload_url}`);
 
               if (existingAsset) {
               await github.rest.repos.deleteReleaseAsset({
@@ -205,10 +208,6 @@ jobs:
               const headers = { 'content-type': 'application/vnd.debian.binary-package', 'content-length': contentLength };
               const asset = fs.readFileSync(path);
               
-              console.log(`UPLOAD URL: ${context.payload.release.upload_url}`);
-              console.log(`release_id: ${process.env.RELEASE_ID}`);
-
-
               await github.rest.repos.uploadReleaseAsset({
               url: context.payload.release.upload_url,
               headers,
@@ -263,5 +262,3 @@ jobs:
             } catch (error) {
               console.error(`Error uploading ${asset_name}, ${error}`);
             }
-
-   UPLOAD_URL: https://uploads.github.com/repos/nqminds/nist-brski/releases/132993068/assets{?name,label}
