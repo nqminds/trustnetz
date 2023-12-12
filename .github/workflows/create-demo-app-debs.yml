@@ -175,6 +175,7 @@ jobs:
           script: |
             const fs = require('fs');
             const path = './brski-demo-app-deb_arm64.deb';
+            const asset_name = 'brski-demo-app-deb_arm64.deb';
 
             try {
               // Check if the file exists
@@ -184,7 +185,6 @@ jobs:
 
               const { owner, repo } = context.repo;
               const release_id = process.env.RELEASE_ID;
-              const asset_name = 'brski-demo-app-deb_arm64.deb';
 
               // Delete existing asset with the same name
               const assets = await github.rest.repos.listReleaseAssets({ owner, repo, release_id });
@@ -220,6 +220,7 @@ jobs:
           script: |
             const fs = require('fs');
             const path = './brski-demo-app-deb-x86_64.deb';
+            const asset_name = 'brski-demo-app-deb-x86_64.deb';
 
             try {
               // Check if the file exists
@@ -229,8 +230,7 @@ jobs:
 
               const { owner, repo } = context.repo;
               const release_id = process.env.RELEASE_ID;
-              const asset_name = 'brski-demo-app-deb-x86_64.deb';
-
+              
               // Delete existing asset with the same name
               const assets = await github.rest.repos.listReleaseAssets({ owner, repo, release_id });
               const existingAsset = assets.data.find(asset => asset.name === asset_name);
