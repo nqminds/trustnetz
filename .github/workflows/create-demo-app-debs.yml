@@ -190,7 +190,7 @@ jobs:
               const assets = await github.rest.repos.listReleaseAssets({ owner, repo, release_id });
               const existingAsset = assets.data.find(asset => asset.name === asset_name);
 
-              console.log(`Existing assets: ${existingAsset}`)
+              console.log(`Existing assets: ${existingAsset}`);
 
               if (existingAsset) {
               await github.rest.repos.deleteReleaseAsset({
@@ -206,7 +206,7 @@ jobs:
               const asset = fs.readFileSync(path);
               
               console.log(`UPLOAD URL: ${context.payload.release.upload_url}`);
-              console.log(`release_id: ${process.env.RELEASE_ID;}`);
+              console.log(`release_id: ${process.env.RELEASE_ID}`);
 
 
               await github.rest.repos.uploadReleaseAsset({
