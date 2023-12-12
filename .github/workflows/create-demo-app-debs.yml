@@ -1,6 +1,7 @@
 name: Build and Package Demo Server
 
 on:
+  workflow_dispatch: # for manual testing
   release:
     types: [created, released]
   push:
@@ -30,9 +31,6 @@ jobs:
 
       - name: Build ARM64 Server
         run: aarch64-linux-gnu-gcc -o server_arm64 debian-brski/brski-demo-app-deb/opt/demo-server/server.c -L/libmicrohttpd/src/microhttpd/.libs -L/zlib -lmicrohttpd -lz -static
-
-      - name: Set execute permission on ARM64 Server Binary
-        run: chmod +x server_arm64
 
       - name: Upload server binary as an artifact
         uses: actions/upload-artifact@v2
@@ -70,7 +68,7 @@ jobs:
         run: mv server_x86_64 brski-demo-app-deb/opt/demo-server/server_x86_64
       
       - name: Set execute permission on x86_64 Server Binary
-        run: chmod +x brski-demo-app-deb/opt/demo-server/server_x86_64
+        run: sudo chmod +x brski-demo-app-deb/opt/demo-server/server_x86_64
 
       - name: Upload x86_64 server binary as an artifact
         uses: actions/upload-artifact@v2
@@ -91,6 +89,9 @@ jobs:
         with:
           name: server-arm64-binary
           path: debian-brski/brski-demo-app-deb/opt/demo-server/
+
+      - name: Set execute permission on ARM64 Server Binary
+        run: sudo chmod +x debian-brski/brski-demo-app-deb/opt/demo-server/server_arm64
 
       - name: Build ARM64 Debian Package
         run: dpkg-deb --build debian-brski/brski-demo-app-deb brski-demo-app-deb_arm64.deb
@@ -142,6 +143,7 @@ jobs:
           if [[ "$RELEASE_ID" != "null" ]]; then
             echo "UPLOAD_URL=${UPLOAD_URL}" >> $GITHUB_ENV
             echo "exists=true" >> $GITHUB_ENV
+            echo "RELEASE_ID=$RELEASE_ID" >> $GITHUB_ENV
           else
             echo "exists=false" >> $GITHUB_ENV
           fi
@@ -168,27 +170,98 @@ jobs:
 
       - name: Upload ARM64 Debian Package to Release
         if: env.exists == 'true'
-        run: |
-          echo "Uploading ARM64 Debian Package..."
-          UPLOAD_URL="${UPLOAD_URL/\{?name,label\}/}?name=brski-demo-app-deb_arm64.deb"
-          echo "URL: $UPLOAD_URL"
-          
-          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: multipart/form-data" \
-            -F "label=ARM64 Debian Package" \
-            -F "data=@./brski-demo-app-deb_arm64.deb" \
-            "$UPLOAD_URL" -v
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const fs = require('fs');
+            const path = './brski-demo-app-deb_arm64.deb';
+            const asset_name = 'brski-demo-app-deb_arm64.deb';
 
+            try {
+              // Check if the file exists
+              if (!fs.existsSync(path)) {
+                  console.error(`File not found: ${path}`);
+              }
+
+              const { owner, repo } = context.repo;
+              const release_id = process.env.RELEASE_ID;
+
+              console.log(`release_id: ${process.env.RELEASE_ID}`);
+
+              // Delete existing asset with the same name
+              const assets = await github.rest.repos.listReleaseAssets({ owner, repo, release_id });
+              const existingAsset = assets.data.find(asset => asset.name === asset_name);
+
+              console.log(`Existing assets: ${existingAsset}`);
+              console.log(`UPLOAD URL: ${process.env.UPLOAD_URL}`);
+
+              if (existingAsset) {
+              await github.rest.repos.deleteReleaseAsset({
+                  owner,
+                  repo,
+                  asset_id: existingAsset.id
+              });
+              }
+
+              // Upload the new asset
+              const contentLength = fs.statSync(path).size;
+              const headers = { 'content-type': 'application/vnd.debian.binary-package', 'content-length': contentLength };
+              const upload_url = process.env.UPLOAD_URL;
+              const asset = fs.readFileSync(path);
+              
+              await github.rest.repos.uploadReleaseAsset({
+              url: upload_url,
+              headers,
+              name: asset_name,
+              data: asset
+              });
+            } catch (error) {
+                console.error(`Error uploading ${asset_name}, ${error}`);
+            }
 
       - name: Upload AMD64 Debian Package to Release
         if: env.exists == 'true'
-        run: |
-          echo "Uploading AMD64 Debian Package..."
-          UPLOAD_URL="${UPLOAD_URL/\{?name,label\}/}?name=brski-demo-app-deb-x86_64.deb"
-          echo "URL: ${UPLOAD_URL}"
-          
-          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: multipart/form-data" \
-            -F "label=AMD64 Debian Package" \
-            -F "data=@./brski-demo-app-deb-x86_64.deb" \
-            "${UPLOAD_URL}" -v
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const fs = require('fs');
+            const path = './brski-demo-app-deb-x86_64.deb';
+            const asset_name = 'brski-demo-app-deb-x86_64.deb';
+
+            try {
+              // Check if the file exists
+              if (!fs.existsSync(path)) {
+                console.error(`File not found: ${path}`);
+              }
+
+              const { owner, repo } = context.repo;
+              const release_id = process.env.RELEASE_ID;
+              
+              // Delete existing asset with the same name
+              const assets = await github.rest.repos.listReleaseAssets({ owner, repo, release_id });
+              const existingAsset = assets.data.find(asset => asset.name === asset_name);
+              if (existingAsset) {
+                await github.rest.repos.deleteReleaseAsset({
+                  owner,
+                  repo,
+                  asset_id: existingAsset.id
+                });
+              }
+
+              // Upload the new asset
+              const contentLength = fs.statSync(path).size;
+              const headers = { 'content-type': 'application/vnd.debian.binary-package', 'content-length': contentLength };
+              const upload_url = process.env.UPLOAD_URL;
+              const asset = fs.readFileSync(path);
+
+              await github.rest.repos.uploadReleaseAsset({
+                url: upload_url,
+                headers,
+                name: asset_name,
+                data: asset
+              });
+            } catch (error) {
+              console.error(`Error uploading ${asset_name}, ${error}`);
+            }
