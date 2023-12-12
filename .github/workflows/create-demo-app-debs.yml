@@ -32,7 +32,7 @@ jobs:
         run: aarch64-linux-gnu-gcc -o server_arm64 debian-brski/brski-demo-app-deb/opt/demo-server/server.c -L/libmicrohttpd/src/microhttpd/.libs -L/zlib -lmicrohttpd -lz -static
 
       - name: Set execute permission on ARM64 Server Binary
-        run: chmod +x server_arm64
+        run: sudo chmod +x server_arm64
 
       - name: Upload server binary as an artifact
         uses: actions/upload-artifact@v2
@@ -70,7 +70,7 @@ jobs:
         run: mv server_x86_64 brski-demo-app-deb/opt/demo-server/server_x86_64
       
       - name: Set execute permission on x86_64 Server Binary
-        run: chmod +x brski-demo-app-deb/opt/demo-server/server_x86_64
+        run: sudo chmod +x brski-demo-app-deb/opt/demo-server/server_x86_64
 
       - name: Upload x86_64 server binary as an artifact
         uses: actions/upload-artifact@v2
