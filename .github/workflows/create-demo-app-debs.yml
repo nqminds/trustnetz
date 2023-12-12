@@ -171,6 +171,7 @@ jobs:
         if: env.exists == 'true'
         uses: actions/github-script@v6
         with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const fs = require('fs');
             const path = './brski-demo-app-deb_arm64.deb';
@@ -178,7 +179,7 @@ jobs:
             try {
               // Check if the file exists
               if (!fs.existsSync(path)) {
-                throw new Error("File not found: " + path);
+                  console.error(`File not found: ${path}`);
               }
 
               const { owner, repo } = context.repo;
@@ -189,37 +190,35 @@ jobs:
               const assets = await github.rest.repos.listReleaseAssets({ owner, repo, release_id });
               const existingAsset = assets.data.find(asset => asset.name === asset_name);
               if (existingAsset) {
-                await github.rest.repos.deleteReleaseAsset({
+              await github.rest.repos.deleteReleaseAsset({
                   owner,
                   repo,
                   asset_id: existingAsset.id
-                });
+              });
               }
 
               // Upload the new asset
               const contentLength = fs.statSync(path).size;
-              const headers = { 'content-type': 'application/octet-stream', 'content-length': contentLength };
-              const uploadUrl = `https://uploads.github.com/repos/${owner}/${repo}/releases/${release_id}/assets?name=${asset_name}`;
+              const headers = { 'content-type': 'application/vnd.debian.binary-package', 'content-length': contentLength };
               const asset = fs.readFileSync(path);
 
               await github.rest.repos.uploadReleaseAsset({
-                headers,
-                name: asset_name,
-                data: asset,
-                url: uploadUrl
+              url: context.payload.release.upload_url,
+              headers,
+              name: asset_name,
+              data: asset
               });
             } catch (error) {
-              console.error(`Error uploading ${asset_name}, ${error}`);
+                console.error(`Error uploading ${asset_name}, ${error}`);
             }
           env:
             RELEASE_ID: ${{ env.RELEASE_ID }}
-
-
 
       - name: Upload AMD64 Debian Package to Release
         if: env.exists == 'true'
         uses: actions/github-script@v6
         with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const fs = require('fs');
             const path = './brski-demo-app-deb-x86_64.deb';
@@ -227,7 +226,7 @@ jobs:
             try {
               // Check if the file exists
               if (!fs.existsSync(path)) {
-                throw new Error("File not found: " + path);
+                console.error(`File not found: ${path}`);
               }
 
               const { owner, repo } = context.repo;
@@ -247,16 +246,18 @@ jobs:
 
               // Upload the new asset
               const contentLength = fs.statSync(path).size;
-              const headers = { 'content-type': 'application/octet-stream', 'content-length': contentLength };
+              const headers = { 'content-type': 'application/vnd.debian.binary-package', 'content-length': contentLength };
               const uploadUrl = `https://uploads.github.com/repos/${owner}/${repo}/releases/${release_id}/assets?name=${asset_name}`;
               const asset = fs.readFileSync(path);
 
               await github.rest.repos.uploadReleaseAsset({
+                url: context.payload.release.upload_url,
                 headers,
                 name: asset_name,
-                data: asset,
-                url: uploadUrl
+                data: asset
               });
             } catch (error) {
               console.error(`Error uploading ${asset_name}, ${error}`);
             }
+          env:
+            RELEASE_ID: ${{ env.RELEASE_ID }}
