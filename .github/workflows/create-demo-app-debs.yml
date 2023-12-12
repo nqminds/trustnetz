@@ -194,7 +194,7 @@ jobs:
               const existingAsset = assets.data.find(asset => asset.name === asset_name);
 
               console.log(`Existing assets: ${existingAsset}`);
-              console.log(`UPLOAD URL: ${context.payload.release.upload_url}`);
+              console.log(`UPLOAD URL: ${process.env.UPLOAD_URL}`);
 
               if (existingAsset) {
               await github.rest.repos.deleteReleaseAsset({
@@ -207,10 +207,11 @@ jobs:
               // Upload the new asset
               const contentLength = fs.statSync(path).size;
               const headers = { 'content-type': 'application/vnd.debian.binary-package', 'content-length': contentLength };
+              const upload_url = process.env.UPLOAD_URL;
               const asset = fs.readFileSync(path);
               
               await github.rest.repos.uploadReleaseAsset({
-              url: context.payload.release.upload_url,
+              url: upload_url,
               headers,
               name: asset_name,
               data: asset
@@ -252,10 +253,11 @@ jobs:
               // Upload the new asset
               const contentLength = fs.statSync(path).size;
               const headers = { 'content-type': 'application/vnd.debian.binary-package', 'content-length': contentLength };
+              const upload_url = process.env.UPLOAD_URL;
               const asset = fs.readFileSync(path);
 
               await github.rest.repos.uploadReleaseAsset({
-                url: context.payload.release.upload_url,
+                url: upload_url,
                 headers,
                 name: asset_name,
                 data: asset
