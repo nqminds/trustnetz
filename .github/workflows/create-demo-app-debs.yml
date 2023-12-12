@@ -247,7 +247,6 @@ jobs:
               // Upload the new asset
               const contentLength = fs.statSync(path).size;
               const headers = { 'content-type': 'application/vnd.debian.binary-package', 'content-length': contentLength };
-              const uploadUrl = `https://uploads.github.com/repos/${owner}/${repo}/releases/${release_id}/assets?name=${asset_name}`;
               const asset = fs.readFileSync(path);
 
               await github.rest.repos.uploadReleaseAsset({
@@ -259,5 +258,4 @@ jobs:
             } catch (error) {
               console.error(`Error uploading ${asset_name}, ${error}`);
             }
-          env:
-            RELEASE_ID: ${{ env.RELEASE_ID }}
+
