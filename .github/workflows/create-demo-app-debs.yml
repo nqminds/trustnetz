@@ -211,8 +211,6 @@ jobs:
             } catch (error) {
                 console.error(`Error uploading ${asset_name}, ${error}`);
             }
-          env:
-            RELEASE_ID: ${{ env.RELEASE_ID }}
 
       - name: Upload AMD64 Debian Package to Release
         if: env.exists == 'true'
