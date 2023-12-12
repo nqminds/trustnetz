@@ -1,6 +1,7 @@
 name: Build and Package Demo Server
 
 on:
+  workflow_dispatch: # for manual testing
   release:
     types: [created, released]
   push:
