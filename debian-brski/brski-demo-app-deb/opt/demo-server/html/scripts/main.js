@@ -17,7 +17,8 @@ function getServerPort(callback) {
 function sendRequest(endpoint, logElementId, statusElementId, statusText, clearLogElementId, clearStatusElementId) {
     getServerPort(function(port) {
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://localhost:" + port + endpoint, true);
+        var url = window.location.protocol + "//" + window.location.hostname + ":" + port + endpoint;
+        xhr.open("POST", url, true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
                 var logElement = document.getElementById(logElementId);
@@ -35,7 +36,7 @@ function sendRequest(endpoint, logElementId, statusElementId, statusText, clearL
                     clearStatusElement.textContent = '';
                     clearStatusElement.classList.remove('status-green');
                 } else {
-                    statusElement.textContent = 'Status: Error';
+                    statusElement.textContent = 'Status: Error - ' + xhr.responseText;
                     statusElement.classList.remove('status-green');
                 }
             }
