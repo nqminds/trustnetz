@@ -1,5 +1,4 @@
 #!/bin/bash
-# offboard.sh
-echo "Offboarding IoT device..."
 
-# TODO: Add offboard logic
+# Disconnect from brski-open if connected
+nmcli device disconnect wlan0
