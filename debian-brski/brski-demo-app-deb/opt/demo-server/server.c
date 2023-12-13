@@ -109,7 +109,15 @@ static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *co
 
         if (strcmp(url, "/onboard") == 0) {
             fprintf(stdout, "Received onboard request\n"); 
-            execute_script("/opt/demo-server/bash-scripts/onboard.sh");
+            int script_result = execute_script("/opt/demo-server/bash-scripts/onboard.sh");
+            char result_str[1024];
+            snprintf(result_str, sizeof(result_str), "Script Exit Status: %d", script_result);
+            response = MHD_create_response_from_buffer(strlen(result_str), (void *)result_str, MHD_RESPMEM_MUST_FREE);
+            // Set the response code based on script_result
+            int response_code = (script_result == 0) ? MHD_HTTP_OK : MHD_HTTP_INTERNAL_SERVER_ERROR;
+            ret = MHD_queue_response(connection, response_code, response);
+            MHD_destroy_response(response);
+            return ret;
         } else if (strcmp(url, "/offboard") == 0) {
             fprintf(stdout, "Received offboard request\n"); 
             execute_script("/opt/demo-server/bash-scripts/offboard.sh");
