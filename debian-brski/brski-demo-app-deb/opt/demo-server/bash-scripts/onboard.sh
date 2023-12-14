@@ -1,14 +1,37 @@
 #!/bin/bash
 
+echo "Starting onboarding process.\n"
+
 # Disconnect from brski-secure if connected
-nmcli device disconnect wlan0
+echo "Disconnecting from brski-secure (if connected)...\n"
+sudo nmcli device disconnect wlan0
+echo "Disconnected from brski-secure.\n"
 
 # Connect to brski-open
-nmcli device wifi connect 'brski-open' ifname wlan0
+echo "Connecting to brski-open...\n"
+sudo nmcli device wifi connect 'brski-open' ifname wlan0
+echo "Connected to brski-open.\n"
 
-brski -c /etc/brski/config.ini -qqqq preq
+sleep 2
+
+echo "Running brski preq command...\n"
+sudo brski -c /etc/brski/config.ini -qqqq preq
+
+echo "Waiting for the pledge voucher"
+sleep 2
 
 if [ $? -eq 0 ]; then
-  nmcli device disconnect wlan0
-  nmcli device wifi connect 'brski-secure' password '1234554321' ifname wlan0
+  echo "brski preq command successful.\n"
+  sudo nmcli device disconnect wlan0
+  echo "Disconnected from brski-open.\n"
+
+  sleep 2
+  
+  echo "Connecting to brski-secure...\n"
+  sudo nmcli device wifi connect 'brski-secure' password '1234554321' ifname wlan0
+  echo "Connected to brski-secure.\n"
+else
+  echo "Error: brski preq command failed.\n"
 fi
+
+echo "Onboarding process completed.\n"
