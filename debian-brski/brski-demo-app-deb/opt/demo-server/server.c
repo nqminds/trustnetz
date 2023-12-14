@@ -7,6 +7,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <errno.h>
+#include <fcntl.h>
 
 #define DEFAULT_PORT 8082
 
@@ -56,12 +57,47 @@ static int serve_file(const char *filename, struct MHD_Response **response) {
         return MHD_NO;
     }
 
-    fread(buffer, 1, size, file);
+    size_t read_bytes = fread(buffer, 1, size, file);
+    if (read_bytes != size) {
+        fprintf(stderr, "Error reading file: %s\n", filename);
+        free(buffer);
+        fclose(file);
+        return MHD_NO;
+    }
+
     *response = MHD_create_response_from_buffer(size, buffer, MHD_RESPMEM_MUST_FREE);
     fclose(file);
 
     return MHD_YES;
 }
+
+static int execute_script_async(const char *script, const char *output_file) {
+    pid_t pid = fork();
+    if (pid == -1) {
+        // Handle error in fork
+        return -1;
+    } else if (pid > 0) {
+        // Parent process
+        fprintf(stdout, "Started script (PID: %d): %s\n", pid, script);
+        return 0;
+    } else {
+        // Child process
+        int fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (fd == -1) {
+            fprintf(stderr, "Failed to open output file: %s\n", output_file);
+            exit(EXIT_FAILURE);
+        }
+
+        dup2(fd, STDOUT_FILENO); // Redirect stdout to output file
+        dup2(fd, STDERR_FILENO); // Redirect stderr to output file
+        close(fd);
+
+        execl("/bin/bash", "bash", "-c", script, (char *) NULL);
+        fprintf(stderr, "Failed to execute script: %s\n", script);
+        exit(EXIT_FAILURE);
+    }
+}
+
 
 static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *connection,
                                             const char *url, const char *method,
@@ -108,15 +144,38 @@ static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *co
                                                                         MHD_RESPMEM_PERSISTENT);
 
         if (strcmp(url, "/onboard") == 0) {
-            fprintf(stdout, "Received onboard request\n"); 
-            int script_result = execute_script("/opt/demo-server/bash-scripts/onboard.sh");
-            char result_str[1024];
-            snprintf(result_str, sizeof(result_str), "Script Exit Status: %d", script_result);
-            response = MHD_create_response_from_buffer(strlen(result_str), (void *)result_str, MHD_RESPMEM_MUST_FREE);
-            // Set the response code based on script_result
-            int response_code = (script_result == 0) ? MHD_HTTP_OK : MHD_HTTP_INTERNAL_SERVER_ERROR;
-            ret = MHD_queue_response(connection, response_code, response);
+            const char *output_file = "/opt/demo-server/html/log_file.txt";
+            // Execute the onboarding script
+            int script_result = execute_script_async("/opt/demo-server/bash-scripts/onboard.sh", output_file);
+            
+            sleep(5);
+            
+            FILE *file = fopen(output_file, "r");
+            if (file == NULL) {
+                perror("Error opening log file");
+            
+                return MHD_NO;
+            }
+
+            fseek(file, 0, SEEK_END);
+            long size = ftell(file);
+            rewind(file);
+
+            char *buffer = malloc(size + 1);
+            if (buffer == NULL) {
+                perror("Memory allocation failed");
+                fclose(file);
+                return MHD_NO;
+            }
+
+            fread(buffer, 1, size, file);
+            buffer[size] = '\0'; // Null-terminate the buffer
+            fclose(file);
+
+            struct MHD_Response *response = MHD_create_response_from_buffer(size, buffer, MHD_RESPMEM_MUST_FREE);
+            int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
             MHD_destroy_response(response);
+
             return ret;
         } else if (strcmp(url, "/offboard") == 0) {
             fprintf(stdout, "Received offboard request\n"); 
