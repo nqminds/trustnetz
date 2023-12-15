@@ -8,11 +8,12 @@
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
+#include "config.h" 
 
 #define DEFAULT_PORT 8082
 
 int write_port_to_conf_file(int port) {
-    FILE *file = fopen("/opt/demo-server/html/server.conf", "w");
+    FILE *file = fopen(CONFIG_FILE_PATH, "w");
     if (file == NULL) {
         perror("Failed to open config file");
         return -1;
@@ -116,7 +117,7 @@ static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *co
         }
 
         char filepath[1024];
-        snprintf(filepath, sizeof(filepath), "/opt/demo-server/html%s", url);
+        snprintf(filepath, sizeof(filepath), "%s%s", HTML_BASE_PATH, url);
 
         if (serve_file(filepath, &response) == MHD_YES) {
             ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
@@ -144,9 +145,9 @@ static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *co
                                                                         MHD_RESPMEM_PERSISTENT);
 
         if (strcmp(url, "/onboard") == 0) {
-            const char *output_file = "/opt/demo-server/html/log_file.txt";
+            const char *output_file = ONBOARDING_LOG_FILE_PATH;
             // Execute the onboarding script
-            int script_result = execute_script_async("/opt/demo-server/bash-scripts/onboard.sh", output_file);
+            int script_result = execute_script_async(ONBOARDING_SCRIPT_PATH, output_file);
             
             sleep(5);
             
@@ -178,8 +179,18 @@ static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *co
 
             return ret;
         } else if (strcmp(url, "/offboard") == 0) {
-            fprintf(stdout, "Received offboard request\n"); 
-            execute_script("/opt/demo-server/bash-scripts/offboard.sh");
+            fprintf(stdout, "Received offboard request\n");
+            const char *output_file = OFFBOARDING_LOG_FILE_PATH;
+
+            execute_script_async(OFFBOARDING_SCRIPT_PATH, output_file);
+            const char *ok_page = "Offboarding initiated";
+            response = MHD_create_response_from_buffer(strlen(ok_page),
+                                                       (void *)ok_page,
+                                                       MHD_RESPMEM_PERSISTENT);
+            ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+            MHD_destroy_response(response);
+            return ret;
+
         } else {
             const char *not_found_page = "Not Found";
             response = MHD_create_response_from_buffer(strlen(not_found_page),
