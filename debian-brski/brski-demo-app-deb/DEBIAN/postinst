@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Create necessary directories
+mkdir -p /opt/demo-server/html
+mkdir -p /opt/demo-server/bash-scripts
+
+# Set permissions
+chown -R root:root /opt/demo-server
+chmod -R 755 /opt/demo-server
+
+
 # Ask the user for a port number
 echo "Please enter the port number for the demo-server service:"
 read PORT
@@ -12,8 +21,10 @@ fi
 
 # Write the port number to the configuration file
 echo "Port selected: $PORT"
-mkdir -p /opt/demo-server/html  # Create the directory if it doesn't exist
 echo "port=$PORT" > /opt/demo-server/html/server.conf
+
+chown root:root /opt/demo-server/html/server.conf
+chmod 644 /opt/demo-server/html/server.conf
 
 # Copy the systemd service file
 cp /opt/demo-server/demo-server.service /etc/systemd/system/
