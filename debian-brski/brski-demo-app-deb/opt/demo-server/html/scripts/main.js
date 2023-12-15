@@ -14,27 +14,36 @@ function getServerPort(callback) {
         });
 }
 
-function sendRequest(endpoint, logElementId, statusElementId, statusText, clearLogElementId, clearStatusElementId) {
+function getLogFile(logFile, logElementId) {
+    fetch(logFile)
+        .then(response => response.text())
+        .then(text => {
+            var logElement = document.getElementById(logElementId);
+            logElement.textContent = text;
+        })
+        .catch(error => {
+            console.error('Error fetching log file:', error);
+        });
+}
+
+function sendRequest(endpoint, logElementId, statusElementId, statusText, clearLogElementId, clearStatusElementId, logFile) {
     getServerPort(function(port) {
         var xhr = new XMLHttpRequest();
         var url = window.location.protocol + "//" + window.location.hostname + ":" + port + endpoint;
         xhr.open("POST", url, true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
-                var logElement = document.getElementById(logElementId);
                 var statusElement = document.getElementById(statusElementId);
                 var clearLogElement = document.getElementById(clearLogElementId);
                 var clearStatusElement = document.getElementById(clearStatusElementId);
 
                 if (xhr.status === 200) {
-                    logElement.textContent = xhr.responseText; // add logs here
                     statusElement.textContent = statusText;
                     statusElement.classList.add('status-green');
-
-                    // clear the opposite status and log
                     clearLogElement.textContent = '';
                     clearStatusElement.textContent = '';
                     clearStatusElement.classList.remove('status-green');
+                    setInterval(() => getLogFile(logFile, logElementId), 1000); // Poll every 1 seconds
                 } else {
                     statusElement.textContent = 'Status: Error - ' + xhr.responseText;
                     statusElement.classList.remove('status-green');
@@ -46,9 +55,9 @@ function sendRequest(endpoint, logElementId, statusElementId, statusText, clearL
 }
 
 document.getElementById('onboard').onclick = function() {
-    sendRequest('/onboard', 'onboardLog', 'onboardStatus', 'Onboarded', 'offboardLog', 'offboardStatus');
+    sendRequest('/onboard', 'onboardLog', 'onboardStatus', 'Onboarded', 'offboardLog', 'offboardStatus', '../onboarding_log_file.txt');
 };
 
 document.getElementById('offboard').onclick = function() {
-    sendRequest('/offboard', 'offboardLog', 'offboardStatus', 'Offboarded', 'onboardLog', 'onboardStatus');
+    sendRequest('/offboard', 'offboardLog', 'offboardStatus', 'Offboarded', 'onboardLog', 'onboardStatus', '../offboarding_log_file.txt');
 };
