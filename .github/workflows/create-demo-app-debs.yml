@@ -67,9 +67,6 @@ jobs:
       - name: Rename x86_64 binary for packaging
         run: mv server_x86_64 brski-demo-app-deb/opt/demo-server/server_x86_64
       
-      - name: Set execute permission on x86_64 Server Binary
-        run: sudo chmod +x brski-demo-app-deb/opt/demo-server/server_x86_64
-
       - name: Upload x86_64 server binary as an artifact
         uses: actions/upload-artifact@v2
         with:
@@ -104,6 +101,9 @@ jobs:
         with:
           name: server-x86_64-binary
           path: debian-brski/brski-demo-app-deb/opt/demo-server/
+
+      - name: Set execute permission on x86_64 Server Binary
+        run: sudo chmod +x debian-brski/brski-demo-app-deb/opt/demo-server/server_x86_64
 
       - name: Build x86_64 Debian Package
         run: dpkg-deb --build debian-brski/brski-demo-app-deb brski-demo-app-deb-x86_64.deb
