@@ -2,6 +2,10 @@
 
 The continuous assurance process is the mechanism by which the `network` continuously monitors the security posture of the connected `device` and responds appropriately
 
+
+
+![image-20240108100831524](image-20240108100831524.png)
+
 # CA command protocol
 
 Within the BRSKI architecture, evaluation of network policy happens at the `registrar`
@@ -150,6 +154,11 @@ The registrar should intermittently run the CVE function against the declared SB
 There should be a configurable CVE threshold function.
 
 If the threshold is not met - then a **revoke** command should be sent from the registrar to the routers. 
+
+
+
+
+
 
 
 # Continuous Assurance Demonstrator
