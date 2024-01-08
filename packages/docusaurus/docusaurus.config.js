@@ -6,10 +6,11 @@
 
 import {themes as prismThemes} from 'prism-react-renderer';
 import configs from "../../config.json";
+import {resolve} from "url"
 // @ts-ignore
 const {TITLE, TAGLINE, DOCUSAURUS_URL, PROJECT_NAME, HEDGEDOC_SERVER, GITHUB_OWNER, GITHUB_REPO} = configs;
 const documentGithubPath = `git/${GITHUB_OWNER}/${GITHUB_REPO}/contents/packages/docusaurus/`;
-
+const editUrl = resolve(HEDGEDOC_SERVER, documentGithubPath)
 
 const config = {
   title: TITLE,
@@ -54,7 +55,7 @@ const config = {
         path: "./docs/build5-docs",
         routeBasePath: "docs",
         remarkPlugins: [require('remark-mermaid-dataurl')],
-        editUrl: documentGithubPath,
+        editUrl,
       },
     ],
     [
