@@ -15,7 +15,7 @@ const editUrl = resolve(HEDGEDOC_SERVER, documentGithubPath)
 const config = {
   title: TITLE,
   tagline: TAGLINE,
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.svg',
 
   url: DOCUSAURUS_URL,
   // For GitHub pages deployment, it is often '/<projectName>/'
