@@ -3,7 +3,7 @@ name: Node.js CI and Deploy
 on:
   push:
     branches:
-      - main
+      - Hedgedoc-update
 
 
 jobs:
