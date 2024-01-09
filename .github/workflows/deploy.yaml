@@ -1,9 +1,10 @@
-name: Node.js CI and Deploy
+name: Hedgedoc x Docusaurus deploy
 
 on:
   push:
     branches:
       - Hedgedoc-update
+      - main
 
 
 jobs:
