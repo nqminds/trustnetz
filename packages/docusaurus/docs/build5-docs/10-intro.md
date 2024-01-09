@@ -1,7 +1,7 @@
 ---
 slug: /
+title: Terminology
 ---
-
 
 # Terminology
 
