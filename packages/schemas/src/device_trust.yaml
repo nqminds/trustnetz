@@ -1,0 +1,29 @@
+$id: https://github.com/nqminds/nist-brski/blob/main/packages/schemas/src/device_trust.yaml
+$schema: https://json-schema.org/draft/2019-09/schema
+title: CVE Check
+description: SCHEMA_DESCRIPTION
+type: object
+properties:
+  user:
+    type: string
+    description: "Id of user stating trust/distrust of device"
+  device:
+    type: string
+    description: "Id of device user is stating trust/distrust of"
+  trust:
+    type: boolean
+    description: "Trust value"
+  issuanceDate:
+    type: string
+    format: date-time
+    description: "date-time at which claim was issued"
+required:
+  - user
+  - device
+  - trust
+  - issuanceDate
+examples:
+  - user: 3ec4950f-2306-4298-aa01-80190a74eff3
+    device: 64501d30-fbae-478e-bf72-8b49d47189f0
+    trust: True
+    issuanceDate: "2022-02-05T10:30:00.1Z"
