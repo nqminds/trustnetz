@@ -1,6 +1,9 @@
 ---
 slug: /
 ---
+
+## Ants quick test
+
 # Terminology
 
 We will use the term `device` interchangeably with the term `pledge` for easier reading
