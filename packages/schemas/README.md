@@ -2,7 +2,7 @@
 
 To create a new schema run, navigate to src and run:
 ```bash
-  schemaTools newSchema <schema_name>
+  schemaTools new-schema <schema_name>
 ```
 
 This will create a blank schema.yaml for you to edit:
