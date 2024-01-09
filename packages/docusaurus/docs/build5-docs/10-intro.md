@@ -379,7 +379,7 @@ sequenceDiagram
 
 
 
-For the full detail of the continuous assurance process, see reference document [Continuous Assurance](ca.md)
+For the full detail of the continuous assurance process, see reference document [Continuous Assurance](20-ca.md)
 
 
 
