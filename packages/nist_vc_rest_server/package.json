@@ -1,0 +1,28 @@
+{
+  "name": "nist_vc_rest_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/server.js",
+  "bin": "./bin/vc-server.js",
+  "scripts": {
+    "dev": "nodemon ./bin/vc-server.js",
+    "build": "rm -rf build/ && prettier --write src/ && tsc"
+  },
+  "nodemonConfig": {
+    "ext": "js",
+    "ignore": [],
+    "delay": "2"
+  },
+  "author": "",
+  "type": "module",
+  "license": "ISC",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.9.13",
+    "@nqminds/verifiable-schemas-toolchain": "^1.0.3",
+    "@tdxvolt/volt-client-grpc": "^0.15.1",
+    "express": "^4.18.2",
+    "express-openapi-validator": "^5.1.2",
+    "nodemon": "^3.0.2",
+    "uuid": "^9.0.1"
+  }
+}
