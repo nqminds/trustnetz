@@ -1,7 +1,7 @@
 $id: https://github.com/nqminds/nist-brski/blob/main/packages/schemas/src/device_trust.yaml
 $schema: https://json-schema.org/draft/2019-09/schema
-title: CVE Check
-description: SCHEMA_DESCRIPTION
+title: Device Trust
+description: Statement of trust of a device to connect to the secure network by a user
 type: object
 properties:
   user:

@@ -1,7 +1,7 @@
 $id: https://github.com/nqminds/nist-brski/blob/main/packages/schemas/src/manufacturer_trust.yaml
 $schema: https://json-schema.org/draft/2019-09/schema
-title: CVE Check
-description: SCHEMA_DESCRIPTION
+title: Manufacturer Trust
+description: Statement of trust of a manufacturer by a user - that the manufacturer's MASA should be trusted to be contacted by the registrar
 type: object
 properties:
   user:

@@ -1,7 +1,7 @@
 $id: https://github.com/nqminds/nist-brski/blob/main/packages/schemas/src/device_manufacturer_binding.yaml
 $schema: https://json-schema.org/draft/2019-09/schema
-title: CVE Check
-description: SCHEMA_DESCRIPTION
+title: Device Manufacturer Binding
+description: Binds a manufacturer to a device instance
 type: object
 properties:
   device:
