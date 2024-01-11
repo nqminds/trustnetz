@@ -1,5 +1,7 @@
 # Schemas directory
 
+Schemas for VCs (Verifiable Credentials) to be used for the NIST BRSKI demonstrator, used to securely communicate information to the registrar. These schemas should be instantiated on a volt running on the registrar using [the VC toolchain](https://github.com/nqminds/vc-toolchain).
+
 ## To populate a volt with the schemas and set it up for the VC toolchain
 
 ### Step 0 
