@@ -5,6 +5,7 @@ on:
     branches:
       - Hedgedoc-update
       - main
+  workflow_dispatch:
 
 
 jobs:
