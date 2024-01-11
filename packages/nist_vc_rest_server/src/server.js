@@ -63,49 +63,21 @@ import {sign, verify} from "@nqminds/verifiable-schemas-toolchain/src/verifiable
  )) {
    const router = express.Router(); // eslint-disable-line new-cap
  
-   const client = new VoltClient(grpc);
-   await client.initialise(voltConfigPath);
-   await client.connect();
- 
    if (!config) {
      config = /** @type {ServerConfig} */ (JSON.parse(await readFile(
        new URL("../config.json", import.meta.url),
        {encoding: "utf8"}),
      ));
    }
- 
-   if (config.basicAuth) {
-     if (process.env.NODE_ENV === "production") {
-       throw new Error("Setting basicAuth when NODE_ENV=production is forbidden.");
-     }
+
+   if (config.voltConfigPath) {
+    voltConfigPath = fileURLToPath(new URL(config.voltConfigPath, import.meta.url))
    }
- 
-  //  passport.use(new BasicStrategy(callbackify(async(username, password) => {
-  //    if (`${username}:${password}` === config.basicAuth) {
-  //      return {
-  //        username: "root",
-  //        domain: "localhost",
-  //      };
-  //    }
- 
-  //    // TODO: Multiple users not currently supported
-  //    // const [user] = await client.SqlExecuteJSON({
-  //    //   database_id: config.databaseId,
-  //    //   statement: `SELECT * from students where username='${username}' LIMIT 1`,
-  //    //   parameter: {
-  //    //     username: {string: username}
-  //    //   },
-  //    // });
- 
-  //    if (!user) {
-  //      throw new Error(`Username ${username} not found`);
-  //    }
-  //    if (password !== user.password) {
-  //      throw new Error(`Incorrect login credentials for user ${user}`);
-  //    }
-  //    return user;
-  //  })));
- 
+
+   const client = new VoltClient(grpc);
+   await client.initialise(voltConfigPath);
+   await client.connect();
+
    // Body parser middleware
    router.use(express.urlencoded({ extended: false }));
    router.use(express.json());
