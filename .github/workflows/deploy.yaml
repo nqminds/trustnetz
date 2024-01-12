@@ -6,6 +6,7 @@ on:
       - main
       - Hedgedoc-update
 
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -22,8 +23,17 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies in root
-      run: npm install
+      - name: Determine target branch
+        id: determine-branch
+        run: |
+          TARGET_BRANCH="Hedgedoc-update"
+          if [ -z "$(git ls-remote origin refs/heads/Hedgedoc-update)" ]; then
+            TARGET_BRANCH="main"
+          fi
+          echo "TARGET_BRANCH=$TARGET_BRANCH" >> $GITHUB_ENV
+
+      - name: Install dependencies in root
+        run: npm install
 
       - name: Validate schemas
         run: |
