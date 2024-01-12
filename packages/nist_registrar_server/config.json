@@ -1,0 +1,4 @@
+{
+  "voltConfigPath": "../volt-config.json",
+  "sqliteDBPath": "/home/ash/Documents/nist_policy_engine/MyLocalDatabase.sqlite"
+}
