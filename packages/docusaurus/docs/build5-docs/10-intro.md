@@ -1,22 +1,3 @@
-<<<<<<< HEAD
----
-slug: /
-title: Introduction
----
-
-
-
-# Trusted onboarding scope
-
-
-
-
-
-# Trusted onboarding: why 
-
-
-
-=======
 ---
 slug: /
 title: Terminology
@@ -410,4 +391,3 @@ For the full detail of the continuous assurance process, see reference document 
 [^FRIEL]: https://ftp.kaist.ac.kr/ietf/draft-friel-brski-over-802dot11-00.txt
 
 [^EMU]: https://datatracker.ietf.org/doc/draft-richardson-emu-eap-onboarding/
->>>>>>> cfd83673da52aba1fc72d28ce44ad3d985455b6e
