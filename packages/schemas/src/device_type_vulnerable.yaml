@@ -1,0 +1,24 @@
+$id: https://github.com/nqminds/nist-brski/blob/main/packages/schemas/src/device_type_vulnerable.yaml
+$schema: https://json-schema.org/draft/2019-09/schema
+title: Device Type Vulnerable
+description: States whether a device type is considered vulnerable, whether it is above the allowed vulnerabilities threshold
+type: object
+properties:
+  deviceType:
+    type: string
+    description: "Id of device type being bound"
+  vulnerable:
+    type: boolean
+    description: "Is device type vulnerable - i.e. it is above allowed vulnerabilities threshold"
+  issuanceDate:
+    type: string
+    format: date-time
+    description: "date-time at which claim was issued"
+required:
+  - deviceType
+  - vulnerable
+  - issuanceDate
+examples:
+  - deviceType: 76e66647-e791-437e-bf03-f3b030ab1220
+    vulnerable: False
+    issuanceDate: "2022-02-05T10:30:00.1Z"
