@@ -23,13 +23,13 @@ rm /tmp/brski_0.2.0-1_arm64.deb
 
 cp certs/* /etc/brski
 
-mkdir -f /opt/demo-server
+mkdir /opt/demo-server
 cp run.sh /opt/demo-server
 
 cp nist-demo.service /etc/systemd/system/
-sudo chmod 644 /etc/systemd/system/nist-demo.service
-sudo systemctl daemon-reload
-sudo systemctl enable nist-demo.service
+chmod 644 /etc/systemd/system/nist-demo.service
+systemctl daemon-reload
+systemctl enable nist-demo.service
 
 apt install hostapd dnsmasq iptables -y
 
@@ -52,5 +52,5 @@ sudo systemctl disable dnsmasq@$IF0.service
 sudo systemctl disable dnsmasq@$IF1.service
 
 # Start the runner
-sudo systemctl start nist-demo.service
+systemctl start nist-demo.service
 
