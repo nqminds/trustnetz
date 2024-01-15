@@ -187,12 +187,12 @@ function httpsPost({url, body, ...options}) {
                 res.send(`Manufacturer ${manufacturer} is not trusted by user ${user}`)
               } else {
                 await dbRun("DELETE FROM trusts WHERE user_id = ? AND manufacturer_id = ?", [userId, manufacturerId]);
-                res.send(`Trusted removed from manufacturer ${manufacturer} by user ${user}`)
+                res.send(`Trust removed from manufacturer ${manufacturer} by user ${user}`)
               }
             }
           }
         case 'device_manufacturer_binding':
-          console.log();
+          null
         case 'device_trust':
           null
         case 'device_type_binding':
