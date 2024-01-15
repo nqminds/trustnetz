@@ -352,9 +352,9 @@ sequenceDiagram
     participant device
     participant router
     participant registrar
-    participant external-sources 
+    participant external
  
-    external-sources -)registrar: 6.0 attempt connection
+    external -)registrar: 6.0 attempt connection
     registrar-)router: 6.1 attempt connection
     
     alt CMD to device
@@ -370,7 +370,7 @@ sequenceDiagram
      
     
     router->>registrar: 6.4 respond with status
-    router->>external-sources: 6.5 respond with status
+    router->>external : 6.5 respond with status
     
    
 
@@ -387,6 +387,7 @@ For the full detail of the continuous assurance process, see reference document 
 
 
 [^rfc8995]: https://datatracker.ietf.org/doc/rfc8995/
+
 [^FRIEL]: https://ftp.kaist.ac.kr/ietf/draft-friel-brski-over-802dot11-00.txt
 
 [^EMU]: https://datatracker.ietf.org/doc/draft-richardson-emu-eap-onboarding/
