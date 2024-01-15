@@ -1,0 +1,10 @@
+[Unit]
+Description=NIST Demo Service
+After=network.target
+
+[Service]
+ExecStart=/opt/demo-server/run.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

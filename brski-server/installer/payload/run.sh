@@ -12,4 +12,5 @@ systemctl start hostapd@$IF1.service
 sudo systemctl restart dnsmasq@$IF0.service
 sudo systemctl restart dnsmasq@$IF1.service
 
-
+brski -c /etc/config.ini masa -d &
+brski -c /etc/config.ini registrar -d &

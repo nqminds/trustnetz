@@ -1,5 +1,10 @@
 #!/bin/bash
 
+wget -O /tmp/brski_0.2.0-1_arm64.deb https://github.com/nqminds/brski/releases/download/0.2.2/brski_0.2.0-1_arm64.deb
+dpkg -i /tmp/brski_0.2.0-1_arm64.deb
+cp /opt/demo-server/certs/* /etc/brski
+rm /tmp/brski_0.2.0-1_arm64.deb
+
 # Ask the user for a port number
 echo "Please enter the port number for the demo-server service:"
 read PORT

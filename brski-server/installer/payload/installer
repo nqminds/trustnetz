@@ -17,10 +17,19 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-wget https://github.com/nqminds/brski/releases/download/0.2.1/brski_0.2.0-1_arm64.deb
-dpkg -i brski_0.2.0-1_arm64.deb
+wget -O /tmp/brski_0.2.0-1_arm64.deb https://github.com/nqminds/brski/releases/download/0.2.2/brski_0.2.0-1_arm64.deb
+dpkg -i /tmp/brski_0.2.0-1_arm64.deb
+rm /tmp/brski_0.2.0-1_arm64.deb
 
 cp certs/* /etc/brski
+
+mkdir -f /opt/demo-server
+cp run.sh /opt/demo-server
+
+cp nist-demo.service /etc/systemd/system/
+sudo chmod 644 /etc/systemd/system/nist-demo.service
+sudo systemctl daemon-reload
+sudo systemctl enable nist-demo.service
 
 apt install hostapd dnsmasq iptables -y
 
@@ -42,4 +51,6 @@ cp dnsmasq.$IF1 /etc/default
 sudo systemctl disable dnsmasq@$IF0.service
 sudo systemctl disable dnsmasq@$IF1.service
 
+# Start the runner
+sudo systemctl start nist-demo.service
 
