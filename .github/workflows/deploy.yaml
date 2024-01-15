@@ -51,6 +51,7 @@ jobs:
       - name: Install dependencies in /packages/docusaurus
         run: |
           cd packages/docusaurus
+          npm run prepare
           npm install
 
       - name: Build in /packages/docusaurus
