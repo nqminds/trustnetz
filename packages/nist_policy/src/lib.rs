@@ -1,5 +1,5 @@
 use openssl::x509::{X509};
-use rusqlite::{params, Connection, Result, OpenFlags};
+use rusqlite::{params, Connection, Error, Result, OpenFlags};
 use serde::{Serialize, Deserialize};
 use serde_json::{Value, to_value};
 use chrono::prelude::DateTime;
@@ -91,10 +91,49 @@ pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result
     };
 
     println!("Manufacturer: {}", serde_json::to_string_pretty(&manufacturer_record).unwrap());
+    let manufacturer_id = manufacturer_record["id"].to_string().trim_matches('"').to_owned();
 
     // check that the manufacturer is trusted by a sufficiently accredited authoriser [!NEED A FIELD IN USERS TABLE FOR THIS!]
+    let manufacturer_trusted: Result<Option<bool>> = conn.query_row(
+        "
+        SELECT DISTINCT
+            CASE
+                WHEN u.can_issue_trust IS NOT NULL THEN 1
+                ELSE 0
+            END AS is_trusted
+        FROM
+            user u
+        JOIN
+            trusts t ON u.id = t.user_id
+        JOIN
+            manufacturer m ON t.manufacturer_id = m.id
+        JOIN
+            manufactured mf ON m.id = mf.manufacturer_id
+        WHERE
+            mf.manufacturer_id = ?;
+        ",
+        params![manufacturer_id],
+        |row| row.get(0),
+    );
 
-    Ok(false)
+    match manufacturer_trusted {
+        Ok(Some(is_trusted)) => {
+            println!("manufacturer_trusted: {:?}", is_trusted);
+            Ok(is_trusted)
+        }
+        Ok(None) => {
+            println!("No rows returned for manufacturer_trusted");
+            Ok(false)
+        }
+        Err(Error::QueryReturnedNoRows) => {
+            println!("No rows returned for manufacturer_trusted");
+            Ok(false)
+        }
+        Err(err) => {
+            eprintln!("Error querying database for manufacturer_trusted: {:?}", err);
+            Err(err)
+        }
+    }
 }
 
 #[cfg(test)]
