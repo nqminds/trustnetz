@@ -55,6 +55,8 @@ sed -i s/@wifiname@/$EAP_NAME/g /etc/hostapd/$IF0.conf
 cp wlan1.conf /etc/hostapd/$IF1.conf
 sed -i s/@wlan@/$IF1/g /etc/hostapd/$IF1.conf
 
+cp eap_user /etc/hostapd
+
 cp dnsmasq.wlan0 /etc/default/dnsmasq.$IF0
 sed -i s/@wlan@/$IF0/g /etc/default/dnsmasq.$IF0
 
