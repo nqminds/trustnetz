@@ -41,7 +41,6 @@ pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result
         .map(|entry| entry.data().as_utf8().unwrap().to_string()) // Convert &str to String
         .unwrap_or_else(|| "Unknown Issuer".to_string());
 
-    println!("Issuer: {}", issuer_name_str);
     let manufacturer_id = issuer_name_str.to_owned();
     let manufacturer_name = issuer_name_str.to_owned();
 
@@ -65,7 +64,6 @@ pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result
             let now = Utc::now();
             let datetime = DateTime::<Utc>::from(now);
             let timestamp_str = datetime.format("%Y-%m-%dT%H:%M:%S.%3fZ").to_string();
-            println!("timestamp: {}", timestamp_str);
 
             let uuid = Uuid::new_v4();
             let manufacturer_entry = Manufacturer {
@@ -88,9 +86,7 @@ pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result
         }
     };
 
-    println!("Manufacturer: {}", serde_json::to_string_pretty(&manufacturer_record).unwrap());
     let manufacturer_id = manufacturer_record["id"].to_string().trim_matches('"').to_owned();
-    println!("Manfacturer ID: {}", manufacturer_id);
 
     // check that the manufacturer is trusted by a sufficiently accredited authoriser [!NEED A FIELD IN USERS TABLE FOR THIS!]
     let manufacturer_trusted: Result<Option<bool>> = conn.query_row(
@@ -267,8 +263,6 @@ mod tests {
 
             let mut stmt = conn.prepare("SELECT COUNT(*) FROM manufacturer WHERE name = 'www.manufacturer.com'")?;
             let count: i64 = stmt.query_row(params![], |row| row.get(0))?;
-
-            println!("Count: {:?}", count);
 
             // Check if the inserted row is present
             assert_eq!(count, 1);
