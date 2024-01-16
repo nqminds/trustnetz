@@ -71,7 +71,7 @@ pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result
 
             let uuid = Uuid::new_v4();
             let manufacturer_entry = Manufacturer {
-                id: if manufacturer_id.to_owned() != "null" {manufacturer_id.to_owned()} else {uuid.to_string()},
+                id: uuid.to_string(),
                 name: manufacturer_name.to_owned(),
                 created_at: timestamp_str.to_owned(),
             };
@@ -92,6 +92,7 @@ pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result
 
     println!("Manufacturer: {}", serde_json::to_string_pretty(&manufacturer_record).unwrap());
     let manufacturer_id = manufacturer_record["id"].to_string().trim_matches('"').to_owned();
+    println!("Manfacturer ID: {}", manufacturer_id);
 
     // check that the manufacturer is trusted by a sufficiently accredited authoriser [!NEED A FIELD IN USERS TABLE FOR THIS!]
     let manufacturer_trusted: Result<Option<bool>> = conn.query_row(
@@ -107,10 +108,8 @@ pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result
             trusts t ON u.id = t.user_id
         JOIN
             manufacturer m ON t.manufacturer_id = m.id
-        JOIN
-            manufactured mf ON m.id = mf.manufacturer_id
         WHERE
-            mf.manufacturer_id = ?;
+            m.id = ?;
         ",
         params![manufacturer_id],
         |row| row.get(0),
@@ -239,7 +238,23 @@ mod tests {
     }
 
     #[test]
-    fn check_finds_manufacturer_is_trusted() {
+    fn check_manufacturer_is_untrusted() {
+        let path_to_sql_db = "./tests/ExistingManufacturerUntrusted.sqlite";
+        let idevid = read(format!("./tests/iDevID"))
+            .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
+            .unwrap();
+
+        // Use with_temporary_database to perform the operation and check the result
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            println!("Running check NOW!!!");
+            let result = check_manufacturer_trusted(idevid, temp_file_path).unwrap();
+            assert_eq!(result, false);
+            Ok(true)
+        }).unwrap();
+    }
+
+    #[test]
+    fn check_manufacturer_is_added_and_untrusted() {
         let path_to_sql_db = "./tests/EmptyTablesDatabase.sqlite";
         let idevid = read(format!("./tests/iDevID"))
             .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
@@ -264,6 +279,22 @@ mod tests {
             // Check if the inserted row is present
             assert_eq!(count, 1);
 
+            Ok(true)
+        }).unwrap();
+    }
+
+    #[test]
+    fn check_manufacturer_is_trusted() {
+        let path_to_sql_db = "./tests/ExistingManufacturerTrusted.sqlite";
+        let idevid = read(format!("./tests/iDevID"))
+            .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
+            .unwrap();
+
+        // Use with_temporary_database to perform the operation and check the result
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            println!("Running check NOW!!!");
+            let result = check_manufacturer_trusted(idevid, temp_file_path).unwrap();
+            assert_eq!(result, true);
             Ok(true)
         }).unwrap();
     }
