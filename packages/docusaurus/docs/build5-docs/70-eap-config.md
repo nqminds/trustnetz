@@ -206,7 +206,26 @@ add or uncoment
 net.ipv4.ip_forward = 1
 ```
 
+### Disable the RPI's network manager
+
+```sh
+sudo nano /etc/NetworkManager/NetworkManager.conf
+```
+
+add
+
+```shell=
+[keyfile]
+unmanaged-devices=interface-name:wlan1
+
+```
+
+restart the network manager
+
+```sh
+sudo systemctl restart NetworkManager
+```
 
 
-
+### Unmask and e
 Implementation based in part on methods as discussed in [Transforming Your Raspberry Pi into a Secure Enterprise Wi-Fi Controller with 802.1x Authentication](https://myitrambles.com/transforming-your-raspberry-pi-into-a-secure-enterprise-wi-fi-controller-with-802-1x-authentication/)
