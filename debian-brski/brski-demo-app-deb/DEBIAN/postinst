@@ -16,10 +16,10 @@ mkdir -p /opt/demo-server/html  # Create the directory if it doesn't exist
 echo "port=$PORT" > /opt/demo-server/html/server.conf
 
 # Install and copy the brski tool and configs, respectively
-wget -O /tmp/brski_0.2.0-1_arm64.deb https://github.com/nqminds/brski/releases/download/0.2.2/brski_0.2.0-1_arm64.deb
-dpkg -i /tmp/brski_0.2.0-1_arm64.deb
+wget -O /tmp/brski_0.2.3_arm64.deb https://github.com/nqminds/brski/releases/download/0.2.3/brski_0.2.3_arm64.deb
+dpkg -i /tmp/brski_0.2.3_arm64.deb
 cp /opt/demo-server/certs/* /etc/brski
-rm /tmp/brski_0.2.0-1_arm64.deb
+rm /tmp/brski_0.2.3_arm64.deb
 
 # Copy the systemd service file
 cp /opt/demo-server/demo-server.service /etc/systemd/system/
