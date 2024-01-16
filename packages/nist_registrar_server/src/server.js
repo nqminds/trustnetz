@@ -90,6 +90,7 @@ function httpsPost({url, body, ...options}) {
    let db = null;
    let dbGet = null;
    let dbRun = null;
+   let nistVcRestServerAddress = null;
    if (!config) {
      config = /** @type {ServerConfig} */ (JSON.parse(await readFile(
        new URL("../config.json", import.meta.url),
@@ -117,6 +118,12 @@ function httpsPost({url, body, ...options}) {
     throw Error("Config missing sqliteDBPath")
    }
 
+   if (config.nistVcRestServerAddress) {
+    nistVcRestServerAddress = config.nistVcRestServerAddress;
+   } else {
+    throw Error("Config missing nistVcRestServerAddress");
+   }
+
    // Body parser middleware
    router.use(express.urlencoded({ extended: false }));
    router.use(express.json());
@@ -138,7 +145,7 @@ function httpsPost({url, body, ...options}) {
     const vc = req.body;
     const vcData = JSON.stringify(vc);
     const response = await httpsPost({
-      url: `http://localhost:3000/verify/${schemaName}`,
+      url: `${nistVcRestServerAddress}/verify/${schemaName}`,
       headers: {
           'Content-Type': 'application/json',
           'Content-Length': vcData.length
