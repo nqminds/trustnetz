@@ -2,4 +2,4 @@
 # offboard.sh
 echo "Offboarding IoT device..."
 
-# TODO: Add offboard logic
+nmcli device disconnect wlan0

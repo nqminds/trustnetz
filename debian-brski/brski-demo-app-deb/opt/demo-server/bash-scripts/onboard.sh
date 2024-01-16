@@ -28,23 +28,27 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+file $CERTS_PATH/peer-client
+
 echo "Got BRSKI signed certificates"
 EAP_NAME=`openssl x509 -noout -issuer -in "$CERTS_PATH/peer-client.crt" | sed -e 's/.*CN = \(.*\).*/\1/'`
+[[ -z "$EAP_NAME" ]] && { echo "Error: No EAP name found"; exit 1; }
 sleep 2
 
-echo "brski preq command successfuli, got EAP-TLS $EAP_NAME."
+echo "Got EAP-TLS name $EAP_NAME."
+
 nmcli device disconnect wlan0
 echo "Disconnected from brski-open."
 
 sleep 2
   
-echo "Connecting to brski-secure..."
-nmcli device wifi connect 'brski-secure' password '1234554321' ifname wlan0
+echo "Connecting to $EAP_NAME ..."
+nmcli device wifi connect $EAP_NAME password '1234554321' ifname wlan0
 
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo "Connected to brski-secure."
+echo "Connected to $EAP_NAME."
 echo "Onboarding process completed."
 
