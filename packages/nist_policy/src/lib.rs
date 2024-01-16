@@ -25,8 +25,6 @@ struct User {
 }
 
 pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool> {
-
-    println!("running manufaturer trusted func");
     // Create OpenFlags without SQLITE_OPEN_CREATE flag
     let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_FULL_MUTEX;
     
@@ -222,7 +220,6 @@ mod tests {
         let idevid = read(format!("./tests/iDevID"))
             .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
             .unwrap();
-        println!("Running check NOW!!!");
         let _ = check_manufacturer_trusted(&idevid, &path_to_sql_db).unwrap();
     }
 
@@ -233,7 +230,6 @@ mod tests {
         let idevid = read(format!("./tests/iDevID"))
             .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
             .unwrap();
-        println!("Running check NOW!!!");
         let _ = check_manufacturer_trusted(&idevid, &path_to_sql_db).unwrap();
     }
 
@@ -246,7 +242,6 @@ mod tests {
 
         // Use with_temporary_database to perform the operation and check the result
         let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
-            println!("Running check NOW!!!");
             let result = check_manufacturer_trusted(idevid, temp_file_path).unwrap();
             assert_eq!(result, false);
             Ok(true)
@@ -262,7 +257,6 @@ mod tests {
 
         // Use with_temporary_database to perform the operation and check the result
         let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
-            println!("Running check NOW!!!");
             let result = check_manufacturer_trusted(idevid, temp_file_path).unwrap();
             assert_eq!(result, false);
 
@@ -284,6 +278,21 @@ mod tests {
     }
 
     #[test]
+    fn check_manufacturer_is_untrusted_when_user_cant_issue_trust() {
+        let path_to_sql_db = "./tests/ExistingManufacturerTrustedWithInsufficientPermissions.sqlite";
+        let idevid = read(format!("./tests/iDevID"))
+            .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
+            .unwrap();
+
+        // Use with_temporary_database to perform the operation and check the result
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            let result = check_manufacturer_trusted(idevid, temp_file_path).unwrap();
+            assert_eq!(result, false);
+            Ok(true)
+        }).unwrap();
+    }
+
+    #[test]
     fn check_manufacturer_is_trusted() {
         let path_to_sql_db = "./tests/ExistingManufacturerTrusted.sqlite";
         let idevid = read(format!("./tests/iDevID"))
@@ -292,7 +301,6 @@ mod tests {
 
         // Use with_temporary_database to perform the operation and check the result
         let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
-            println!("Running check NOW!!!");
             let result = check_manufacturer_trusted(idevid, temp_file_path).unwrap();
             assert_eq!(result, true);
             Ok(true)
