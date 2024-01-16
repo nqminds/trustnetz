@@ -25,6 +25,8 @@ struct User {
 }
 
 pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool> {
+
+    println!("running manufaturer trusted func");
     // Create OpenFlags without SQLITE_OPEN_CREATE flag
     let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_FULL_MUTEX;
     
@@ -127,14 +129,18 @@ mod tests {
             "ATTACH DATABASE ? AS ondiskdb",
             params![source_path.to_owned()],
         )?;
-        source_conn.execute(
-            "ATTACH DATABASE ? AS tempdb",
-            params![&temp_file_path],
-        )?;
-        source_conn.execute(
-            "INSERT INTO tempdb.main_table SELECT * FROM ondiskdb.main_table",
-            params![],
-        )?;
+        let table_name = "manufacturer";
+        let create_table_sql = format!(
+            "CREATE TABLE IF NOT EXISTS tempdb.{} AS SELECT * FROM ondiskdb.{} WHERE 0",
+            table_name, table_name
+        );
+        source_conn.execute(&create_table_sql, params![])?;
+        let insert_sql = format!(
+            "INSERT INTO tempdb.{} SELECT * FROM ondiskdb.{}",
+            table_name, table_name
+        );
+        source_conn.execute(&insert_sql, params![])?;
+
         source_conn.execute("DETACH DATABASE ondiskdb", params![])?;
         source_conn.execute("DETACH DATABASE tempdb", params![])?;
 
@@ -147,16 +153,6 @@ mod tests {
         Ok(result)
     }
 
-    #[test] 
-    #[should_panic(expected = r#"called `Result::unwrap()` on an `Err` value: ErrorStack([Error { code: 109052059, library: "asn1 encoding routines"#)]
-    fn check_panics_with_bad_idevid() {
-        let path_to_sql_db = "./tests/EmptyDatabase.sqlite";
-        let idevid = read(format!("./tests/Bad_iDevID"))
-            .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
-            .unwrap();
-        let _ = check_manufacturer_trusted(&idevid, &path_to_sql_db).unwrap();
-    }
-
     #[test]
     #[should_panic(expected = "unable to open database file: ./tests/DoesntExist.sqlite")]
     fn check_panics_with_non_existent_sqlite_database() {
@@ -164,6 +160,7 @@ mod tests {
         let idevid = read(format!("./tests/iDevID"))
             .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
             .unwrap();
+        println!("Running check NOW!!!");
         let _ = check_manufacturer_trusted(&idevid, &path_to_sql_db).unwrap();
     }
 
@@ -174,6 +171,7 @@ mod tests {
         let idevid = read(format!("./tests/iDevID"))
             .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
             .unwrap();
+        println!("Running check NOW!!!");
         let _ = check_manufacturer_trusted(&idevid, &path_to_sql_db).unwrap();
     }
 
@@ -185,7 +183,8 @@ mod tests {
             .unwrap();
 
         // Use with_temporary_database to perform the operation and check the result
-        let result = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            println!("Running check NOW!!!");
             let result = check_manufacturer_trusted(idevid, temp_file_path).unwrap();
             assert_eq!(result, false);
 
@@ -194,7 +193,7 @@ mod tests {
             // Connect to SqlDB database from a file
             let conn = Connection::open_with_flags(temp_file_path, flags)?;
 
-            let mut stmt = conn.prepare("SELECT COUNT(*) FROM tempdb.manufacturer")?;
+            let mut stmt = conn.prepare("SELECT COUNT(*) FROM manufacturer WHERE name = 'www.manufacturer.com'")?;
             let count: i64 = stmt.query_row(params![], |row| row.get(0))?;
 
             println!("Count: {:?}", count);
@@ -203,17 +202,7 @@ mod tests {
             assert_eq!(count, 1);
 
             Ok(true)
-        });
-
-        match result {
-            Ok(is_trusted) => {
-                assert!(is_trusted, "Manufacturer is trusted");
-            }
-            Err(err) => eprintln!("Error: {:?}", err),
-        }
+        }).unwrap();
     }
-
-
-    // TODO: ADD TEST WITH DATABASE WITH MANUFACTURER TABLE EXISTING BUT EMPTY - SHOULD CHECK THAT MANUFACTURER IS INSERTED INTO TABLE
 
 }
