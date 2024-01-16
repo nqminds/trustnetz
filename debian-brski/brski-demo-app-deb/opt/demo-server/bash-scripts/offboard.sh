@@ -1,10 +1,24 @@
 #!/bin/bash
+# offboard.sh
 
-echo "Starting offboarding process."
+echo "Offboarding IoT device..."
 
-# Disconnect from brski-open if connected
-echo "Disconnecting from brski-open (if connected)..."
+
+file /opt/demo-server/certs/eap-tls-client.crt
+
+EAP_NAME=`openssl x509 -noout -issuer -in "/opt/demo-server/certs/eap-tls-client.crt" | sed -e 's/.*CN = \(.*\).*/\1/'`
+[[ -z "$EAP_NAME" ]] && { echo "Error: No EAP name found"; exit 1; }
+
 nmcli device disconnect wlan0
-echo "Disconnected from brski-open."
 
-echo "Offboarding process completed."
+echo "Removinf connection to $EAP_NAME ..."
+nmcli connection show $EAP_NAME > /dev/null
+
+if [ $? -eq 0 ]; then
+	nmcli connection delete id $EAP_NAME
+fi
+
+rm -f /opt/demo-server/certs/pinned-domain-ca.crt
+rm -f /opt/demo-server/certs/eap-tls-client.crt
+rm -f /opt/demo-server/certs/eap-tls-client.key
+

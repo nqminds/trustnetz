@@ -17,10 +17,19 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-wget https://github.com/nqminds/brski/releases/download/0.2.1/brski_0.2.0-1_arm64.deb
-dpkg -i brski_0.2.0-1_arm64.deb
+wget -O /tmp/brski_0.2.3_arm64.deb https://github.com/nqminds/brski/releases/download/0.2.3/brski_0.2.3_arm64.deb
+dpkg -i /tmp/brski_0.2.3_arm64.deb
+rm /tmp/brski_0.2.3_arm64.deb
 
 cp certs/* /etc/brski
+
+mkdir -p /opt/demo-server
+cp run.sh /opt/demo-server
+
+cp nist-demo.service /etc/systemd/system/
+chmod 644 /etc/systemd/system/nist-demo.service
+systemctl daemon-reload
+systemctl enable nist-demo.service
 
 apt install hostapd dnsmasq iptables -y
 
@@ -33,13 +42,30 @@ systemctl disable wpa_supplicant
 systemctl disable hostapd@$IF0.service 
 systemctl disable hostapd@$IF1.service 
 
-cp $IF0.conf /etc/hostapd/$IF0.conf
-cp $IF1.conf /etc/hostapd/$IF1.conf
+# secure hostapd
+cp wlan-secure.conf /etc/hostapd/$IF1.conf
+sed -i s/@wlan@/$IF1/g /etc/hostapd/$IF1.conf
 
-cp dnsmasq.$IF0 /etc/default
-cp dnsmasq.$IF1 /etc/default
+file /etc/brski/registrar-tls-ca.crt
+EAP_NAME=`openssl x509 -noout -issuer -in /etc/brski/registrar-tls-ca.crt | sed -e 's/.*CN = \(.*\).*/\1/'`
+[[ -z "$EAP_NAME" ]] && { echo "Error: No EAP name found"; exit 1; }
+sed -i s/@wifiname@/$EAP_NAME/g /etc/hostapd/$IF1.conf
+
+cp eap_user /etc/hostapd
+
+# open hostapd
+cp wlan-open.conf /etc/hostapd/$IF0.conf
+sed -i s/@wlan@/$IF0/g /etc/hostapd/$IF0.conf
+
+cp dnsmasq-open.conf /etc/default/dnsmasq.$IF0
+sed -i s/@wlan@/$IF0/g /etc/default/dnsmasq.$IF0
+
+cp dnsmasq-secure.conf /etc/default/dnsmasq.$IF1
+sed -i s/@wlan@/$IF1/g /etc/default/dnsmasq.$IF1
 
 sudo systemctl disable dnsmasq@$IF0.service
 sudo systemctl disable dnsmasq@$IF1.service
 
+# Start the runner
+systemctl restart nist-demo.service
 
