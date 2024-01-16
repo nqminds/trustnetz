@@ -264,35 +264,57 @@ sudo systemctl status dnsmasq
 
 ```sh 
 # Certificate Authority:
-	# Gen private key: 
-    sudo openssl genrsa -out ca.key 2048
-	# Gen CA.pem cert: 
-    sudo openssl req -x509 -new -nodes -key ca.key -sha256 -days 1024 -out ca.pem
+# Gen private key: 
+sudo openssl genrsa -out ca.key 2048
+# Gen CA.pem cert: 
+sudo openssl req -x509 -new -nodes -key ca.key -sha256 -days 1024 -out ca.pem
 
 # Server:
-	# Gen private key: 
-	sudo openssl genrsa -out server.key 2048
-	# Gen server cert sign request: 
-    sudo openssl req -new -key server.key -out server.csr
-	# Gen server.pem certificate: 
-    sudo openssl x509 -req -in server.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out server.pem -days 1000 -sha256
+# Gen private key: 
+sudo openssl genrsa -out server.key 2048
+# Gen server cert sign request: 
+sudo openssl req -new -key server.key -out server.csr
+# Gen server.pem certificate: 
+sudo openssl x509 -req -in server.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out server.pem -days 1000 -sha256
 ```
 
 ### Generate Device certificate
 ```sh
-    # Gen private key: 
-    sudo openssl genrsa -out client.key 2048
-	# Gen cert sign request:
-    sudo openssl req -new -key client.key -out client.csr
-	# Gen client.pem certificate:
-    sudo openssl x509 -req -in client.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out client.pem -days 365 -sha256
+# Gen private key: 
+sudo openssl genrsa -out client.key 2048
+# Gen cert sign request:
+sudo openssl req -new -key client.key -out client.csr
+# Gen client.pem certificate:
+sudo openssl x509 -req -in client.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out client.pem -days 365 -sha256
 ```
+
+ PERMISSIONS SHOULD BE:
+ 
+```sh 
+sudo chown user:user /path/to/client.key
+sudo chmod 600 /path/to/client.key
+sudo chown user:user /path/to/client.pem
+sudo chmod 600 /path/to/client.pem
+```
+
 
 ### CRL (Certificate Revocation List). REVOKE A DEVICE CERTIFICATE:
 
 ```sh
-    # Initialise an index file:
-	touch /etc/hostapd/CA/index.txt
+sudo mkdir /etc/hostapd/CA
+
+# Initialise an index file:
+sudo touch /etc/hostapd/CA/index.txt
+
+#Create a serial file to keep track of the next serial number to use for new certificates or CRLs:
+echo '1000' | sudo tee /etc/hostapd/CA/serial
+
+# Create a crl number file:
+sudo touch /etc/hostapd/CA/crlnumber
+
+#Increment the number to 1:
+echo '01' | sudo tee /etc/hostapd/CA/crlnumber
+
 ```
 
 Implementation based in part on methods as discussed in [Transforming Your Raspberry Pi into a Secure Enterprise Wi-Fi Controller with 802.1x Authentication](https://myitrambles.com/transforming-your-raspberry-pi-into-a-secure-enterprise-wi-fi-controller-with-802-1x-authentication/)
