@@ -129,17 +129,41 @@ mod tests {
             "ATTACH DATABASE ? AS ondiskdb",
             params![source_path.to_owned()],
         )?;
-        let table_name = "manufacturer";
-        let create_table_sql = format!(
-            "CREATE TABLE IF NOT EXISTS tempdb.{} AS SELECT * FROM ondiskdb.{} WHERE 0",
-            table_name, table_name
-        );
-        source_conn.execute(&create_table_sql, params![])?;
-        let insert_sql = format!(
-            "INSERT INTO tempdb.{} SELECT * FROM ondiskdb.{}",
-            table_name, table_name
-        );
-        source_conn.execute(&insert_sql, params![])?;
+
+
+        // List of table names to copy
+        let table_names = vec![
+            "allow_to_connect",
+            "device",
+            "device_type",
+            "gives_connection_rights",
+            "has_vulnerability",
+            "is_of_type",
+            "manufactured",
+            "manufacturer",
+            "owns",
+            "trusts",
+            "user",
+            "vulnerability",
+        ];
+
+        // Iterate over each table and create it in tempdb
+        for table_name in &table_names {
+            let create_table_sql = format!(
+                "CREATE TABLE IF NOT EXISTS tempdb.{} AS SELECT * FROM ondiskdb.{} WHERE 0",
+                table_name, table_name
+            );
+            source_conn.execute(&create_table_sql, params![])?;
+        }
+
+        // Iterate over each table and copy data
+        for table_name in &table_names {
+            let insert_sql = format!(
+                "INSERT INTO tempdb.{} SELECT * FROM ondiskdb.{}",
+                table_name, table_name
+            );
+            source_conn.execute(&insert_sql, params![])?;
+        }
 
         source_conn.execute("DETACH DATABASE ondiskdb", params![])?;
         source_conn.execute("DETACH DATABASE tempdb", params![])?;
