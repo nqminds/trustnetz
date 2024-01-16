@@ -30,6 +30,6 @@
   },
   "homepage": "https://github.com/nqminds/nist-brski#readme",
   "devDependencies": {
-    "@nqminds/verifiable-schemas-toolchain": "^1.0.5"
+    "@nqminds/verifiable-schemas-toolchain": "^1.0.7"
   }
 }
