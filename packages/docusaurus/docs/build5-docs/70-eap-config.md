@@ -352,6 +352,6 @@ echo '01' | sudo tee /etc/hostapd/CA/crlnumber
 
 ```
 
-
+# NOT COMPLETED
 
 Implementation based in part on methods as discussed in [Transforming Your Raspberry Pi into a Secure Enterprise Wi-Fi Controller with 802.1x Authentication](https://myitrambles.com/transforming-your-raspberry-pi-into-a-secure-enterprise-wi-fi-controller-with-802-1x-authentication/)
