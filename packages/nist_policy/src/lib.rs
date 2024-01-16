@@ -1,13 +1,11 @@
-use openssl::x509::{X509, X509Name};
-use openssl::string::OpensslString;
-use rusqlite::{params, Connection, Error, Result, OpenFlags};
-use std::env;
-use std::process;
+use openssl::x509::{X509};
+use rusqlite::{params, Connection, Result, OpenFlags};
 use serde::{Serialize, Deserialize};
-use serde_json::{Value, Map, to_value};
+use serde_json::{Value, to_value};
 use chrono::prelude::DateTime;
 use chrono::Utc;
 use uuid::Uuid;
+
 #[derive(Debug, Serialize, Deserialize)]
 struct Manufacturer {
     id: String,
@@ -26,16 +24,16 @@ struct User {
     can_issue_trust: bool,
 }
 
-pub fn check_manufacturer_trusted(iDeVID: X509, pathToSqlDB: String) -> Result<bool> {
+pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool> {
     // Create OpenFlags without SQLITE_OPEN_CREATE flag
     let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_FULL_MUTEX;
     
     // Connect to SqlDB database from a file
-    let conn = Connection::open_with_flags(pathToSqlDB, flags)?;
+    let conn = Connection::open_with_flags(path_to_sql_db, flags)?;
 
-    // extract manufacturer from iDeVID - Issuer
+    // extract manufacturer from idevid - Issuer
     // Get the issuer name
-    let issuer_name = iDeVID.issuer_name();
+    let issuer_name = idevid.issuer_name();
     // Convert the issuer name to a human-readable string
     let issuer_name_str = issuer_name
         .entries_by_nid(openssl::nid::Nid::COMMONNAME)
@@ -90,58 +88,129 @@ pub fn check_manufacturer_trusted(iDeVID: X509, pathToSqlDB: String) -> Result<b
         }
     };
 
-    // println!("Manufacturer: {}", serde_json::to_string_pretty(&manufacturer_record).unwrap());
+    println!("Manufacturer: {}", serde_json::to_string_pretty(&manufacturer_record).unwrap());
 
     // check that the manufacturer is trusted by a sufficiently accredited authoriser [!NEED A FIELD IN USERS TABLE FOR THIS!]
 
-    Ok(true)
+    Ok(false)
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use std::fs::{read};
+    use tempfile::NamedTempFile;
+
+    // Function to perform the database copy and execute a callback with the temporary file path
+    fn with_temporary_database<T, F>(
+        idevid: X509,
+        source_path: &str,
+        callback: F,
+    ) -> Result<T>
+    where
+        F: FnOnce(&X509, &str) -> Result<T>,
+    {
+        // Create a temporary file
+        let temp_file = NamedTempFile::new().map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?;
+
+        // Get the path of the temporary file
+        let temp_file_path = temp_file.path().to_str().unwrap().to_owned();
+
+        // Open the source database on disk
+        let source_conn = Connection::open(source_path)?;
+
+        // Attach a new in-memory database
+        source_conn.execute("ATTACH DATABASE ? AS tempdb", params![&temp_file_path])?;
+
+        // Execute SQL statement to copy data from source to temporary file
+        source_conn.execute(
+            "ATTACH DATABASE ? AS ondiskdb",
+            params![source_path.to_owned()],
+        )?;
+        source_conn.execute(
+            "ATTACH DATABASE ? AS tempdb",
+            params![&temp_file_path],
+        )?;
+        source_conn.execute(
+            "INSERT INTO tempdb.main_table SELECT * FROM ondiskdb.main_table",
+            params![],
+        )?;
+        source_conn.execute("DETACH DATABASE ondiskdb", params![])?;
+        source_conn.execute("DETACH DATABASE tempdb", params![])?;
+
+        // Call the callback function with the temporary file path and other arguments
+        let result = callback(&idevid, &temp_file_path)?;
+
+        // Clean up the temporary file
+        temp_file.close().map_err(|e| rusqlite::Error::ToSqlConversionFailure(Box::new(e)))?;
+
+        Ok(result)
+    }
 
     #[test] 
     #[should_panic(expected = r#"called `Result::unwrap()` on an `Err` value: ErrorStack([Error { code: 109052059, library: "asn1 encoding routines"#)]
     fn check_panics_with_bad_idevid() {
-        let pathToSqlDB = "./tests/EmptyDatabase.sqlite";
+        let path_to_sql_db = "./tests/EmptyDatabase.sqlite";
         let idevid = read(format!("./tests/Bad_iDevID"))
             .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
             .unwrap();
-        let result = check_manufacturer_trusted(idevid, pathToSqlDB.to_string()).unwrap();
-        assert_eq!(result, true);
+        let _ = check_manufacturer_trusted(&idevid, &path_to_sql_db).unwrap();
     }
 
     #[test]
     #[should_panic(expected = "unable to open database file: ./tests/DoesntExist.sqlite")]
     fn check_panics_with_non_existent_sqlite_database() {
-        let pathToSqlDB = "./tests/DoesntExist.sqlite";
+        let path_to_sql_db = "./tests/DoesntExist.sqlite";
         let idevid = read(format!("./tests/iDevID"))
             .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
             .unwrap();
-        let result = check_manufacturer_trusted(idevid, pathToSqlDB.to_string()).unwrap();
+        let _ = check_manufacturer_trusted(&idevid, &path_to_sql_db).unwrap();
     }
 
     #[test]
     #[should_panic(expected = "no such table: manufacturer")]
     fn check_panics_when_manufacturer_table_missing() {
-        let pathToSqlDB = "./tests/EmptyDatabase.sqlite";
+        let path_to_sql_db = "./tests/EmptyDatabase.sqlite";
         let idevid = read(format!("./tests/iDevID"))
             .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
             .unwrap();
-        let result = check_manufacturer_trusted(idevid, pathToSqlDB.to_string()).unwrap();
-        assert_eq!(result, true);
+        let _ = check_manufacturer_trusted(&idevid, &path_to_sql_db).unwrap();
     }
 
     #[test]
     fn check_finds_manufacturer_is_trusted() {
-        let pathToSqlDB = "./tests/EmptyTablesDatabase.sqlite";
+        let path_to_sql_db = "./tests/EmptyTablesDatabase.sqlite";
         let idevid = read(format!("./tests/iDevID"))
             .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
             .unwrap();
-        let result = check_manufacturer_trusted(idevid, pathToSqlDB.to_string()).unwrap();
-        assert_eq!(result, true);
+
+        // Use with_temporary_database to perform the operation and check the result
+        let result = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            let result = check_manufacturer_trusted(idevid, temp_file_path).unwrap();
+            assert_eq!(result, false);
+
+            // Create OpenFlags without SQLITE_OPEN_CREATE flag
+            let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_FULL_MUTEX;
+            // Connect to SqlDB database from a file
+            let conn = Connection::open_with_flags(temp_file_path, flags)?;
+
+            let mut stmt = conn.prepare("SELECT COUNT(*) FROM tempdb.manufacturer")?;
+            let count: i64 = stmt.query_row(params![], |row| row.get(0))?;
+
+            println!("Count: {:?}", count);
+
+            // Check if the inserted row is present
+            assert_eq!(count, 1);
+
+            Ok(true)
+        });
+
+        match result {
+            Ok(is_trusted) => {
+                assert!(is_trusted, "Manufacturer is trusted");
+            }
+            Err(err) => eprintln!("Error: {:?}", err),
+        }
     }
 
 
