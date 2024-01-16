@@ -78,7 +78,7 @@ add
 sudo nano /etc/hostapd/hostapd.conf
 ```
     
-```bash
+```shell=
 # Set country code
 country_code=GB
 
@@ -165,9 +165,25 @@ radius_server_clients=/etc/hostapd/radius_clients
 radius_server_auth_port=1812
 ```
     
+### Radius server configuration
 
+Create radius configuration file
 
+```sh
+sudo nano /etc/hostapd/radius_clients
+```
 
+add
 
+```shell=
+# RADIUS client configuration for the RADIUS server
+127.0.0.1	p@ssw0rd!
+```
+
+### Add user database
+
+```sh
+sudo nano /etc/hostapd/radius_clients
+```
 
 Implementation based in part on methods as discussed in [Transforming Your Raspberry Pi into a Secure Enterprise Wi-Fi Controller with 802.1x Authentication](https://myitrambles.com/transforming-your-raspberry-pi-into-a-secure-enterprise-wi-fi-controller-with-802-1x-authentication/)
