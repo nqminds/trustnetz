@@ -227,5 +227,40 @@ sudo systemctl restart NetworkManager
 ```
 
 
-### Unmask and e
+### Unmask and enable the service
+
+```sh
+sudo systemctl unmask hostapd
+sudo systemctl enable hostapd
+```
+
+Start hostapd
+
+```sh
+sudo system ctl start hostapd
+sudo systemctl status hostapd
+```
+
+Start hostapd in debugg mode
+```sh
+sudo hostapd -dd /etc/hostapd/hostapd.conf
+```
+
+
+Check status
+
+```sh
+sudo systemctl status hostapd
+```
+
+Start Dnsmasq
+
+```sh
+sudo system ctl start dnsmasq
+sudo systemctl status dnsmasq
+```
+
+
+
+
 Implementation based in part on methods as discussed in [Transforming Your Raspberry Pi into a Secure Enterprise Wi-Fi Controller with 802.1x Authentication](https://myitrambles.com/transforming-your-raspberry-pi-into-a-secure-enterprise-wi-fi-controller-with-802-1x-authentication/)
