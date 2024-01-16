@@ -300,6 +300,41 @@ sudo chmod 600 /path/to/client.pem
 
 ### CRL (Certificate Revocation List). REVOKE A DEVICE CERTIFICATE:
 
+Make ca config file:
+```sh
+sudo nano ca.conf /etc/hostapd/CA
+
+```
+add
+
+```shell=
+[ ca ]
+default_ca = CA_default
+
+[ CA_default ]
+database = /etc/hostapd/CA/index.txt
+new_certs_dir = /etc/hostapd/CA/newcerts
+certificate = /etc/hostapd/ca.pem
+private_key = /etc/hostapd/ca.key
+crlnumber = /etc/hostapd/CA/crlnumber
+serial = /etc/hostapd/CA/serial
+
+default_md = sha256
+default_crl_days = 30
+default_days = 365
+policy = policy_match
+
+
+[ policy_match ]
+countryName = supplied
+stateOrProvinceName = supplied
+organizationName = supplied
+organizationalUnitName = optional
+commonName = supplied
+emailAddress = optional
+
+```
+
 ```sh
 sudo mkdir /etc/hostapd/CA
 
@@ -316,5 +351,7 @@ sudo touch /etc/hostapd/CA/crlnumber
 echo '01' | sudo tee /etc/hostapd/CA/crlnumber
 
 ```
+
+
 
 Implementation based in part on methods as discussed in [Transforming Your Raspberry Pi into a Secure Enterprise Wi-Fi Controller with 802.1x Authentication](https://myitrambles.com/transforming-your-raspberry-pi-into-a-secure-enterprise-wi-fi-controller-with-802-1x-authentication/)
