@@ -183,7 +183,30 @@ add
 ### Add user database
 
 ```sh
-sudo nano /etc/hostapd/radius_clients
+sudo nano /etc/hostapd/eap_user
 ```
+
+```shell= 
+# HOSTAPD USER DATABASE FOR INTEGRATED EAP SERVER
+# Phase 1
+# username    authentication
+* TLS
+"identity name"		TLS
+```
+
+### Apply ip forwarding for wlan1(RT5370 Wireless Adapter)
+
+```sh
+sudo nano /etc/sysctl.conf
+```
+
+add or uncoment
+
+```shell=
+net.ipv4.ip_forward = 1
+```
+
+
+
 
 Implementation based in part on methods as discussed in [Transforming Your Raspberry Pi into a Secure Enterprise Wi-Fi Controller with 802.1x Authentication](https://myitrambles.com/transforming-your-raspberry-pi-into-a-secure-enterprise-wi-fi-controller-with-802-1x-authentication/)
