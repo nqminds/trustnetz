@@ -23,6 +23,6 @@ examples:
     manufacturer: e16dfb44-5a6d-41f6-b7a7-c3885a0efc42
     issuanceDate: "2022-02-05T10:30:00.1Z"
 context: |
-  ## Hello world
+  ## Device Manufacturer Binding
+  This assertion
   
-  - I even do bulletpoints
