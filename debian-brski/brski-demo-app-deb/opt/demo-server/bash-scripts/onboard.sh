@@ -22,7 +22,7 @@ echo "Connected to brski-open."
 sleep 2
 
 echo "Running brski sign command..."
-brski -c /etc/brski/config.ini sign -o "$CERTS_PATH/peer-client"  -d
+brski -c /etc/brski/config.ini sign -o "$CERTS_PATH/peer-client" -d
 
 if [ $? -ne 0 ]; then
     exit 1
@@ -43,7 +43,23 @@ echo "Disconnected from brski-open."
 sleep 2
   
 echo "Connecting to $EAP_NAME ..."
-nmcli device wifi connect $EAP_NAME password '1234554321' ifname wlan0
+nmcli connection show $EAP_NAME > /dev/null
+
+if [ $? -eq 0 ]; then
+	nmcli connection delete id $EAP_NAME
+fi
+
+nmcli c add type wifi ifname wlan0 con-name $EAP_NAME \
+      802-11-wireless.ssid $EAP_NAME \
+      802-11-wireless-security.key-mgmt wpa-eap \
+      802-1x.eap tls \
+      802-1x.identity brski@pledge \
+      802-1x.ca-cert /etc/brski/registrar-tls-ca.crt \
+      802-1x.client-cert /opt/demo-server/certs/peer-client.crt \
+      802-1x.private-key /opt/demo-server/certs/peer-client.key \
+      802-1x.private-key-password s3cr3t
+
+nmcli c up $EAP_NAME
 
 if [ $? -ne 0 ]; then
   exit 1
