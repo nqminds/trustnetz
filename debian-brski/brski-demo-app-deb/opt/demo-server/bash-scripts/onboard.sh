@@ -28,7 +28,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-file $CERTS_PATH/peer-client
+file $CERTS_PATH/peer-client.crt
 
 echo "Got BRSKI signed certificates"
 EAP_NAME=`openssl x509 -noout -issuer -in "$CERTS_PATH/peer-client.crt" | sed -e 's/.*CN = \(.*\).*/\1/'`
