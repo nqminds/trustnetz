@@ -15,7 +15,8 @@
     "npm": ">=8.7.0"
   },
   "workspaces": [
-    "./node-packages/*"
+    "./node-packages/*",
+    "./packages/*"
   ],
   "keywords": [
     "nist",
@@ -27,5 +28,8 @@
   "bugs": {
     "url": "https://github.com/nqminds/nist-brski/issues"
   },
-  "homepage": "https://github.com/nqminds/nist-brski#readme"
+  "homepage": "https://github.com/nqminds/nist-brski#readme",
+  "devDependencies": {
+    "@nqminds/verifiable-schemas-toolchain": "^1.0.7"
+  }
 }

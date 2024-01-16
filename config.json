@@ -1,0 +1,10 @@
+
+{
+  "TITLE": "NIST Trusted Onboarding",
+  "TAGLINE": "Build-5",
+  "DOCUSAURUS_URL": "http://office.nqm.ai",
+  "PROJECT_NAME": "@nqminds/nist-brski",
+  "HEDGEDOC_SERVER": "https://hedgedoc.nqminds.com/",
+  "GITHUB_OWNER": "nqminds",
+  "GITHUB_REPO": "nist-brski"
+}
