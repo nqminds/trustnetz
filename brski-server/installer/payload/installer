@@ -23,7 +23,7 @@ rm /tmp/brski_0.2.3_arm64.deb
 
 cp certs/* /etc/brski
 
-mkdir /opt/demo-server
+mkdir -p /opt/demo-server
 cp run.sh /opt/demo-server
 
 cp nist-demo.service /etc/systemd/system/

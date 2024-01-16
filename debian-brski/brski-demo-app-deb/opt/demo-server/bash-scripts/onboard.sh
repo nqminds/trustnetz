@@ -4,10 +4,10 @@ CERTS_PATH="/opt/demo-server/certs"
 
 echo "Starting onboarding process."
 
-# Disconnect from brski-secure if connected
-echo "Disconnecting from brski-secure (if connected)..."
+# Disconnect from WIFI if connected
+echo "Disconnecting from WIFI newtork (if connected)..."
 nmcli device disconnect wlan0
-echo "Disconnected from brski-secure."
+echo "Disconnected from WIFI network."
 
 # Connect to brski-open
 echo "Connecting to brski-open..."
