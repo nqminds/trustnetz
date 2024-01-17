@@ -198,8 +198,6 @@ function httpsPost({url, body, ...options}) {
     try {
       console.log("trying to parse json...")
       const claimData = JSON.parse(response.toString("utf-8"));
-      // const vcJSON = JSON.parse(vcData);
-      // const issuanceDate = vcJSON.issuanceDate
       switch (schemaName) {
         case 'manufacturer_trust':
           const {user, manufacturer, trust, issuanceDate} = claimData;
