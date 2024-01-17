@@ -1,17 +1,18 @@
 #!/bin/bash
 
 CERTS_PATH="/opt/demo-server/certs"
+WLAN="wlan0"
 
 echo "Starting onboarding process."
 
 # Disconnect from WIFI if connected
 echo "Disconnecting from WIFI newtork (if connected)..."
-nmcli device disconnect wlan0
+nmcli device disconnect $WLAN
 echo "Disconnected from WIFI network."
 
 # Connect to brski-open
 echo "Connecting to brski-open..."
-nmcli device wifi connect 'brski-open' ifname wlan0
+nmcli device wifi connect 'brski-open' ifname $WLAN
 
 if [ $? -ne 0 ]; then
     exit 1
@@ -21,8 +22,30 @@ echo "Connected to brski-open."
 
 sleep 2
 
+echo "Finding registrar..."
+
+srch=`avahi-browse -d local -r _registrar._tcp -t -p | grep -m 1 -E "=;$WLAN;IPv4;.*;_registrar._tcp;local;.+;.+;.+;"`
+
+# Save the current value of IFS
+oldIFS=$IFS
+IFS=';'
+array=($srch)
+IFS=$oldIFS
+
+if [ ${#array[@]} -lt 2 ]; then
+	echo "Couldn't find registrar"
+	exit 1
+fi
+
+IP=${array[-2]}
+PORT=${array[-1]}
+
+echo "Found registrar on IP=$IP PORT=$PORT."
+
+sleep 2
+
 echo "Running brski preq command..."
-brski -c /etc/brski/config.ini preq -o "$CERTS_PATH/pinned-domain-ca" -d
+brski -c /etc/brski/config.ini preq -p $PORT -a $IP -o "$CERTS_PATH/pinned-domain-ca" -d
 
 if [ $? -ne 0 ]; then
     exit 1
@@ -32,7 +55,7 @@ file $CERTS_PATH/pinned-domain-ca.crt
 
 
 echo "Running brski sign command..."
-brski -c /etc/brski/config.ini sign -o "$CERTS_PATH/eap-tls-client" -d
+brski -c /etc/brski/config.ini sign -p $PORT -a $IP -o "$CERTS_PATH/eap-tls-client" -d
 
 if [ $? -ne 0 ]; then
     exit 1
@@ -48,7 +71,7 @@ sleep 2
 
 echo "Got EAP-TLS name $EAP_NAME."
 
-nmcli device disconnect wlan0
+nmcli device disconnect $WLAN
 echo "Disconnected from brski-open."
 
 sleep 2
@@ -60,7 +83,7 @@ if [ $? -eq 0 ]; then
 	nmcli connection delete id $EAP_NAME
 fi
 
-nmcli c add type wifi ifname wlan0 con-name $EAP_NAME \
+nmcli c add type wifi ifname $WLAN con-name $EAP_NAME \
       802-11-wireless.ssid $EAP_NAME \
       802-11-wireless-security.key-mgmt wpa-eap \
       802-1x.eap tls \
