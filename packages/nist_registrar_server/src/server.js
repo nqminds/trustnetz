@@ -8,11 +8,8 @@ import {v4 as uuidv4} from "uuid";
 import http from 'http';
 import sqlite3 from "sqlite3";
 import util from 'util';
-import fs from "fs";
 
-// Read the schema from the file
-const schemaPath = 'schema.sql';
-const schema = fs.readFileSync(schemaPath, 'utf8');
+import intitialise_demo_database from "./initialise_demo_database.js";
 
 function httpsPost({url, body, ...options}) {
     return new Promise((resolve,reject) => {
@@ -105,48 +102,7 @@ function httpsPost({url, body, ...options}) {
       // Open a database connection
       db = new sqlite3.Database(sqliteDBPath, sqlite3.OPEN_READWRITE, (err) => {
         if (err) {
-          console.log("Database file missing, initialising database file with schema")
-          db = new sqlite3.Database(sqliteDBPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
-          // Execute the schema
-          db.serialize(function() {
-            db.exec(schema, function (err) {
-              if (err) {
-                console.error(err.message);
-              } else {
-                console.log('Schema executed successfully');
-              }
-            });
-            // List of usernames
-            const usernames = ['Ash', 'John', 'Ant', 'James', 'Ionut', 'Nick', 'Anita', 'Hannah', 'Suzanne', 'Alois', 'Alex', 'Toby'];
-  
-            // Insert data into user table with UUID for each user
-            for (const username of usernames) {
-              db.run("INSERT INTO user (id, username, created_at) VALUES (?, ?, ?)", [uuidv4(), username, new Date().toISOString()]);
-            }
-  
-            // Update users 'Nick' and 'John' to have can_issue_purchase_rights and can_issue_connection_rights
-            db.run("UPDATE user SET can_issue_purchase_rights = TRUE, can_issue_connection_rights = TRUE WHERE username IN ('Nick', 'John')");
-  
-            // Update users to have can_issue_trust
-            db.run("UPDATE user SET can_issue_trust = TRUE WHERE username IN ('Nick', 'Ash', 'Ant', 'James', 'Ionut')");
-  
-            // Insert data into trusts table - Nick Trusts Amazon
-            const nickRow = db.get("SELECT id FROM user WHERE username = 'Nick'");
-            const nicksId = nickRow.id;
-  
-            // Insert data into allow_to_connect - John allows Ash's Amazon Echo to connect
-            const johnRow = db.get("SELECT id FROM user WHERE username = 'John'");
-            const johnsId = johnRow.id;
-  
-            // Insert a single entry into gives_purchase_rights
-            const ashRow = db.get("SELECT id FROM user WHERE username = 'Ash'");
-            const ashsId = ashRow.id;
-  
-            const nickRowForRights = db.get("SELECT id FROM user WHERE username = 'Nick'");
-            const nicksIdForRights = nickRowForRights.id;
-  
-            db.run("INSERT INTO gives_purchase_rights (recipient_id, authoriser_id, created_at) VALUES (?, ?, ?)", [ashsId, nicksIdForRights, new Date().toISOString()]);
-          });
+          db = intitialise_demo_database(sqliteDBPath);
         } else {
           console.log('Connected to the database');
         }
@@ -206,6 +162,8 @@ function httpsPost({url, body, ...options}) {
           const manufacturerRow = await dbGet("SELECT id from manufacturer where id = ? OR name = ?", [manufacturer, manufacturer])
           if (!manufacturerRow) {
             console.log(`No manufacturer found for ID or name: ${manufacturer}`);
+            res.send(`No manufacturer with id or name ${manufacturer}`)
+            return
           } else {
             manufacturerId = manufacturerRow.id;
           }
@@ -213,30 +171,26 @@ function httpsPost({url, body, ...options}) {
           const userRow = await dbGet("SELECT id from user where id = ? OR username = ?", [user, user])
           if (!userRow) {
             console.log(`No user found for ID or name: ${user}`);
+            res.send(`No user with id or name ${user}`)
+            return
           } else {
             userId = userRow.id;
           }
-          if (!manufacturerId) {
-            res.send(`No manufacturer with id or name ${manufacturer}`)
-          } else if (!userId) {
-            res.send(`No user with id or name ${user}`)
-          } else {
-            const trustRow = await dbGet("SELECT * from trusts WHERE user_id = ? AND manufacturer_id = ?", [userId, manufacturerId])
-            if (trust) {
-              if (!trustRow) {
-                await dbRun("INSERT INTO trusts (user_id, manufacturer_id, created_at) VALUES (?, ?, ?)",
-                  [userId, manufacturerId, issuanceDate]);
-                res.send(`Trusted added to manufacturer ${manufacturer} by user ${user}`)
-              } else {
-                res.send(`Manufacturer ${manufacturer} is already trusted by user ${user}`)
-              }
+          const trustRow = await dbGet("SELECT * from trusts WHERE user_id = ? AND manufacturer_id = ?", [userId, manufacturerId])
+          if (trust) {
+            if (!trustRow) {
+              await dbRun("INSERT INTO trusts (user_id, manufacturer_id, created_at) VALUES (?, ?, ?)",
+                [userId, manufacturerId, issuanceDate]);
+              res.send(`Trusted added to manufacturer ${manufacturer} by user ${user}`)
             } else {
-              if (!trustRow) {
-                res.send(`Manufacturer ${manufacturer} is not trusted by user ${user}`)
-              } else {
-                await dbRun("DELETE FROM trusts WHERE user_id = ? AND manufacturer_id = ?", [userId, manufacturerId]);
-                res.send(`Trust removed from manufacturer ${manufacturer} by user ${user}`)
-              }
+              res.send(`Manufacturer ${manufacturer} is already trusted by user ${user}`)
+            }
+          } else {
+            if (!trustRow) {
+              res.send(`Manufacturer ${manufacturer} is not trusted by user ${user}`)
+            } else {
+              await dbRun("DELETE FROM trusts WHERE user_id = ? AND manufacturer_id = ?", [userId, manufacturerId]);
+              res.send(`Trust removed from manufacturer ${manufacturer} by user ${user}`)
             }
           }
         case 'device_manufacturer_binding':
