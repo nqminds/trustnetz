@@ -296,6 +296,58 @@ sudo chmod 600 /path/to/client.key
 sudo chown user:user /path/to/client.pem
 sudo chmod 600 /path/to/client.pem
 ```
+### Install ca.pem certificate to the trusted list
+
+Add the certificate to 
+```sh
+sudo cp ca.pem /usr/local/share/ca-certificates/ca.pem
+``` 
+and then run
+
+```sh
+sudo update-ca-certificates
+```
+
+### Check if has been linked
+
+```sh
+ls -l /etc/ssl/certs | grep ca.pem
+```
+
+### Manually link the certificate if the certificate is not present at /etc/ssl/certs/
+
+```sh
+sudo ln -s /usr/local/share/ca-certificates/ca.pem /etc/ssl/certs/ca.pem
+```
+
+### Generating the device certificates can also be done by running the following script
+
+```shell=
+#!/bin/bash
+
+# Change to your desired directory
+cd /home/nqm-pi-tls/Desktop/TEST_TLS/
+
+# Client
+echo "Generating Client Certificates..."
+sudo openssl genrsa -out client.key 2048
+sudo openssl req -new -key client.key -out client.csr \
+-subj "/C=GB/ST=Hampshire/L=Southampton/O=client ltd/OU=unit one/CN=client/emailAddress=client@nquiringminds.com"
+sudo openssl x509 -req -in client.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out nqm-pi-client.pem -days 365 -sha256
+
+# Set certificate permissions
+echo "Setting permissions..."
+sudo chown $USER:$USER nqm-pi-client.key nqm-pi-client.pem
+sudo chmod 600 nqm-pi-client.key nqm-pi-client.pem
+
+# Add CA certificate to the system
+echo "Adding CA certificate to the system..."
+sudo cp ca_home.pem /usr/local/share/ca-certificates/ca_home.pem
+sudo update-ca-certificates
+
+echo "Client certificate generation and configuration completed."
+
+```
 
 
 ### CRL (Certificate Revocation List). REVOKE A DEVICE CERTIFICATE:
@@ -352,6 +404,6 @@ echo '01' | sudo tee /etc/hostapd/CA/crlnumber
 
 ```
 
-# NOT COMPLETED
 
-Implementation based in part on methods as discussed in [Transforming Your Raspberry Pi into a Secure Enterprise Wi-Fi Controller with 802.1x Authentication](https://myitrambles.com/transforming-your-raspberry-pi-into-a-secure-enterprise-wi-fi-controller-with-802-1x-authentication/)
+
+Implementation based in part on methods discussed in [Transforming Your Raspberry Pi into a Secure Enterprise Wi-Fi Controller with 802.1x Authentication](https://myitrambles.com/transforming-your-raspberry-pi-into-a-secure-enterprise-wi-fi-controller-with-802-1x-authentication/)
