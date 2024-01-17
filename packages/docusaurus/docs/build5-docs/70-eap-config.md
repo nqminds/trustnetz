@@ -462,13 +462,35 @@ sudo sh -c 'cat /etc/hostapd/ca.pem /etc/hostapd/CA/crl.pem > /etc/hostapd/CA/ca
 ```sh
 openssl verify -extended_crl -verbose -CAfile ca_and_crl.pem -crl_check client_re.pem
 ```
+
+or by 
+
+```sh
+openssl crl -in ca_and_crl.pem -text -noout
+```
 If succesfful the output should be:
 
+```sh
+error 23 at 0 depth lookup: certificate revoked
+error /etc/hostapd/CA/client_re.pem: verification failed
+```
+### Update hostapd.conf
 
+```shell=
+ca_cert=/etc/hostapd/CA/ca_and_crl.pem
+```
 
+### Restart hostapd
 
+```sh
+sudo systemctl restart hostapd
+```
 
+### Before trying to reconect the device using a revoked certificate we must flush the network to remove any stored credentials
 
-
+```sh
+# Add the necessary SSID at the end
+sudo nmcli con delete id "TEST_EAP-TLS"
+```
 
 Implementation based in part on methods discussed in [Transforming Your Raspberry Pi into a Secure Enterprise Wi-Fi Controller with 802.1x Authentication](https://myitrambles.com/transforming-your-raspberry-pi-into-a-secure-enterprise-wi-fi-controller-with-802-1x-authentication/)
