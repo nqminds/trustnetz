@@ -516,7 +516,7 @@ echo "Configuring $SSID connection..."
 nmcli con add type wifi ifname "$INTERFACE" con-name "$SSID" ssid "$SSID" \
     wifi-sec.key-mgmt "wpa-eap" \
     802-1x.eap "tls" \
-    802-1x.identity "ionut" \
+    802-1x.identity "identity name" \
     802-1x.ca-cert "$CA_CERT" \
     802-1x.client-cert "$CLIENT_CERT" \
     802-1x.private-key "$CLIENT_KEY" \
