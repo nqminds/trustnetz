@@ -110,7 +110,7 @@ const MyComponent = () => {
 
       {/* Right side with list */}
       <div className="list-container">
-        <h3>List of Strings:</h3>
+        <h3>Submitted VCs and Registrar Responses:</h3>
         <ul>
           {listItems.map((item, index) => (
             <li key={index}>{item}</li>
