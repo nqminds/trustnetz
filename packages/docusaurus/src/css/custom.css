@@ -168,7 +168,6 @@ tbody tr:nth-child(even) {
 }
 
 img {
-  width: 100%;
   display: block; /* Remove default inline alignment */
   margin: 0 auto
 }
