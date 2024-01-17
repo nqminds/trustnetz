@@ -17,6 +17,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Configure BRSK tool
 wget -O /tmp/brski_0.2.3_arm64.deb https://github.com/nqminds/brski/releases/download/0.2.3/brski_0.2.3_arm64.deb
 dpkg -i /tmp/brski_0.2.3_arm64.deb
 rm /tmp/brski_0.2.3_arm64.deb
@@ -31,7 +32,14 @@ chmod 644 /etc/systemd/system/nist-demo.service
 systemctl daemon-reload
 systemctl enable nist-demo.service
 
-apt install hostapd dnsmasq iptables -y
+# Insatll all packages
+apt install hostapd dnsmasq iptables avahi-daemon -y
+
+# Configure avahi
+# Always enable
+systemctl enable avahi-daemon.service
+mkdir -p /etc/avahi/services
+cp registrar.service /etc/avahi/services
 
 service hostapd stop
 service dnsmasq stop
@@ -65,6 +73,9 @@ sed -i s/@wlan@/$IF1/g /etc/default/dnsmasq.$IF1
 
 sudo systemctl disable dnsmasq@$IF0.service
 sudo systemctl disable dnsmasq@$IF1.service
+
+# Restart the avahi service
+systemctl restart avahi-daemon.service
 
 # Start the runner
 systemctl restart nist-demo.service

@@ -1,0 +1,9 @@
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<service-group>
+ <name replace-wildcards="yes">%h-registrar</name>
+  <service>
+   <type>_registrar._tcp</type>
+   <port>12345</port>
+  </service>
+</service-group>
+
