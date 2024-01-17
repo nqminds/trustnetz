@@ -10,6 +10,10 @@ import sqlite3 from "sqlite3";
 import util from 'util';
 
 import intitialise_demo_database from "./initialise_demo_database.js";
+import handle_device_trust from "./handle_device_trust.js"
+import handle_manufacturer_trust from "./handle_manufacturer_trust.js";
+import handle_device_type_binding from "./handle_device_type_binding.js";
+import handle_device_type_vulnerable from "./handle_device_type_vulnerability_binding.js";
 
 function httpsPost({url, body, ...options}) {
     return new Promise((resolve,reject) => {
@@ -87,6 +91,7 @@ function httpsPost({url, body, ...options}) {
    const router = express.Router(); // eslint-disable-line new-cap
    let db = null;
    let dbGet = null;
+   let dbAll = null;
    let dbRun = null;
    let nistVcRestServerAddress = null;
    if (!config) {
@@ -108,6 +113,7 @@ function httpsPost({url, body, ...options}) {
         }
       });
       dbGet = util.promisify(db.get).bind(db);
+      dbAll = util.promisify(db.all).bind(db);
       dbRun = util.promisify(db.run).bind(db);
     } catch (err) {
       console.log("errO: ", err);
@@ -156,56 +162,21 @@ function httpsPost({url, body, ...options}) {
       const claimData = JSON.parse(response.toString("utf-8"));
       switch (schemaName) {
         case 'manufacturer_trust':
-          const {user, manufacturer, trust, issuanceDate} = claimData;
-          let manufacturerId = null;
-          console.log(`manufacturer: ${manufacturer}`)
-          const manufacturerRow = await dbGet("SELECT id from manufacturer where id = ? OR name = ?", [manufacturer, manufacturer])
-          if (!manufacturerRow) {
-            console.log(`No manufacturer found for ID or name: ${manufacturer}`);
-            res.send(`No manufacturer with id or name ${manufacturer}`)
-            return
-          } else {
-            manufacturerId = manufacturerRow.id;
-          }
-          let userId = null;
-          const userRow = await dbGet("SELECT id from user where id = ? OR username = ?", [user, user])
-          if (!userRow) {
-            console.log(`No user found for ID or name: ${user}`);
-            res.send(`No user with id or name ${user}`)
-            return
-          } else {
-            userId = userRow.id;
-          }
-          const trustRow = await dbGet("SELECT * from trusts WHERE user_id = ? AND manufacturer_id = ?", [userId, manufacturerId])
-          if (trust) {
-            if (!trustRow) {
-              await dbRun("INSERT INTO trusts (user_id, manufacturer_id, created_at) VALUES (?, ?, ?)",
-                [userId, manufacturerId, issuanceDate]);
-              res.send(`Trusted added to manufacturer ${manufacturer} by user ${user}`)
-            } else {
-              res.send(`Manufacturer ${manufacturer} is already trusted by user ${user}`)
-            }
-          } else {
-            if (!trustRow) {
-              res.send(`Manufacturer ${manufacturer} is not trusted by user ${user}`)
-            } else {
-              await dbRun("DELETE FROM trusts WHERE user_id = ? AND manufacturer_id = ?", [userId, manufacturerId]);
-              res.send(`Trust removed from manufacturer ${manufacturer} by user ${user}`)
-            }
-          }
+          await handle_manufacturer_trust(claimData, res, dbGet, dbRun);
         case 'device_manufacturer_binding':
-          null
+          res.send(`Method to handle ${schemaName} not yet implemented`);
         case 'device_trust':
-          null
+          await handle_device_trust(claimData, res, dbGet, dbRun);
         case 'device_type_binding':
-          null
-        case 'device_type_vulnerable':
-          null
+          await handle_device_type_binding(claimData, res, dbGet, dbRun);
+        case 'device_type_vulnerability_binding':
+          res.send(`Method to handle ${schemaName} not yet implemented`);
+          // await handle_device_type_vulnerability_binding(claimData, res, dbGet, dbAll, dbRun);
       }
     }
     catch (err) {
-      console.log(`got error: ${err} responding`)
-      res.send(response);
+      console.log(`Encountered Error: ${err}`)
+      res.send(`Encountered Error: ${err}`);
     }
   }));
    
