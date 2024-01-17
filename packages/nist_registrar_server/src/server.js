@@ -98,7 +98,7 @@ function httpsPost({url, body, ...options}) {
        {encoding: "utf8"}),
      ));
    }
-   
+
    if (config.sqliteDBPath) {
     const sqliteDBPath = fileURLToPath(new URL(config.sqliteDBPath, import.meta.url))
     try {
@@ -205,14 +205,15 @@ function httpsPost({url, body, ...options}) {
           const {user, manufacturer, trust, issuanceDate} = claimData;
           let manufacturerId = null;
           console.log(`manufacturer: ${manufacturer}`)
-          const manufacturerRow = dbGet("SELECT id from manufacturer where id = ? OR name = ?", [manufacturer, manufacturer])
+          const manufacturerRow = await dbGet("SELECT id from manufacturer where id = ? OR name = ?", [manufacturer, manufacturer])
+          console.log(manufacturerRow);
           if (!manufacturerRow) {
             console.log(`No manufacturer found for ID or name: ${manufacturer}`);
           } else {
             manufacturerId = manufacturerRow.id;
           }
           let userId = null;
-          const userRow = dbGet("SELECT id from user where id = ? OR username = ?", [user, user])
+          const userRow = await dbGet("SELECT id from user where id = ? OR username = ?", [user, user])
           if (!userRow) {
             console.log(`No user found for ID or name: ${user}`);
           } else {
@@ -223,10 +224,10 @@ function httpsPost({url, body, ...options}) {
           } else if (!userId) {
             res.send(`No user with id or name ${user}`)
           } else {
-            const trustRow = dbGet("SELECT * from trusts WHERE user_id = ? AND manufacturer_id = ?", [userId, manufacturerId])
+            const trustRow = await dbGet("SELECT * from trusts WHERE user_id = ? AND manufacturer_id = ?", [userId, manufacturerId])
             if (trust) {
               if (!trustRow) {
-                dbRun("INSERT INTO trusts (user_id, manufacturer_id, created_at) VALUES (?, ?, ?)",
+                await dbRun("INSERT INTO trusts (user_id, manufacturer_id, created_at) VALUES (?, ?, ?)",
                   [userId, manufacturerId, issuanceDate]);
                 res.send(`Trusted added to manufacturer ${manufacturer} by user ${user}`)
               } else {
@@ -236,7 +237,7 @@ function httpsPost({url, body, ...options}) {
               if (!trustRow) {
                 res.send(`Manufacturer ${manufacturer} is not trusted by user ${user}`)
               } else {
-                dbRun("DELETE FROM trusts WHERE user_id = ? AND manufacturer_id = ?", [userId, manufacturerId]);
+                await dbRun("DELETE FROM trusts WHERE user_id = ? AND manufacturer_id = ?", [userId, manufacturerId]);
                 res.send(`Trust removed from manufacturer ${manufacturer} by user ${user}`)
               }
             }
