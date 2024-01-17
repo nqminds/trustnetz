@@ -84,13 +84,9 @@ function httpsPost({url, body, ...options}) {
   *
   * @param {ServerConfig} [config] The configuration object. If not set,
   * will default to the `../config.json` file.
-  * @param {string} [voltConfigPath] - The path to the TDX Volt Configuration file.
-  * By default, this is the `../volt-config.json` file.
   * @returns {Promise<express.Router>} The express router.
   */
- export default async function server(config, voltConfigPath = fileURLToPath(
-   new URL("../volt-config.json", import.meta.url),
- )) {
+ export default async function server(config) {
    const router = express.Router(); // eslint-disable-line new-cap
    let db = null;
    let dbGet = null;
@@ -102,11 +98,7 @@ function httpsPost({url, body, ...options}) {
        {encoding: "utf8"}),
      ));
    }
-
-   if (config.voltConfigPath) {
-    voltConfigPath = fileURLToPath(new URL(config.voltConfigPath, import.meta.url))
-   }
-
+   
    if (config.sqliteDBPath) {
     const sqliteDBPath = fileURLToPath(new URL(config.sqliteDBPath, import.meta.url))
     try {
