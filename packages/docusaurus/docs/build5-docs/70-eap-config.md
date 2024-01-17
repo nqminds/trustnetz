@@ -237,7 +237,7 @@ sudo systemctl enable hostapd
 Start hostapd
 
 ```sh
-sudo system ctl start hostapd
+sudo systemctl start hostapd
 sudo systemctl status hostapd
 ```
 
