@@ -278,6 +278,31 @@ sudo openssl req -new -key server.key -out server.csr
 sudo openssl x509 -req -in server.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out server.pem -days 1000 -sha256
 ```
 
+### CA and Radius certificates could also be done by running this script
+
+```shell=
+#!/bin/bash
+
+
+#cd /path/to/your/certificate/directory
+
+# Certificate Authority
+echo "Generating CA..."
+sudo openssl genrsa -out ca.key 2048
+sudo openssl req -x509 -new -nodes -key ca.key -sha256 -days 1024 -out ca.pem \
+-subj "/C=GB/ST=Hampshire/L=Southampton/O=nqminds_ca/OU=unit one/CN=ca/emailAddress=ca@nquiringminds.com"
+
+# Server
+echo "Generating Server Certificates..."
+sudo openssl genrsa -out server.key 2048
+sudo openssl req -new -key server.key -out server.csr \
+-subj "/C=GB/ST=Hampshire/L=Southampton/O=nqminds_server/OU=unit one/CN=server/emailAddress=server@nquiringminds.com"
+sudo openssl x509 -req -in server.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out server.pem -days 1000 -sha256
+
+echo "Certificates generation completed."
+
+```
+
 ### Generate Device certificate
 ```sh
 # Gen private key: 
@@ -333,16 +358,17 @@ echo "Generating Client Certificates..."
 sudo openssl genrsa -out client.key 2048
 sudo openssl req -new -key client.key -out client.csr \
 -subj "/C=GB/ST=Hampshire/L=Southampton/O=client ltd/OU=unit one/CN=client/emailAddress=client@nquiringminds.com"
-sudo openssl x509 -req -in client.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out nqm-pi-client.pem -days 365 -sha256
+sudo openssl x509 -req -in client.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out client.pem -days 365 -sha256
 
 # Set certificate permissions
 echo "Setting permissions..."
-sudo chown $USER:$USER nqm-pi-client.key nqm-pi-client.pem
-sudo chmod 600 nqm-pi-client.key nqm-pi-client.pem
+# Replace $USER with the your user
+sudo chown $USER:$USER client.key client.pem
+sudo chmod 600 client.key client.pem
 
 # Add CA certificate to the system
 echo "Adding CA certificate to the system..."
-sudo cp ca_home.pem /usr/local/share/ca-certificates/ca_home.pem
+sudo cp ca.pem /usr/local/share/ca-certificates/ca.pem
 sudo update-ca-certificates
 
 echo "Client certificate generation and configuration completed."
@@ -350,9 +376,9 @@ echo "Client certificate generation and configuration completed."
 ```
 
 
-### CRL (Certificate Revocation List). REVOKE A DEVICE CERTIFICATE:
+## CRL (Certificate Revocation List). REVOKE A DEVICE CERTIFICATE:
 
-Make ca config file:
+### Make ca config file:
 ```sh
 sudo nano ca.conf /etc/hostapd/CA
 
@@ -386,6 +412,8 @@ commonName = supplied
 emailAddress = optional
 
 ```
+### Add necessary files
+
 
 ```sh
 sudo mkdir /etc/hostapd/CA
@@ -403,6 +431,43 @@ sudo touch /etc/hostapd/CA/crlnumber
 echo '01' | sudo tee /etc/hostapd/CA/crlnumber
 
 ```
+
+### Create a new CRL certificate
+
+```sh
+sudo openssl ca -gencrl -out /etc/hostapd/CA/crl.pem -config /etc/hostapd/CA/ca.conf
+```
+
+
+### Revoke the client’s certificate
+
+```sh
+sudo openssl ca -revoke /path/to/client_cert.pem -config /etc/hostapd/CA/ca.conf
+```
+
+### Update the CRL
+
+```sh
+sudo openssl ca -gencrl -out /etc/hostapd/CA/crl.pem -config /etc/hostapd/CA/ca.conf
+```
+
+### Concatenate CA certificate and CRL
+
+```sh
+sudo sh -c 'cat /etc/hostapd/ca.pem /etc/hostapd/CA/crl.pem > /etc/hostapd/CA/ca_and_crl.pem'
+```
+
+### Verify if the certificate has been revoked
+
+```sh
+openssl verify -extended_crl -verbose -CAfile ca_and_crl.pem -crl_check client_re.pem
+```
+If succesfful the output should be:
+
+
+
+
+
 
 
 
