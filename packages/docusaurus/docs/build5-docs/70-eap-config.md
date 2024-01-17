@@ -46,7 +46,7 @@ sudo dnsmasq -C /etc/dnsmasq.conf
 ### Configure the wlan interface which will be used to interact with the wifi clients
     
 ```sh
-sudo nano /usr/local/bin/wlan0staticip.sh
+sudo nano /usr/local/bin/wlan1staticip.sh
 ```
 add
 
