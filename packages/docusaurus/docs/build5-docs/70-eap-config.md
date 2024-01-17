@@ -493,4 +493,10 @@ sudo systemctl restart hostapd
 sudo nmcli con delete id "TEST_EAP-TLS"
 ```
 
+### Device script for onboarding the network:
+
+```shell=
+
+```
+
 Implementation based in part on methods discussed in [Transforming Your Raspberry Pi into a Secure Enterprise Wi-Fi Controller with 802.1x Authentication](https://myitrambles.com/transforming-your-raspberry-pi-into-a-secure-enterprise-wi-fi-controller-with-802-1x-authentication/)
