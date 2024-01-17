@@ -590,9 +590,12 @@ sudo chmod +x local_revoke.sh
 ```
 
 
-### Add i
+### Add device to the CRL list
 
-
+```sh
+ sudo ./local_revoke.sh device.pem
+```
+W
 
 
 
