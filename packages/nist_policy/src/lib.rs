@@ -41,12 +41,11 @@ pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result
         .map(|entry| entry.data().as_utf8().unwrap().to_string()) // Convert &str to String
         .unwrap_or_else(|| "Unknown Issuer".to_string());
 
-    let manufacturer_id = issuer_name_str.to_owned();
     let manufacturer_name = issuer_name_str.to_owned();
 
     // Check manufacturer in database, If manufacturer not present in database, add them to database, so that a user may choose to trust them or not, at a later stage
-    let mut get_manufacturer_statement = conn.prepare("SELECT * FROM manufacturer WHERE (manufacturer.id = ? OR manufacturer.name = ?)")?;
-    let manufacturer_record: Value = match get_manufacturer_statement.query_row(params![manufacturer_id.to_owned(), manufacturer_name.to_owned()], |row| {
+    let mut get_manufacturer_statement = conn.prepare("SELECT * FROM manufacturer WHERE manufacturer.name = ?")?;
+    let manufacturer_record: Value = match get_manufacturer_statement.query_row(params![manufacturer_name.to_owned()], |row| {
         Ok(Manufacturer {
             id: row.get(0)?,
             name: row.get(1)?,
@@ -128,6 +127,165 @@ pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result
         }
     }
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Device {
+    id: String,
+    name: String,
+    idevid: String,
+    created_at: String,
+}
+
+pub fn check_device_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool> {
+    let manufacturer_trusted = check_manufacturer_trusted(idevid, path_to_sql_db);
+    match manufacturer_trusted {
+        Ok(true) => {
+            println!("Device's manufacturer trusted, proceeding to check device is trusted...");
+        }
+        Ok(false) => {
+            println!("Device's manufacturer untrusted, device is therefore untrusted");
+            return Ok(false)
+        }
+        Err(err) => {
+            eprintln!("Error in check_manufacturer_trusted: {:?}", err);
+            return Ok(false)
+        }
+    }
+
+    // Create OpenFlags without SQLITE_OPEN_CREATE flag
+    let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_FULL_MUTEX;
+    
+    // Connect to SqlDB database from a file
+    let conn = Connection::open_with_flags(path_to_sql_db, flags)?;
+
+    // extract deviceId and manufacturer from idevid
+    let issuer_name = idevid.issuer_name();
+    let subject_name = idevid.subject_name();
+
+    // Convert the issuer name to a human-readable string
+    let issuer_name_str = issuer_name
+        .entries_by_nid(openssl::nid::Nid::COMMONNAME)
+        .next()
+        .map(|entry| entry.data().as_utf8().unwrap().to_string()) // Convert &str to String
+        .unwrap_or_else(|| "Unknown Issuer".to_string());
+    let subject_name_str = subject_name
+        .entries_by_nid(openssl::nid::Nid::COMMONNAME)
+        .next()
+        .map(|entry| entry.data().as_utf8().unwrap().to_string()) // Convert &str to String
+        .unwrap_or_else(|| "Unknown Issuer".to_string());
+
+    let manufacturer_name = issuer_name_str.to_owned();
+    let device_name = subject_name_str.to_owned();
+
+    // Find pledge's device entity in device table, if it doesn't exist, add device entity
+    let mut get_device_statement = conn.prepare("SELECT * FROM device WHERE device.name = ?")?;
+
+    let pledge_device: Value = match get_device_statement.query_row(params![device_name], |row| {
+        Ok(Device {
+            id: row.get(0)?,
+            name: row.get(1)?,
+            idevid: row.get(2)?,
+            created_at: row.get(3)?,
+        })
+    }) {
+       Ok(pledge) => {
+           println!("Device found in database: {:?}", pledge);
+           to_value(&pledge).unwrap()
+       }
+       Err(rusqlite::Error::QueryReturnedNoRows) => {
+           println!("No matching device found in database");
+
+           // Adding the device to the database
+           let now = Utc::now();
+           let datetime = DateTime::<Utc>::from(now);
+           let timestamp_str = datetime.format("%Y-%m-%dT%H:%M:%S.%3fZ").to_string();
+        
+           let uuid = Uuid::new_v4();
+           let pledge = Device {
+               id: uuid.to_string(),
+               name: device_name.to_owned(),
+               idevid: "your_idevid".to_owned(),
+               created_at: timestamp_str,
+           };
+
+           conn.execute(
+               "INSERT INTO device (id, name, idevid, created_at) VALUES (?, ?, ?, ?)",
+               params![pledge.id, pledge.name, pledge.idevid, pledge.created_at],
+           )?;
+
+           println!("Added pledge device to database, {:?}", pledge);
+           to_value(&pledge).unwrap()
+       }
+       Err(err) => {
+           eprintln!("Error querying database: {:?}", err);
+           Value::Null
+       }
+   };
+
+   println!("Pledge device: {}", serde_json::to_string_pretty(&pledge_device).unwrap());
+   let device_id = pledge_device["id"].to_string().trim_matches('"').to_owned();
+
+
+    // Find pledge's manufacturer entity in manufacturer table and insert manufactured_by relationship,
+    let mut get_manufacturer_statement = conn.prepare("SELECT * FROM manufacturer WHERE manufacturer.name = ?")?;
+    let manufacturer_record: Value = match get_manufacturer_statement.query_row(params![manufacturer_name.to_owned()], |row| {
+        Ok(Manufacturer {
+            id: row.get(0)?,
+            name: row.get(1)?,
+            created_at: row.get(2)?,
+        })
+    }) {
+        Ok(manufacturer) => {
+            println!("Manufacturer found in database: {:?}", manufacturer);
+            to_value(&manufacturer).unwrap()
+        }
+        Err(err) => {
+            eprintln!("Error querying database: {:?}", err);
+            Value::Null
+        }
+    };
+
+    println!("Manufacturer: {}", serde_json::to_string_pretty(&manufacturer_record).unwrap());
+
+    let manufacturer_id = manufacturer_record["id"].to_string().trim_matches('"').to_owned();
+
+    // Query to check if the device is allowed to connect
+    let is_allowed_to_connect: Result<Option<bool>> = conn.query_row(
+        "
+        SELECT CASE
+                WHEN atc.device_id IS NOT NULL OR (o.user_id IS NOT NULL AND u.can_issue_connection_rights) THEN 1
+                ELSE 0
+            END AS is_allowed_to_connect
+        FROM device d
+        LEFT JOIN owns o ON d.id = o.device_id
+        LEFT JOIN user u ON o.user_id = u.id
+        LEFT JOIN allow_to_connect atc ON d.id = atc.device_id
+        WHERE d.id = ?;
+        ",
+        params![device_id],
+        |row| row.get(0),
+    );
+
+    match is_allowed_to_connect {
+        Ok(Some(is_allowed)) => {
+            println!("is_allowed_to_connect: {:?}", is_allowed);
+            Ok(is_allowed)
+        }
+        Ok(None) => {
+            println!("No rows returned for is_allowed_to_connect");
+            Ok(false)
+        }
+        Err(rusqlite::Error::QueryReturnedNoRows) => {
+            println!("No rows returned for is_allowed_to_connect");
+            Ok(false)
+        }
+        Err(err) => {
+            eprintln!("Error querying database for is_allowed_to_connect: {:?}", err);
+            Err(err)
+        }
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -296,6 +454,69 @@ mod tests {
         // Use with_temporary_database to perform the operation and check the result
         let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
             let result = check_manufacturer_trusted(idevid, temp_file_path).unwrap();
+            assert_eq!(result, true);
+            Ok(true)
+        }).unwrap();
+    }
+
+    #[test]
+    fn check_device_untrusted_because_manufacturer_is_untrusted() {
+        let path_to_sql_db = "./tests/ExistingManufacturerUntrusted.sqlite";
+        let idevid = read(format!("./tests/iDevID"))
+            .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
+            .unwrap();
+
+        // Use with_temporary_database to perform the operation and check the result
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            let result = check_device_trusted(idevid, temp_file_path).unwrap();
+            assert_eq!(result, false);
+            Ok(true)
+        }).unwrap();
+    }
+
+    #[test]
+    fn check_device_and_manufactured_by_created_manufacturer_is_trusted() {
+        let path_to_sql_db = "./tests/ExistingManufacturerTrusted.sqlite";
+        let idevid = read(format!("./tests/iDevID"))
+            .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
+            .unwrap();
+
+        // Use with_temporary_database to perform the operation and check the result
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            let result = check_device_trusted(idevid, temp_file_path).unwrap();
+
+            // Create OpenFlags without SQLITE_OPEN_CREATE flag
+            let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_FULL_MUTEX;
+            // Connect to SqlDB database from a file
+            let conn = Connection::open_with_flags(temp_file_path, flags)?;
+
+            let mut stmt = conn.prepare("SELECT COUNT(*) FROM device WHERE name = 'www.client.com'")?;
+            let count: i64 = stmt.query_row(params![], |row| row.get(0))?;
+
+            // Check if the inserted row is present
+            assert_eq!(count, 1);
+
+            let mut stmt = conn.prepare("SELECT COUNT(*) FROM manufactured")?;
+            let count: i64 = stmt.query_row(params![], |row| row.get(0))?;
+
+            // Check if the inserted row is present
+            assert_eq!(count, 1);
+
+            assert_eq!(result, false);
+            Ok(true)
+        }).unwrap();
+    }
+
+    #[test]
+    fn check_device_is_trusted() {
+        let path_to_sql_db = "./tests/ExistingDeviceTrusted.sqlite";
+        let idevid = read(format!("./tests/iDevID"))
+            .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
+            .unwrap();
+
+        // Use with_temporary_database to perform the operation and check the result
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            let result = check_device_trusted(idevid, temp_file_path).unwrap();
             assert_eq!(result, true);
             Ok(true)
         }).unwrap();
