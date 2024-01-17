@@ -1,5 +1,5 @@
 {
   "voltConfigPath": "../volt-config.json",
-  "sqliteDBPath": "/home/ash/Documents/nist_policy_engine/MyLocalDatabase.sqlite",
+  "sqliteDBPath": "../MyLocalDatabase.sqlite",
   "nistVcRestServerAddress": "http://localhost:3000"
 }
