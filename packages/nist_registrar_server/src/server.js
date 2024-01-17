@@ -204,7 +204,6 @@ function httpsPost({url, body, ...options}) {
           let manufacturerId = null;
           console.log(`manufacturer: ${manufacturer}`)
           const manufacturerRow = await dbGet("SELECT id from manufacturer where id = ? OR name = ?", [manufacturer, manufacturer])
-          console.log(manufacturerRow);
           if (!manufacturerRow) {
             console.log(`No manufacturer found for ID or name: ${manufacturer}`);
           } else {
