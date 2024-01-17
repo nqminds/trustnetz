@@ -595,14 +595,30 @@ sudo chmod +x local_revoke.sh
 ```sh
  sudo ./local_revoke.sh device.pem
 ```
-W
 
+When checking the CRL it should add the device SR to the Revoked Certificates:
 
+```sh 
+openssl crl -in ca_and_crl.pem -text -noout
+```
 
-
-
-
-
+```
+Certificate Revocation List (CRL):
+        Version 2 (0x1)
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C = GB, ST = Hampshire, L = basingstoke, O = nquiringminds ltd, OU = unit home, CN = home_ca, emailAddress = home_ca@nquiringminds.com
+        Last Update: Jan 17 14:06:41 2024 GMT
+        Next Update: Feb 16 14:06:41 2024 GMT
+        CRL extensions:
+            X509v3 CRL Number: 
+                3
+Revoked Certificates:
+    Serial Number: 6038A82CB21B3E5F3147517B3601D0E3A19522AF
+        Revocation Date: Jan 16 11:57:57 2024 GMT
+    Serial Number: 690C87AE80386DA41F90D47A53A5EBDD809563AB
+        Revocation Date: Jan 17 14:06:41 2024 GMT
+    Signature Algorithm: sha256WithRSAEncryption
+```
 
 
 Implementation based in part on methods discussed in [Transforming Your Raspberry Pi into a Secure Enterprise Wi-Fi Controller with 802.1x Authentication](https://myitrambles.com/transforming-your-raspberry-pi-into-a-secure-enterprise-wi-fi-controller-with-802-1x-authentication/)
