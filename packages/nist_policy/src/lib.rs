@@ -286,6 +286,127 @@ pub fn check_device_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool>
     }
 }
 
+pub fn check_device_vulnerable(idevid: &X509, path_to_sql_db: &str) -> Result<bool> {
+    // Create OpenFlags without SQLITE_OPEN_CREATE flag
+    let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_FULL_MUTEX;
+    
+    // Connect to SqlDB database from a file
+    let conn = Connection::open_with_flags(path_to_sql_db, flags)?;
+
+    // extract deviceId and manufacturer from idevid
+    let issuer_name = idevid.issuer_name();
+    let subject_name = idevid.subject_name();
+
+    // Convert the issuer name to a human-readable string
+    let issuer_name_str = issuer_name
+        .entries_by_nid(openssl::nid::Nid::COMMONNAME)
+        .next()
+        .map(|entry| entry.data().as_utf8().unwrap().to_string()) // Convert &str to String
+        .unwrap_or_else(|| "Unknown Issuer".to_string());
+    let subject_name_str = subject_name
+        .entries_by_nid(openssl::nid::Nid::COMMONNAME)
+        .next()
+        .map(|entry| entry.data().as_utf8().unwrap().to_string()) // Convert &str to String
+        .unwrap_or_else(|| "Unknown Issuer".to_string());
+
+    let manufacturer_name = issuer_name_str.to_owned();
+    let device_name = subject_name_str.to_owned();
+
+    // Find pledge's device entity in device table, if it doesn't exist, add device entity
+    let mut get_device_statement = conn.prepare("SELECT * FROM device WHERE device.name = ?")?;
+
+    let pledge_device: Value = match get_device_statement.query_row(params![device_name], |row| {
+        Ok(Device {
+            id: row.get(0)?,
+            name: row.get(1)?,
+            idevid: row.get(2)?,
+            created_at: row.get(3)?,
+        })
+    }) {
+       Ok(pledge) => {
+           println!("Device found in database: {:?}", pledge);
+           to_value(&pledge).unwrap()
+       }
+       Err(rusqlite::Error::QueryReturnedNoRows) => {
+           println!("No matching device found in database");
+
+           // Adding the device to the database
+           let now = Utc::now();
+           let datetime = DateTime::<Utc>::from(now);
+           let timestamp_str = datetime.format("%Y-%m-%dT%H:%M:%S.%3fZ").to_string();
+        
+           let uuid = Uuid::new_v4();
+           let pledge = Device {
+               id: uuid.to_string(),
+               name: device_name.to_owned(),
+               idevid: "your_idevid".to_owned(),
+               created_at: timestamp_str,
+           };
+
+           conn.execute(
+               "INSERT INTO device (id, name, idevid, created_at) VALUES (?, ?, ?, ?)",
+               params![pledge.id, pledge.name, pledge.idevid, pledge.created_at],
+           )?;
+
+           println!("Added pledge device to database, {:?}", pledge);
+           to_value(&pledge).unwrap()
+       }
+       Err(err) => {
+           eprintln!("Error querying database: {:?}", err);
+           Value::Null
+       }
+   };
+
+   println!("Pledge device: {}", serde_json::to_string_pretty(&pledge_device).unwrap());
+   let device_id = pledge_device["id"].to_string().trim_matches('"').to_owned();
+
+
+    // Query to check if the device type is safe
+    let is_device_type_safe: Result<Option<bool>> = conn.query_row(
+        "
+        SELECT CASE
+                WHEN dtv.critical_count = 0 AND dtv.high_count = 0 
+                THEN 1
+                ELSE 0
+            END AS is_device_type_safe
+        FROM device d
+        LEFT JOIN is_of_type iot ON d.id = iot.device_id
+        LEFT JOIN device_type dt ON iot.device_type_id = dt.id
+        LEFT JOIN (
+            SELECT 
+                dt.id AS device_type_id, 
+                COUNT(CASE WHEN v.severity = 'Critical' THEN 1 ELSE NULL END) AS critical_count,
+                COUNT(CASE WHEN v.severity = 'High' THEN 1 ELSE NULL END) AS high_count
+            FROM device_type dt
+            LEFT JOIN has_vulnerability hv ON dt.id = hv.device_type_id
+            LEFT JOIN vulnerability v ON hv.vulnerability_id = v.id
+            GROUP BY dt.id
+        ) dtv ON dt.id = dtv.device_type_id
+        WHERE d.id = ?;
+        ",
+        params![device_id],
+        |row| row.get(0),
+    );
+
+    match is_device_type_safe {
+        Ok(Some(is_safe)) => {
+            println!("is_device_type_vulnerable: {:?}", !is_safe);
+            Ok(!is_safe)
+        }
+        Ok(None) => {
+            println!("No rows returned for is_device_type_safe");
+            Ok(true)
+        }
+        Err(rusqlite::Error::QueryReturnedNoRows) => {
+            println!("No rows returned for is_device_type_safe");
+            Ok(true)
+        }
+        Err(err) => {
+            eprintln!("Error querying database for is_device_type_safe: {:?}", err);
+            Err(err)
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -522,4 +643,48 @@ mod tests {
         }).unwrap();
     }
 
+    #[test]
+    fn check_device_with_no_type_is_vulnerable() {
+        let path_to_sql_db = "./tests/ExistingDeviceTrusted.sqlite";
+        let idevid = read(format!("./tests/iDevID"))
+            .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
+            .unwrap();
+
+        // Use with_temporary_database to perform the operation and check the result
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            let result = check_device_vulnerable(idevid, temp_file_path).unwrap();
+            assert_eq!(result, true);
+            Ok(true)
+        }).unwrap();
+    }
+
+    #[test]
+    fn check_device_with_type_with_no_vulnerabilities_is_not_vulnerable() {
+        let path_to_sql_db = "./tests/ExistingTrustedDeviceWithType.sqlite";
+        let idevid = read(format!("./tests/iDevID"))
+            .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
+            .unwrap();
+
+        // Use with_temporary_database to perform the operation and check the result
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            let result = check_device_vulnerable(idevid, temp_file_path).unwrap();
+            assert_eq!(result, false);
+            Ok(true)
+        }).unwrap();
+    }
+
+    #[test]
+    fn check_device_with_type_with_vulnerabilities_is_vulnerable() {
+        let path_to_sql_db = "./tests/ExistingTrustedDeviceWithVulnerableType.sqlite";
+        let idevid = read(format!("./tests/iDevID"))
+            .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
+            .unwrap();
+
+        // Use with_temporary_database to perform the operation and check the result
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            let result = check_device_vulnerable(idevid, temp_file_path).unwrap();
+            assert_eq!(result, true);
+            Ok(true)
+        }).unwrap();
+    }
 }
