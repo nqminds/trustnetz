@@ -2,6 +2,8 @@
 
 CERTS_PATH="/opt/demo-server/certs"
 WLAN="wlan0"
+RNAME="_registrar._tcp"
+DOMAIN="local"
 
 echo "Starting onboarding process."
 
@@ -24,7 +26,7 @@ sleep 2
 
 echo "Finding registrar..."
 
-srch=`avahi-browse -d local -r _registrar._tcp -t -p | grep -m 1 -E "=;$WLAN;IPv4;.*;_registrar._tcp;local;.+;.+;.+;"`
+srch=`avahi-browse -d $DOMAIN -r $RNAME -t -p | grep -m 1 -E "=;$WLAN;IPv4;.+;$RNAME;$DOMAIN;.+;[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3};[0-9]{1,5};"`
 
 # Save the current value of IFS
 oldIFS=$IFS
@@ -33,14 +35,14 @@ array=($srch)
 IFS=$oldIFS
 
 if [ ${#array[@]} -lt 2 ]; then
-	echo "Couldn't find registrar"
+	echo "Couldn't find registrar address!"
 	exit 1
 fi
 
 IP=${array[-2]}
 PORT=${array[-1]}
 
-echo "Found registrar on IP=$IP PORT=$PORT."
+echo "Found registrar at ip=$IP and port=$PORT."
 
 sleep 2
 
