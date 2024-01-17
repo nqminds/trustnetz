@@ -4,6 +4,7 @@ import './MyComponent.css';
 
 const MyComponent = () => {
   const [listItems, setListItems] = useState([]);
+  const [deviceType, setDeviceTypeState] = useState('');
 
   const handleButtonClick = (value) => {
     setListItems([...listItems, value]);
@@ -96,13 +97,62 @@ const MyComponent = () => {
 		}
   }
 
+  const trustDevice = async () => {
+		try {
+      const claim = {
+        "user": "Nick",
+        "device": "www.client.com",
+        "trust": true,
+      };
+      await signAndSubmitClaim(claim, "device_trust");
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+  const distrustDevice = async () => {
+    try {
+      const claim = {
+        "user": "Nick",
+        "device": "www.client.com",
+        "trust": false,
+      };
+      await signAndSubmitClaim(claim, "device_trust");
+		} catch (err) {
+			console.log(err);
+		}
+  }
+
+  const setDeviceType = async () => {
+    try {
+      const claim = {
+        "device": "www.client.com",
+        "deviceType": deviceType,
+        "trust": false,
+      };
+      await signAndSubmitClaim(claim, "device_type_binding");
+		} catch (err) {
+			console.log(err);
+		}
+  }
+
   return (
     <div className="container">
       {/* Left side with buttons */}
       <div className="button-container">
         <button onClick={trustManufacturer}>Trust Manufacturer</button>
         <button onClick={distrustManufacturer}>Distrust Manufacturer</button>
-        {/* Add more buttons as needed */}
+        <button onClick={trustDevice}>Trust Device</button>
+        <button onClick={distrustDevice}>Distrust Device</button>
+        <div className="button-input-container">
+        <input
+          type="text"
+          value={deviceType}
+          onChange={(e) => setDeviceTypeState(e.target.value)}
+          placeholder="Enter Device Type..."
+        />
+        <button onClick={setDeviceType}>Set Device Type</button>
+        </div>
       </div>
 
       {/* Vertical line */}
