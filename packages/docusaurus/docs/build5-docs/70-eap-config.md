@@ -526,7 +526,7 @@ nmcli con add type wifi ifname "$INTERFACE" con-name "$SSID" ssid "$SSID" \
 echo "Connecting to $SSID..."
 nmcli con up id "$SSID"
 
-# Wait for a brief moment to allow the connection to establish
+# Wait for a brief moment to allow the connection to establish 
 sleep 5
 
 # Check the connection status
