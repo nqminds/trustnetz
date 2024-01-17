@@ -237,7 +237,7 @@ sudo systemctl enable hostapd
 Start hostapd
 
 ```sh
-sudo system ctl start hostapd
+sudo systemctl start hostapd
 sudo systemctl status hostapd
 ```
 
@@ -321,6 +321,7 @@ sudo chmod 600 /path/to/client.key
 sudo chown user:user /path/to/client.pem
 sudo chmod 600 /path/to/client.pem
 ```
+
 ### Install ca.pem certificate to the trusted list
 
 Add the certificate to 
@@ -491,6 +492,50 @@ sudo systemctl restart hostapd
 ```sh
 # Add the necessary SSID at the end
 sudo nmcli con delete id "TEST_EAP-TLS"
+```
+
+### Device script for onboarding the network:
+
+```shell=
+#!/bin/bash
+
+# Network configuration
+SSID="TEST_EAP-TLS"
+INTERFACE="wlan0"
+
+# Certificate and key paths
+CA_CERT="/etc/ssl/certs/ca.pem"
+CLIENT_CERT="/path/to/client.pem"
+CLIENT_KEY="/path/to/client.key"
+
+# User key password
+USER_KEY_PASSWORD="12345"
+
+# Create a new Wi-Fi connection with EAP-TLS authentication
+echo "Configuring $SSID connection..."
+nmcli con add type wifi ifname "$INTERFACE" con-name "$SSID" ssid "$SSID" \
+    wifi-sec.key-mgmt "wpa-eap" \
+    802-1x.eap "tls" \
+    802-1x.identity "ionut" \
+    802-1x.ca-cert "$CA_CERT" \
+    802-1x.client-cert "$CLIENT_CERT" \
+    802-1x.private-key "$CLIENT_KEY" \
+    802-1x.private-key-password "$USER_KEY_PASSWORD"
+
+# Activate the connection
+echo "Connecting to $SSID..."
+nmcli con up id "$SSID"
+
+# Wait for a brief moment to allow the connection to establish 
+sleep 5
+
+# Check the connection status
+if nmcli -t -f GENERAL.STATE con show "$SSID" | grep -q "activated"; then
+    echo "Connected to $SSID successfully."
+else
+    echo "Connection to $SSID failed."
+fi
+
 ```
 
 Implementation based in part on methods discussed in [Transforming Your Raspberry Pi into a Secure Enterprise Wi-Fi Controller with 802.1x Authentication](https://myitrambles.com/transforming-your-raspberry-pi-into-a-secure-enterprise-wi-fi-controller-with-802-1x-authentication/)
