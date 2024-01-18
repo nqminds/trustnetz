@@ -10,6 +10,7 @@
   flex-direction: column;
   align-items: flex-start;
   margin-right: 20px;
+  max-width: 20%;
 }
 
 .button-input-container {
@@ -42,6 +43,14 @@ button:hover {
 
 .list-container {
   max-width: 50%;
+}
+
+.info-container {
+  max-width: 30%;
+}
+
+.table-section {
+  margin-bottom: 40px; /* Adjust the margin as needed for spacing between tables */
 }
 
 ul {
