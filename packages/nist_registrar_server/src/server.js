@@ -13,7 +13,7 @@ import intitialise_demo_database from "./initialise_demo_database.js";
 import handle_device_trust from "./handle_device_trust.js"
 import handle_manufacturer_trust from "./handle_manufacturer_trust.js";
 import handle_device_type_binding from "./handle_device_type_binding.js";
-import handle_device_type_vulnerable from "./handle_device_type_vulnerability_binding.js";
+import handle_device_type_vulnerable from "./handle_device_type_vulnerable.js";
 
 function httpsPost({url, body, ...options}) {
     return new Promise((resolve,reject) => {
@@ -174,12 +174,11 @@ function httpsPost({url, body, ...options}) {
         case 'device_type_binding':
           handlerResponse = await handle_device_type_binding(claimData, dbGet, dbRun);
           break;
-        case 'device_type_vulnerability_binding':
-          handlerResponse = handlerResponse;
+        case 'device_type_vulnerable':
+          handlerResponse = await handle_device_type_vulnerable(claimData, dbGet, dbRun);
           break;
-          // await handle_device_type_vulnerability_binding(claimData, res, dbGet, dbAll, dbRun);
       }
-      console.log("handlerREsponse: ", handlerResponse);
+      console.log("handlerResponse: ", handlerResponse);
       res.send(handlerResponse);
     }
     catch (err) {

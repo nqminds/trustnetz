@@ -48,6 +48,8 @@ export default function intitialise_demo_database(sqliteDBPath) {
     const nicksIdForRights = nickRowForRights.id;
 
     db.run("INSERT INTO gives_purchase_rights (recipient_id, authoriser_id, created_at) VALUES (?, ?, ?)", [ashsId, nicksIdForRights, new Date().toISOString()]);
+
+    db.run("INSERT INTO vulnerability () VALUES (?, ?, ?, ?, ?)", ['9dce9345-e306-4786-b7f0-536827351d21', 'Security Flaw',	'Critical',	'https://example.com', '2024-01-16 14:13:55.849160']);
     return db
   });
 }

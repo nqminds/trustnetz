@@ -136,6 +136,30 @@ const MyComponent = () => {
 		}
   }
 
+  const setDeviceTypeVulnerable = async () => {
+    try {
+      const claim = {
+        "deviceType": deviceType,
+        "vulnerable": true,
+      };
+      await signAndSubmitClaim(claim, "device_type_vulnerable");
+		} catch (err) {
+			console.log(err);
+		}
+  }
+
+  const setDeviceTypeNotVulnerable = async () => {
+    try {
+      const claim = {
+        "deviceType": deviceType,
+        "vulnerable": false,
+      };
+      await signAndSubmitClaim(claim, "device_type_vulnerable");
+		} catch (err) {
+			console.log(err);
+		}
+  }
+
   return (
     <div className="container">
       {/* Left side with buttons */}
@@ -153,6 +177,8 @@ const MyComponent = () => {
         />
         <button onClick={setDeviceType}>Set Device Type</button>
         </div>
+        <button onClick={setDeviceTypeVulnerable}>Set Device Type Vulnerable</button>
+        <button onClick={setDeviceTypeNotVulnerable}>Set Device Type Not Vulnerable</button>
       </div>
 
       {/* Vertical line */}
