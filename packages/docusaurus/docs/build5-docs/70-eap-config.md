@@ -46,7 +46,7 @@ sudo dnsmasq -C /etc/dnsmasq.conf
 ### Configure the wlan interface which will be used to interact with the wifi clients
     
 ```sh
-sudo nano /usr/local/bin/wlan0staticip.sh
+sudo nano /usr/local/bin/wlan1staticip.sh
 ```
 add
 
@@ -516,7 +516,7 @@ echo "Configuring $SSID connection..."
 nmcli con add type wifi ifname "$INTERFACE" con-name "$SSID" ssid "$SSID" \
     wifi-sec.key-mgmt "wpa-eap" \
     802-1x.eap "tls" \
-    802-1x.identity "ionut" \
+    802-1x.identity "identity name" \
     802-1x.ca-cert "$CA_CERT" \
     802-1x.client-cert "$CLIENT_CERT" \
     802-1x.private-key "$CLIENT_KEY" \
@@ -537,5 +537,88 @@ else
 fi
 
 ```
+
+## Local Revoke Script
+
+### Create new bash script
+
+```sh
+sudo nano local_revoke.sh
+```
+
+Add
+
+```shell=
+#!/bin/bash
+
+# Check if a certificate file path is provided
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 /path/to/client_cert.pem"
+    exit 1
+fi
+
+CLIENT_CERT="$1"
+CA_CONFIG="/etc/hostapd/CA/ca.conf"
+CA_CERT="/etc/hostapd/CA/ca.pem"
+CRL="/etc/hostapd/CA/crl.pem"
+COMBINED_CA_CRL="/etc/hostapd/CA/ca_and_crl.pem"
+
+# Revoke the client certificate
+sudo openssl ca -revoke "$CLIENT_CERT" -config "$CA_CONFIG"
+
+# Update the CRL
+sudo openssl ca -gencrl -out "$CRL" -config "$CA_CONFIG"
+
+# Concatenate CA certificate and CRL
+sudo sh -c "cat $CA_CERT $CRL > $COMBINED_CA_CRL"
+
+# Verify if the certificate has been revoked
+if sudo openssl verify -extended_crl -verbose -CAfile "$COMBINED_CA_CRL" -crl_check "$CLIENT_CERT"; then
+    echo "Certificate revocation verification failed. Not restarting hostapd."
+else
+    echo "Certificate has been revoked. Restarting hostapd..."
+    # Restart hostapd
+    sudo systemctl restart hostapd
+fi
+
+```
+
+Make script executable:
+
+```sh
+sudo chmod +x local_revoke.sh
+```
+
+
+### Add device LDevID to the CRL list
+
+```sh
+ sudo ./local_revoke.sh device.pem
+```
+
+When checking the CRL it should add the device SR to the Revoked Certificates:
+
+```sh 
+openssl crl -in ca_and_crl.pem -text -noout
+```
+
+```
+Certificate Revocation List (CRL):
+        Version 2 (0x1)
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C = GB, ST = Hampshire, L = basingstoke, O = nquiringminds ltd, OU = unit home, CN = home_ca, emailAddress = home_ca@nquiringminds.com
+        Last Update: Jan 17 14:06:41 2024 GMT
+        Next Update: Feb 16 14:06:41 2024 GMT
+        CRL extensions:
+            X509v3 CRL Number: 
+                3
+Revoked Certificates:
+    Serial Number: 6038A82CB21B3E5F3147517B3601D0E3A19522AF
+        Revocation Date: Jan 16 11:57:57 2024 GMT
+    Serial Number: 690C87AE80386DA41F90D47A53A5EBDD809563AB
+        Revocation Date: Jan 17 14:06:41 2024 GMT
+    Signature Algorithm: sha256WithRSAEncryption
+```
+
 
 Implementation based in part on methods discussed in [Transforming Your Raspberry Pi into a Secure Enterprise Wi-Fi Controller with 802.1x Authentication](https://myitrambles.com/transforming-your-raspberry-pi-into-a-secure-enterprise-wi-fi-controller-with-802-1x-authentication/)
