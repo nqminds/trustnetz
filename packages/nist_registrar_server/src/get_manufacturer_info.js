@@ -14,7 +14,7 @@ export default async function getManufacturerInfo(manufacturer, dbGet) {
     trusted = true;
     const userId = trustRow.user_id;
     const user = await dbGet("SELECT * from user WHERE id = ?", [userId]);
-    trustingUser = user.name;
+    trustingUser = user.username;
   }
   const manufacturerData = {name: manufacturerRow.name, trusted, trustingUser};
   return manufacturerData;
