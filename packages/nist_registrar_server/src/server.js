@@ -13,7 +13,7 @@ import intitialise_demo_database from "./initialise_demo_database.js";
 import handle_device_trust from "./handle_device_trust.js"
 import handle_manufacturer_trust from "./handle_manufacturer_trust.js";
 import handle_device_type_binding from "./handle_device_type_binding.js";
-import handle_device_type_vulnerable from "./handle_device_type_vulnerability_binding.js";
+import handle_device_type_vulnerable from "./handle_device_type_vulnerable.js";
 
 function httpsPost({url, body, ...options}) {
     return new Promise((resolve,reject) => {
@@ -158,21 +158,28 @@ function httpsPost({url, body, ...options}) {
       body: vcData,
     })
     try {
-      console.log("trying to parse json...")
       const claimData = JSON.parse(response.toString("utf-8"));
+      let handlerResponse = `Method to handle ${schemaName} not yet implemented`;
+      console.log("recieved request for: ", schemaName);
       switch (schemaName) {
         case 'manufacturer_trust':
-          await handle_manufacturer_trust(claimData, res, dbGet, dbRun);
+          handlerResponse = await handle_manufacturer_trust(claimData, dbGet, dbRun);
+          break;
         case 'device_manufacturer_binding':
-          res.send(`Method to handle ${schemaName} not yet implemented`);
+          handlerResponse = handlerResponse;
+          break;
         case 'device_trust':
-          await handle_device_trust(claimData, res, dbGet, dbRun);
+          handlerResponse = await handle_device_trust(claimData, dbGet, dbRun);
+          break;
         case 'device_type_binding':
-          await handle_device_type_binding(claimData, res, dbGet, dbRun);
-        case 'device_type_vulnerability_binding':
-          res.send(`Method to handle ${schemaName} not yet implemented`);
-          // await handle_device_type_vulnerability_binding(claimData, res, dbGet, dbAll, dbRun);
+          handlerResponse = await handle_device_type_binding(claimData, dbGet, dbRun);
+          break;
+        case 'device_type_vulnerable':
+          handlerResponse = await handle_device_type_vulnerable(claimData, dbGet, dbRun);
+          break;
       }
+      console.log("handlerResponse: ", handlerResponse);
+      res.send(handlerResponse);
     }
     catch (err) {
       console.log(`Encountered Error: ${err}`)
