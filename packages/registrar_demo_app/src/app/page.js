@@ -34,9 +34,7 @@ const MyComponent = () => {
     }
   };
 
-  const fetchDeviceData = async (device) => {
-    const deviceToGetInfoFor = device ? device : selectedDevice;
-    console.log(`deviceToGetInfoFor: ${deviceToGetInfoFor}`)
+  const fetchDeviceData = async (deviceToGetInfoFor) => {
     try {
       if (deviceToGetInfoFor) {
         const selectedDeviceUrlEncoded = encodeURIComponent(deviceToGetInfoFor);
@@ -45,13 +43,11 @@ const MyComponent = () => {
         setSelectedDeviceInfo(deviceInfo);
       }
     } catch (error) {
-      console.error('Error fetching VC Log:', error);
+      console.error('Error fetching device data:', error);
     }
   }
 
-  const fetchDeviceTypeData = async (deviceType) => {
-    const deviceTypeToGetInfoFor = deviceType ? deviceType : selectedDeviceType;
-    console.log(`deviceTypeToGetInfoFor: ${deviceTypeToGetInfoFor}`)
+  const fetchDeviceTypeData = async (deviceTypeToGetInfoFor) => {
     try {
       if (deviceTypeToGetInfoFor) {
         const selecteddeviceTypeUrlEncoded = encodeURIComponent(deviceTypeToGetInfoFor);
@@ -60,13 +56,11 @@ const MyComponent = () => {
         setSelectedDeviceTypeInfo(deviceTypeInfo);
       }
     } catch (error) {
-      console.error('Error fetching VC Log:', error);
+      console.error('Error fetching device type data:', error);
     }
   }
 
-  const fetchManufacturerData = async (manufacturer) => {
-    const manufacturerToGetInfoFor = manufacturer ? manufacturer : selectedManufacturer;
-    console.log(`manufacturerToGetInfoFor: ${manufacturerToGetInfoFor}`)
+  const fetchManufacturerData = async (manufacturerToGetInfoFor) => {
     try {
       if (manufacturerToGetInfoFor) {
         const selectedManufacturerUrlEncoded = encodeURIComponent(manufacturerToGetInfoFor);
@@ -75,7 +69,7 @@ const MyComponent = () => {
         setSelectedManufacturerInfo(manufacturerInfo);
       }
     } catch (error) {
-      console.error('Error fetching VC Log:', error);
+      console.error('Error fetching manufacturer data:', error);
     }
   }
 
@@ -108,6 +102,29 @@ const MyComponent = () => {
 
     fetchData();
   }, []); // Empty dependency array ensures the effect runs only once when the component mounts
+
+  useEffect(() => {
+    // Function to be executed
+    const fetchData = async () => {
+      // Use try-catch to handle errors in async functions
+      try {
+        await fetchDeviceData(selectedDevice);
+        await fetchDeviceTypeData(selectedDeviceType);
+        await fetchManufacturerData(selectedManufacturer);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Run the function initially
+    fetchData();
+
+    // Set up an interval to run the function every 5 seconds
+    const intervalId = setInterval(fetchData, 1000);
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [selectedDevice, selectedDeviceType, selectedManufacturer]); // Empty dependency array ensures the effect runs only once on mount
 
   const handleButtonClick = (value) => {
     setVcLog([...vcLog, value]);

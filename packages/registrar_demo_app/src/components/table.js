@@ -9,16 +9,10 @@ const Table = ({ data }) => {
 
   return (
     <table>
-      <thead>
-        <tr>
-          <th>Key</th>
-          <th>Value</th>
-        </tr>
-      </thead>
       <tbody>
         {headers.map((header) => (
           <tr key={header}>
-            <td>{header}</td>
+            <th>{header}</th>
             <td>{renderValue(data[header])}</td>
           </tr>
         ))}
