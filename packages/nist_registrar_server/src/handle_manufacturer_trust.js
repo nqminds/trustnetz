@@ -1,4 +1,4 @@
-export default async function handle_manufacturer_trust(claimData, dbGet, dbRun) {
+export default async function handleManufacturerTrust(claimData, dbGet, dbRun) {
   const {user, manufacturer, trust, issuanceDate} = claimData;
   let manufacturerId = null;
   console.log(`manufacturer: ${manufacturer}`)

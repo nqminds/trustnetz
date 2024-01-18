@@ -1,4 +1,4 @@
-export default async function handle_device_trust(claimData, dbGet, dbRun) {
+export default async function handleDeviceTrust(claimData, dbGet, dbRun) {
   const {user, device, trust, issuanceDate} = claimData;
   let deviceId = null;
   console.log(`device: ${device}`)

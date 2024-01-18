@@ -9,12 +9,15 @@ import http from 'http';
 import sqlite3 from "sqlite3";
 import util from 'util';
 
-import intitialise_demo_database from "./initialise_demo_database.js";
-import handle_device_trust from "./handle_device_trust.js"
-import handle_manufacturer_trust from "./handle_manufacturer_trust.js";
-import handle_device_type_binding from "./handle_device_type_binding.js";
-import handle_device_type_vulnerable from "./handle_device_type_vulnerable.js";
+import intitialiseDemoDatabase from "./initialise_demo_database.js";
+import handleDeviceTrust from "./handle_device_trust.js"
+import handleManufacturerTrust from "./handle_manufacturer_trust.js";
+import handleDeviceTypeBinding from "./handle_device_type_binding.js";
+import handleDeviceTypeVulnerable from "./handle_device_type_vulnerable.js";
 import storeClaimAndResponse from "./store_claim_and_response.js";
+import getManufacturerInfo from "./get_manufacturer_info.js";
+import getDeviceTypeInfo from "./get_device_type_info.js";
+import getDeviceInfo from "./get_device_info.js";
 
 function httpsPost({url, body, ...options}) {
     return new Promise((resolve,reject) => {
@@ -80,7 +83,7 @@ function httpsPost({url, body, ...options}) {
     try {
       db = new sqlite3.Database(sqliteDBPath, sqlite3.OPEN_READWRITE, (err) => {
         if (err) {
-          db = intitialise_demo_database(sqliteDBPath);
+          db = intitialiseDemoDatabase(sqliteDBPath);
           resolve(db)
         } else {
           console.log('Connected to the database');
@@ -177,19 +180,19 @@ function httpsPost({url, body, ...options}) {
       console.log("recieved request for: ", schemaName);
       switch (schemaName) {
         case 'manufacturer_trust':
-          handlerResponse = await handle_manufacturer_trust(claimData, dbGet, dbRun);
+          handlerResponse = await handleManufacturerTrust(claimData, dbGet, dbRun);
           break;
         case 'device_manufacturer_binding':
           handlerResponse = handlerResponse;
           break;
         case 'device_trust':
-          handlerResponse = await handle_device_trust(claimData, dbGet, dbRun);
+          handlerResponse = await handleDeviceTrust(claimData, dbGet, dbRun);
           break;
         case 'device_type_binding':
-          handlerResponse = await handle_device_type_binding(claimData, dbGet, dbRun);
+          handlerResponse = await handleDeviceTypeBinding(claimData, dbGet, dbRun);
           break;
         case 'device_type_vulnerable':
-          handlerResponse = await handle_device_type_vulnerable(claimData, dbGet, dbRun);
+          handlerResponse = await handleDeviceTypeVulnerable(claimData, dbGet, dbRun);
           break;
       }
       console.log("handlerResponse: ", handlerResponse);
@@ -244,6 +247,45 @@ function httpsPost({url, body, ...options}) {
         logs = [];
       }
       res.send(logs);
+    }
+    catch (err) {
+      console.log(`Encountered Error: ${err}`)
+      res.send(`Encountered Error: ${err}`);
+    }
+  }));
+
+  router.get("/info/manufacturer/:manufacturer", asyncHandler(async (req, res) => {
+    try {
+      const manufacturer = decodeURIComponent(req.params.manufacturer);
+      const response = await getManufacturerInfo(manufacturer, dbGet);
+      console.log(response);
+      res.send(response);
+    }
+    catch (err) {
+      console.log(`Encountered Error: ${err}`)
+      res.send(`Encountered Error: ${err}`);
+    }
+  }));
+
+  router.get("/info/device-type/:deviceType", asyncHandler(async (req, res) => {
+    try {
+      const deviceType = decodeURIComponent(req.params.deviceType);
+      const response = await getDeviceTypeInfo(deviceType, dbGet);
+      console.log(response);
+      res.send(response);
+    }
+    catch (err) {
+      console.log(`Encountered Error: ${err}`)
+      res.send(`Encountered Error: ${err}`);
+    }
+  }));
+
+  router.get("/info/device/:device", asyncHandler(async (req, res) => {
+    try {
+      const device = decodeURIComponent(req.params.device);
+      const response = await getDeviceInfo(device, dbGet);
+      console.log(response);
+      res.send(response);
     }
     catch (err) {
       console.log(`Encountered Error: ${err}`)

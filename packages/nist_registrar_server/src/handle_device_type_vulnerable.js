@@ -1,6 +1,6 @@
 const demoVulnerabilityId = '9dce9345-e306-4786-b7f0-536827351d21';
 
-export default async function handle_device_type_vulnerable(claimData, dbGet, dbRun) {
+export default async function handleDeviceTypeVulnerable(claimData, dbGet, dbRun) {
   const {deviceType, vulnerable, issuanceDate} = claimData;
   let deviceTypeId = null;
   const deviceTypeRow = await dbGet("SELECT id from device_type where id = ? OR name = ?", [deviceType, deviceType])

@@ -1,4 +1,4 @@
-export default async function handle_device_type_binding(claimData, dbGet, dbRun) {
+export default async function handleDeviceTypeBinding(claimData, dbGet, dbRun) {
   const {device, deviceType, issuanceDate} = claimData;device
   let deviceId = null;
   console.log(`device: ${device}`)
@@ -6,7 +6,6 @@ export default async function handle_device_type_binding(claimData, dbGet, dbRun
   if (!deviceRow) {
     console.log(`No device found for ID or name: ${device}`);
     return `No device with id or name ${device}`;
-    return
   } else {
     deviceId = deviceRow.id;
   }
@@ -15,7 +14,6 @@ export default async function handle_device_type_binding(claimData, dbGet, dbRun
   if (!deviceTypeRow) {
     console.log(`No device type found for ID or name: ${deviceType}`);
     return `No device type with id or name ${deviceType}`;
-    return
   } else {
     deviceTypeId = deviceTypeRow.id;
   }
