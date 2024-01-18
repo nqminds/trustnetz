@@ -8,7 +8,7 @@ const demoVulnerabilityId = '9dce9345-e306-4786-b7f0-536827351d21';
 const schemaPath = 'schema.sql';
 const schema = fs.readFileSync(schemaPath, 'utf8');
 
-export default function intitialise_demo_database(sqliteDBPath) {
+export default function intitialiseDemoDatabase(sqliteDBPath) {
   try {
     console.log("Database file missing, initialising database file with schema");
     const db = new sqlite3.Database(sqliteDBPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
