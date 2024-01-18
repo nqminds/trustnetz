@@ -49,7 +49,11 @@ export default function intitialise_demo_database(sqliteDBPath) {
 
     db.run("INSERT INTO gives_purchase_rights (recipient_id, authoriser_id, created_at) VALUES (?, ?, ?)", [ashsId, nicksIdForRights, new Date().toISOString()]);
 
-    db.run("INSERT INTO vulnerability () VALUES (?, ?, ?, ?, ?)", ['9dce9345-e306-4786-b7f0-536827351d21', 'Security Flaw',	'Critical',	'https://example.com', '2024-01-16 14:13:55.849160']);
+    db.run("INSERT INTO device_type (id, name, created_at) VALUES (?, ?, ?)", ['ac115a2d-4c18-4de4-9b59-4861ddb18b4e', 'Raspberry Pi', '2024-01-18 09:18:55.849129']);
+
+    db.run("INSERT INTO device_type (id, name, created_at) VALUES (?, ?, ?)", ['465df82c-d250-49c1-be27-95c8e4759fc2', 'Smart Speaker', '2024-01-16 14:13:55.849129']);
+
+    db.run("INSERT INTO vulnerability (id, name, severity, url, created_at) VALUES (?, ?, ?, ?, ?)", [demoVulnerabilityId, 'Security Flaw',	'Critical',	'https://example.com', '2024-01-16 14:13:55.849160']);
     return db
   });
 }

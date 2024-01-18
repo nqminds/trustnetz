@@ -4,7 +4,7 @@ import './MyComponent.css';
 
 const MyComponent = () => {
   const [listItems, setListItems] = useState([]);
-  const [deviceType, setDeviceTypeState] = useState('');
+  const [deviceType, setDeviceTypeState] = useState('Raspberry Pi');
 
   const handleButtonClick = (value) => {
     setListItems([...listItems, value]);
