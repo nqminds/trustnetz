@@ -2,7 +2,7 @@ export default async function handle_manufacturer_trust(claimData, dbGet, dbRun)
   const {user, manufacturer, trust, issuanceDate} = claimData;
   let manufacturerId = null;
   console.log(`manufacturer: ${manufacturer}`)
-  const manufacturerRow = await dbGet("SELECT id from manufacturer where id = ? OR name = ?", [manufacturer, manufacturer])
+  const manufacturerRow = await dbGet("SELECT id from manufacturer where id = ? OR name = ?", [manufacturer, manufacturer]);
   if (!manufacturerRow) {
     console.log(`No manufacturer found for ID or name: ${manufacturer}`);
     return `No manufacturer with id or name ${manufacturer}`;

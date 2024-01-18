@@ -72,6 +72,25 @@ function httpsPost({url, body, ...options}) {
      Promise.resolve(asyncHandler(req, res)).catch((error) => next(error));
    }
  }
+
+ function connectToDatabase(sqliteDBPath) {
+  return new Promise((resolve, reject) => {
+    let db = null;
+    try {
+      db = new sqlite3.Database(sqliteDBPath, sqlite3.OPEN_READWRITE, (err) => {
+        if (err) {
+          db = intitialise_demo_database(sqliteDBPath);
+          resolve(db)
+        } else {
+          console.log('Connected to the database');
+          resolve(db)
+        }
+      });
+    } catch (err) {
+      reject(err);
+    }
+  })
+ }
  
  /**
   * @typedef {object} ServerConfig - Config for NIST VC REST server.
@@ -105,13 +124,7 @@ function httpsPost({url, body, ...options}) {
     const sqliteDBPath = fileURLToPath(new URL(config.sqliteDBPath, import.meta.url))
     try {
       // Open a database connection
-      db = new sqlite3.Database(sqliteDBPath, sqlite3.OPEN_READWRITE, (err) => {
-        if (err) {
-          db = intitialise_demo_database(sqliteDBPath);
-        } else {
-          console.log('Connected to the database');
-        }
-      });
+      db = await connectToDatabase(sqliteDBPath);
       dbGet = util.promisify(db.get).bind(db);
       dbAll = util.promisify(db.all).bind(db);
       dbRun = util.promisify(db.run).bind(db);
