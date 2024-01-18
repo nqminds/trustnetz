@@ -1,13 +1,63 @@
 'use client';
-import React, { useState } from 'react';
+import React, {useState, useEffect} from 'react';
 import './MyComponent.css';
 
 const MyComponent = () => {
-  const [listItems, setListItems] = useState([]);
+  const [vcLog, setVcLog] = useState([]);
   const [deviceType, setDeviceTypeState] = useState('Raspberry Pi');
+  const [deviceList, setDeviceList] = useState([]);
+  const [deviceTypeList, setDeviceTypeList] = useState([]);
+  const [manufacturerList, setManufacturerList] = useState([]);
+
+  const [selectedDevice, setSelectedDevice] = useState('');
+  const [selectedManufacturer, setSelectedManufacturer] = useState('');
+  const [selectedDeviceType, setSelectedDeviceType] = useState('');
+
+  console.log(deviceList, deviceTypeList, manufacturerList);
+
+  const fetchVcLog = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/vc-logs');
+      const vcLog = await response.json();
+      console.log(vcLog);
+      setVcLog(vcLog.map(({log}) => log));
+    } catch (error) {
+      console.error('Error fetching VC Log:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch initial inputValue from an API route when the component mounts
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/devices');
+        const devices = await response.json();
+        setDeviceList(devices);
+      } catch (error) {
+        console.error('Error fetching device list:', error);
+      }
+      try {
+        const response = await fetch('http://localhost:3001/manufacturers');
+        const manufacturers = await response.json();
+        setManufacturerList(manufacturers);
+      } catch (error) {
+        console.error('Error fetching manufacturer list:', error);
+      }
+      try {
+        const response = await fetch('http://localhost:3001/device-types');
+        const deviceTypes = await response.json();
+        setDeviceTypeList(deviceTypes);
+      } catch (error) {
+        console.error('Error fetching deviceType list:', error);
+      }
+      await fetchVcLog();
+    };
+
+    fetchData();
+  }, []); // Empty dependency array ensures the effect runs only once when the component mounts
 
   const handleButtonClick = (value) => {
-    setListItems([...listItems, value]);
+    setVcLog([...vcLog, value]);
   };
 
   const signClaim = async (body, schemaName) => {
@@ -75,7 +125,7 @@ const MyComponent = () => {
 		try {
       const claim = {
         "user": "Nick",
-        "manufacturer": "www.manufacturer.com",
+        "manufacturer": selectedManufacturer,
         "trust": true,
       };
       await signAndSubmitClaim(claim, "manufacturer_trust");
@@ -88,7 +138,7 @@ const MyComponent = () => {
     try {
       const claim = {
         "user": "Nick",
-        "manufacturer": "www.manufacturer.com",
+        "manufacturer": selectedManufacturer,
         "trust": false,
       };
       await signAndSubmitClaim(claim, "manufacturer_trust");
@@ -101,7 +151,7 @@ const MyComponent = () => {
 		try {
       const claim = {
         "user": "Nick",
-        "device": "www.client.com",
+        "device": selectedDevice,
         "trust": true,
       };
       await signAndSubmitClaim(claim, "device_trust");
@@ -114,7 +164,7 @@ const MyComponent = () => {
     try {
       const claim = {
         "user": "Nick",
-        "device": "www.client.com",
+        "device": selectedDevice,
         "trust": false,
       };
       await signAndSubmitClaim(claim, "device_trust");
@@ -126,8 +176,8 @@ const MyComponent = () => {
   const setDeviceType = async () => {
     try {
       const claim = {
-        "device": "www.client.com",
-        "deviceType": deviceType,
+        "device": selectedDevice,
+        "deviceType": selectedDeviceType,
         "trust": false,
       };
       await signAndSubmitClaim(claim, "device_type_binding");
@@ -139,7 +189,7 @@ const MyComponent = () => {
   const setDeviceTypeVulnerable = async () => {
     try {
       const claim = {
-        "deviceType": deviceType,
+        "deviceType": selectedDeviceType,
         "vulnerable": true,
       };
       await signAndSubmitClaim(claim, "device_type_vulnerable");
@@ -151,7 +201,7 @@ const MyComponent = () => {
   const setDeviceTypeNotVulnerable = async () => {
     try {
       const claim = {
-        "deviceType": deviceType,
+        "deviceType": selectedDeviceType,
         "vulnerable": false,
       };
       await signAndSubmitClaim(claim, "device_type_vulnerable");
@@ -164,19 +214,53 @@ const MyComponent = () => {
     <div className="container">
       {/* Left side with buttons */}
       <div className="button-container">
+        <label>
+          Manufacturer Select:
+          <select
+            value={selectedManufacturer}
+            onChange={(e) => setSelectedManufacturer(e.target.value)}
+          >
+            <option value="">Select a manufacturer</option>
+            {manufacturerList.map((option, index) => (
+              <option key={index} value={option.name}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+        </label>
         <button onClick={trustManufacturer}>Trust Manufacturer</button>
         <button onClick={distrustManufacturer}>Distrust Manufacturer</button>
+        <label>
+          Device Select:
+          <select
+            value={selectedDevice}
+            onChange={(e) => setSelectedDevice(e.target.value)}
+          >
+            <option value="">Select a device</option>
+            {deviceList.map((option, index) => (
+              <option key={index} value={option.name}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+        </label>
         <button onClick={trustDevice}>Trust Device</button>
         <button onClick={distrustDevice}>Distrust Device</button>
-        <div className="button-input-container">
-        <input
-          type="text"
-          value={deviceType}
-          onChange={(e) => setDeviceTypeState(e.target.value)}
-          placeholder="Enter Device Type..."
-        />
+        <label>
+          Device Type Select:
+          <select
+            value={selectedDeviceType}
+            onChange={(e) => setSelectedDeviceType(e.target.value)}
+          >
+            <option value="">Select a device type</option>
+            {deviceTypeList.map((option, index) => (
+              <option key={index} value={option.name}>
+                {option.name}
+              </option>
+            ))}
+          </select>
+        </label>
         <button onClick={setDeviceType}>Set Device Type</button>
-        </div>
         <button onClick={setDeviceTypeVulnerable}>Set Device Type Vulnerable</button>
         <button onClick={setDeviceTypeNotVulnerable}>Set Device Type Not Vulnerable</button>
       </div>
@@ -184,11 +268,11 @@ const MyComponent = () => {
       {/* Vertical line */}
       <div className="vertical-line"></div>
 
-      {/* Right side with list */}
+      {/* Right side with scrollable list */}
       <div className="list-container">
-        <h3>Submitted VCs and Registrar Responses:</h3>
-        <ul>
-          {listItems.map((item, index) => (
+        <h3>List of Strings:</h3>
+        <ul className="scrollable-list">
+          {vcLog.slice().reverse().map((item, index) => (
             <li key={index}>{item}</li>
           ))}
         </ul>
