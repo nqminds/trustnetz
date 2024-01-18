@@ -2,6 +2,13 @@
 import React, {useState, useEffect} from 'react';
 import './MyComponent.css';
 
+const ListItem = ({ leftContent, rightContent }) => (
+  <div className="list-item">
+    <div className="left-content">{leftContent}</div>
+    <div className="right-content">{rightContent}</div>
+  </div>
+);
+
 const MyComponent = () => {
   const [vcLog, setVcLog] = useState([]);
   const [deviceType, setDeviceTypeState] = useState('Raspberry Pi');
@@ -270,10 +277,16 @@ const MyComponent = () => {
 
       {/* Right side with scrollable list */}
       <div className="list-container">
-        <h3>List of Strings:</h3>
+        <h3>List of submitted VC and Responses:</h3>
         <ul className="scrollable-list">
           {vcLog.slice().reverse().map((item, index) => (
-            <li key={index}>{item}</li>
+            <li key={index}>
+              {/* {item} */}
+              <ListItem
+                leftContent={item.split(", ")[0]}  // Left-aligned content
+                rightContent={item.split(", ")[1]}  // Right-aligned content
+              />
+            </li>
           ))}
         </ul>
       </div>
