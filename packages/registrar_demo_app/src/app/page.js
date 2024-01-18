@@ -3,6 +3,9 @@ import React, {useState, useEffect} from 'react';
 import Table from '@/components/table';
 import './MyComponent.css';
 
+const VCRestAPIAddress = "http://localhost:3000";
+const RegistrarAPIAddress = "http://localhost:3001";
+
 const ListItem = ({ leftContent, rightContent }) => (
   <div className="list-item">
     <div className="left-content">{leftContent}</div>
@@ -26,7 +29,7 @@ const MyComponent = () => {
 
   const fetchVcLog = async () => {
     try {
-      const response = await fetch('http://localhost:3001/vc-logs');
+      const response = await fetch(`${RegistrarAPIAddress}/vc-logs`);
       const vcLog = await response.json();
       setVcLog(vcLog.map(({log}) => log));
     } catch (error) {
@@ -38,7 +41,7 @@ const MyComponent = () => {
     try {
       if (deviceToGetInfoFor) {
         const selectedDeviceUrlEncoded = encodeURIComponent(deviceToGetInfoFor);
-        const response = await fetch(`http://localhost:3001/info/device/${selectedDeviceUrlEncoded}`);
+        const response = await fetch(`${RegistrarAPIAddress}/info/device/${selectedDeviceUrlEncoded}`);
         const deviceInfo = await response.json();
         setSelectedDeviceInfo(deviceInfo);
       }
@@ -51,7 +54,7 @@ const MyComponent = () => {
     try {
       if (deviceTypeToGetInfoFor) {
         const selecteddeviceTypeUrlEncoded = encodeURIComponent(deviceTypeToGetInfoFor);
-        const response = await fetch(`http://localhost:3001/info/device-type/${selecteddeviceTypeUrlEncoded}`);
+        const response = await fetch(`${RegistrarAPIAddress}/info/device-type/${selecteddeviceTypeUrlEncoded}`);
         const deviceTypeInfo = await response.json();
         setSelectedDeviceTypeInfo(deviceTypeInfo);
       }
@@ -64,7 +67,7 @@ const MyComponent = () => {
     try {
       if (manufacturerToGetInfoFor) {
         const selectedManufacturerUrlEncoded = encodeURIComponent(manufacturerToGetInfoFor);
-        const response = await fetch(`http://localhost:3001/info/manufacturer/${selectedManufacturerUrlEncoded}`);
+        const response = await fetch(`${RegistrarAPIAddress}/info/manufacturer/${selectedManufacturerUrlEncoded}`);
         const manufacturerInfo = await response.json();
         setSelectedManufacturerInfo(manufacturerInfo);
       }
@@ -77,21 +80,21 @@ const MyComponent = () => {
     // Fetch initial inputValue from an API route when the component mounts
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3001/devices');
+        const response = await fetch(`${RegistrarAPIAddress}/devices`);
         const devices = await response.json();
         setDeviceList(devices);
       } catch (error) {
         console.error('Error fetching device list:', error);
       }
       try {
-        const response = await fetch('http://localhost:3001/manufacturers');
+        const response = await fetch(`${RegistrarAPIAddress}/manufacturers`);
         const manufacturers = await response.json();
         setManufacturerList(manufacturers);
       } catch (error) {
         console.error('Error fetching manufacturer list:', error);
       }
       try {
-        const response = await fetch('http://localhost:3001/device-types');
+        const response = await fetch(`${RegistrarAPIAddress}/device-types`);
         const deviceTypes = await response.json();
         setDeviceTypeList(deviceTypes);
       } catch (error) {
@@ -139,7 +142,7 @@ const MyComponent = () => {
         },
         body: JSON.stringify(body),
       }
-      let res = await fetch(`http://localhost:3000/sign/${schemaName}`, options);
+      let res = await fetch(`${VCRestAPIAddress}/sign/${schemaName}`, options);
       let response = null;
       try {
         response = await res.clone().json();
@@ -162,7 +165,7 @@ const MyComponent = () => {
         },
         body: JSON.stringify(vc),
       }
-      let res = await fetch(`http://localhost:3001/submit-vc/${schemaName}`, options);
+      let res = await fetch(`${RegistrarAPIAddress}/submit-vc/${schemaName}`, options);
       let response = null;
       try {
         response = await res.clone().json();
@@ -349,7 +352,7 @@ const MyComponent = () => {
 
       {/* Middle side with scrollable list */}
       <div className="list-container">
-        <h3>List of submitted VC and Responses:</h3>
+        <h3>List of submitted VC and Registrar&#39;s Responses:</h3>
         <ul className="scrollable-list">
           {vcLog.slice().reverse().map((item, index) => (
             <li key={index}>
