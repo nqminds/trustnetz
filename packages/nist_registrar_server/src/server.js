@@ -14,6 +14,7 @@ import handle_device_trust from "./handle_device_trust.js"
 import handle_manufacturer_trust from "./handle_manufacturer_trust.js";
 import handle_device_type_binding from "./handle_device_type_binding.js";
 import handle_device_type_vulnerable from "./handle_device_type_vulnerable.js";
+import storeClaimAndResponse from "./store_claim_and_response.js";
 
 function httpsPost({url, body, ...options}) {
     return new Promise((resolve,reject) => {
@@ -72,6 +73,25 @@ function httpsPost({url, body, ...options}) {
      Promise.resolve(asyncHandler(req, res)).catch((error) => next(error));
    }
  }
+
+ function connectToDatabase(sqliteDBPath) {
+  return new Promise((resolve, reject) => {
+    let db = null;
+    try {
+      db = new sqlite3.Database(sqliteDBPath, sqlite3.OPEN_READWRITE, (err) => {
+        if (err) {
+          db = intitialise_demo_database(sqliteDBPath);
+          resolve(db)
+        } else {
+          console.log('Connected to the database');
+          resolve(db)
+        }
+      });
+    } catch (err) {
+      reject(err);
+    }
+  })
+ }
  
  /**
   * @typedef {object} ServerConfig - Config for NIST VC REST server.
@@ -105,13 +125,7 @@ function httpsPost({url, body, ...options}) {
     const sqliteDBPath = fileURLToPath(new URL(config.sqliteDBPath, import.meta.url))
     try {
       // Open a database connection
-      db = new sqlite3.Database(sqliteDBPath, sqlite3.OPEN_READWRITE, (err) => {
-        if (err) {
-          db = intitialise_demo_database(sqliteDBPath);
-        } else {
-          console.log('Connected to the database');
-        }
-      });
+      db = await connectToDatabase(sqliteDBPath);
       dbGet = util.promisify(db.get).bind(db);
       dbAll = util.promisify(db.all).bind(db);
       dbRun = util.promisify(db.run).bind(db);
@@ -179,7 +193,57 @@ function httpsPost({url, body, ...options}) {
           break;
       }
       console.log("handlerResponse: ", handlerResponse);
+      await storeClaimAndResponse(claimData, handlerResponse, dbGet, dbRun);
       res.send(handlerResponse);
+    }
+    catch (err) {
+      console.log(`Encountered Error: ${err}`)
+      res.send(`Encountered Error: ${err}`);
+    }
+  }));
+
+  router.get("/manufacturers", asyncHandler(async (req, res) => {
+    try {
+      const manufacturers = await dbAll("SELECT * from manufacturer");
+      res.send(manufacturers);
+    }
+    catch (err) {
+      console.log(`Encountered Error: ${err}`)
+      res.send(`Encountered Error: ${err}`);
+    }
+  }));
+
+  router.get("/devices", asyncHandler(async (req, res) => {
+    try {
+      const devices = await dbAll("SELECT * from device");
+      res.send(devices);
+    }
+    catch (err) {
+      console.log(`Encountered Error: ${err}`)
+      res.send(`Encountered Error: ${err}`);
+    }
+  }));
+
+  router.get("/device-types", asyncHandler(async (req, res) => {
+    try {
+      const devicesTypes = await dbAll("SELECT * from device_type");
+      res.send(devicesTypes);
+    }
+    catch (err) {
+      console.log(`Encountered Error: ${err}`)
+      res.send(`Encountered Error: ${err}`);
+    }
+  }));
+
+  router.get("/vc-logs", asyncHandler(async (req, res) => {
+    try {
+      let logs = null;
+      try {
+        logs = await dbAll("SELECT * from vc_log");
+      } catch (err) {
+        logs = [];
+      }
+      res.send(logs);
     }
     catch (err) {
       console.log(`Encountered Error: ${err}`)
