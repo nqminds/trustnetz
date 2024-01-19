@@ -18,7 +18,7 @@ export default async function handleDeviceTypeVulnerable(claimData, dbGet, dbRun
   console.log("has_demo_vuln: ", has_demo_vulnerability);
   if (vulnerable) {
     if (has_demo_vulnerability) {
-      return `device type ${deviceType} is already vulnerable`;
+      return `device type ${deviceType} is already classified as vulnerable`;
     } else {
       await dbRun("INSERT INTO has_vulnerability (device_type_id, vulnerability_id) VALUES (?, ?)",
         [deviceTypeId, demoVulnerabilityId]);
