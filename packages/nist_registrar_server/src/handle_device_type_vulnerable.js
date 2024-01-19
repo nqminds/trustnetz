@@ -16,11 +16,11 @@ export default async function handleDeviceTypeVulnerable(claimData, dbGet, dbRun
   const has_demo_vulnerability = await dbGet("SELECT * from has_vulnerability WHERE device_type_id = ? AND vulnerability_id = ?", [deviceTypeId, demoVulnerabilityId]);
   if (vulnerable) {
     if (has_demo_vulnerability) {
-      return `device type ${deviceType} is already vulnerable`;
+      return `device type ${deviceType} is already classified as vulnerable`;
     } else {
       await dbRun("INSERT INTO has_vulnerability (device_type_id, vulnerability_id) VALUES (?, ?)",
         [deviceTypeId, demoVulnerabilityId]);
-      return `device type ${deviceType} is now vulnerable`;
+      return `device type ${deviceType} is now classified as vulnerable`;
     }
   } else {
     if (has_demo_vulnerability) {
@@ -28,7 +28,7 @@ export default async function handleDeviceTypeVulnerable(claimData, dbGet, dbRun
         [deviceTypeId, demoVulnerabilityId]);
       return `device type ${deviceType} is now no longer vulnerable`;
     } else {
-      return `device type ${deviceType} is already not vulnerable`;
+      return `device type ${deviceType} has already been classified not vulnerable`;
     }
   }
 }

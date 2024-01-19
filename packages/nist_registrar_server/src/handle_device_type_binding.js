@@ -1,5 +1,5 @@
 export default async function handleDeviceTypeBinding(claimData, dbGet, dbRun) {
-  const {device, deviceType, issuanceDate} = claimData;device
+  const {device, deviceType, issuanceDate} = claimData;
   let deviceId = null;
   const deviceRow = await dbGet("SELECT id from device where id = ? OR name = ?", [device, device])
   if (!deviceRow) {
