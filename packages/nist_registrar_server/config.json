@@ -1,0 +1,4 @@
+{
+  "sqliteDBPath": "../MyLocalDatabase.sqlite",
+  "nistVcRestServerAddress": "http://localhost:3000"
+}
