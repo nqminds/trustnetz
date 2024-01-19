@@ -5,7 +5,13 @@ title: Demo Policy setup
 
 import ExternalContent from '@site/src/components/externalContent.js';
 
-The policy is an augmentation of the baseline BRSKI protocal which facilitates network owners to determine a policy to determine which devices are allowed onto the network, and which users have permissions to trust different entities. The policy is implemented as a Rust library which provides a number of methods which may be run by the registrar to determine if a manufactuer of devices is to be trusted to be contacted to validate the idevID of connecting devices, if a device is trusted to onboard to the network, and determine if a device is vulnerable. An sqlite database is used to evaluate the policy Information is submitted to the the sqlite database that is used to evaluate the policy through verifiable credentials.
+The policy is an augmentation of the baseline BRSKI protocal which facilitates network owners to determine a policy to determine which devices are allowed onto the network, and which users have permissions to trust different entities. The policy is implemented as a Rust library which provides a number of methods which may be run by the registrar to determine if a manufactuer of devices is to be trusted to be contacted to validate the idevID of connecting devices, if a device is trusted to onboard to the network, and determine if a device is vulnerable. An sqlite database is used to store the data which is used to evaluate the policy. Information is submitted to the the sqlite database through verifiable credentials (VCs).
+
+There are 4 pieces of the policy infastructure:
+- a rust library which provides the functions to evaluate the policy, the functions take an idevID and the path to the sqlite database
+- a REST API which is connected to a volt and is used to sign and verify VCs
+
+Claims are submitted through verifiable credentials which are signed by submitting the information a REST API.
 
 The policy allows a network owner to enter the users in thier organisation and set thier permission levels so that users may trust other users to issue trust to other users or to connect devices. 
 
