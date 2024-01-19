@@ -9,7 +9,8 @@ The policy is an augmentation of the baseline BRSKI protocal which facilitates n
 
 There are 4 pieces of the policy infastructure:
 - a rust library which provides the functions to evaluate the policy, the functions take an idevID and the path to the sqlite database
-- a REST API which is connected to a volt and is used to sign and verify VCs
+- a REST API which is connected to a [tdx volt](https://docs.tdxvolt.com/en/introduction) and is used to sign and verify VCs, an instance runs on the registrar and an instance runs on a agent's machine which wishes to submit information to the regisrar (both connecting to the same tdx volt instance, which may run on the regisrar or another remote machine)
+- a REST API which runs on the regisrar and receives VCs from agents, 
 
 Claims are submitted through verifiable credentials which are signed by submitting the information a REST API.
 
