@@ -166,3 +166,8 @@ tbody tr:nth-child(even) {
   letter-spacing: var(--ifm-typography-f8a9e51-letter-spacing);
   word-spacing: var(--ifm-typography-f8a9e51-word-spacing);
 }
+
+img {
+  display: block; /* Remove default inline alignment */
+  margin: 0 auto
+}

@@ -3,7 +3,7 @@ Version: 1.0
 Section: net
 Priority: optional
 Architecture: all
-Depends: libmicrohttpd12 (>= 0.9.70), libgcrypt20, libgpg-error0, libnettle8, libgmp10
+Depends: libmicrohttpd12 (>= 0.9.70), libgcrypt20, libgpg-error0, libnettle8, libgmp10, avahi-utils
 Maintainer: Ionut Bostan <ionut@nquiringminds.com>
 Description: NQM Brski Demo APP
  When you click "onboard" button a POST request is sent to `http://localhost:<port-number>/onboard`. 
