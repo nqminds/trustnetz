@@ -22,7 +22,7 @@ export default async function handleDeviceTypeVulnerable(claimData, dbGet, dbRun
     } else {
       await dbRun("INSERT INTO has_vulnerability (device_type_id, vulnerability_id) VALUES (?, ?)",
         [deviceTypeId, demoVulnerabilityId]);
-      return `device type ${deviceType} is now vulnerable`;
+      return `device type ${deviceType} is now classified as vulnerable`;
     }
   } else {
     if (has_demo_vulnerability) {
