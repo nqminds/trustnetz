@@ -3,10 +3,7 @@ import React, {useState, useEffect} from 'react';
 import fetchJson from '@/utilities/fetch-json';
 import postJson from '@/utilities/post-json';
 import '@/app-css.css';
-
-const VCRestAPIAddress = "http://localhost:3000";
-const RegistrarAPIAddress = "http://localhost:3001";
-const user = "Nick";
+import { VCRestAPIAddress, RegistrarAPIAddress, user } from '@/config';
 
 const ControlPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType,
   setSelectedDevice, setSelectedManufacturer, setSelectedDeviceType,

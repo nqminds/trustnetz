@@ -2,8 +2,7 @@
 import React, {useState, useEffect} from 'react';
 import '@/app-css.css';
 import fetchJson from '@/utilities/fetch-json';
-
-const RegistrarAPIAddress = "http://localhost:3001";
+import { RegistrarAPIAddress } from '@/config';
 
 const ListItem = ({ leftContent, rightContent }) => (
   <div className="list-item">
