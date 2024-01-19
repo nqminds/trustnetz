@@ -11,7 +11,7 @@ There are 5 pieces of the policy infastructure:
 - a set of schemas which define the structure for claims which may be submitted to claim information to the regisrar in the form of VCs
 - a rust library which provides the functions to evaluate the policy, the functions take an idevID and the path to the sqlite database
 - a VC REST API which is connected to a [tdx volt](https://docs.tdxvolt.com/en/introduction) and is used to sign and verify VCs, an instance runs on the registrar and an instance runs on a agent's machine which wishes to submit information to the regisrar (both connecting to the same tdx volt instance, which may run on the regisrar or another remote machine). When a claim is submitted to this REST API the route specifies the schema to use and the body contains the body of the VC claim. It verifies that the claim data matches the specified schema, and if so, returns a signed VC containing the claim information.
-- a Registrar REST API which runs on the regisrar and receives VCs from agents, it submits the VC to the VC REST API running locally to verify that the VC was signed 
+- a Registrar REST API which runs on the regisrar and receives VCs from agents, it submits the VC to the VC REST API running locally to verify that the VC was signed by an instance of the VC REST API. If it verifies sucessfully then the data in the sqlite database is updated to reflect the changes in the contents of the claim 
 
 Claims are submitted through verifiable credentials which are signed by submitting the information a REST API.
 
