@@ -5,6 +5,5 @@ export default async function storeClaimAndResponse(claimData, handlerResponse, 
   }
   const log = `claim: ${JSON.stringify(claimData)}, response: ${handlerResponse}`;
   await dbRun("INSERT INTO vc_log (log) VALUES (?)", [log]);
-  console.log(`logged ${log} to vc-log`);
   return;
 }

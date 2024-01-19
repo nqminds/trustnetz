@@ -54,9 +54,7 @@ export default function intitialiseDemoDatabase(sqliteDBPath) {
       db.run("INSERT INTO device_type (id, name, created_at) VALUES (?, ?, ?)", ['465df82c-d250-49c1-be27-95c8e4759fc2', 'Smart Speaker', '2024-01-16 14:13:55.849129']);
 
       db.run("INSERT INTO vulnerability (id, name, severity, url, created_at) VALUES (?, ?, ?, ?, ?)", [demoVulnerabilityId, 'Security Flaw',	'Critical',	'https://example.com', '2024-01-16 14:13:55.849160']);
-      console.log("COMPLETE!!!!");
     });
-    console.log("RETURNING DB");
     return db;
   } catch (err) {
     throw err;

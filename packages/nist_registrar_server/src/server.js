@@ -133,7 +133,6 @@ function httpsPost({url, body, ...options}) {
       dbAll = util.promisify(db.all).bind(db);
       dbRun = util.promisify(db.run).bind(db);
     } catch (err) {
-      console.log("errO: ", err);
       throw(err);
     }
    } else {
@@ -177,7 +176,6 @@ function httpsPost({url, body, ...options}) {
     try {
       const claimData = JSON.parse(response.toString("utf-8"));
       let handlerResponse = `Method to handle ${schemaName} not yet implemented`;
-      console.log("recieved request for: ", schemaName);
       switch (schemaName) {
         case 'manufacturer_trust':
           handlerResponse = await handleManufacturerTrust(claimData, dbGet, dbRun);
@@ -195,12 +193,10 @@ function httpsPost({url, body, ...options}) {
           handlerResponse = await handleDeviceTypeVulnerable(claimData, dbGet, dbRun);
           break;
       }
-      console.log("handlerResponse: ", handlerResponse);
       await storeClaimAndResponse(claimData, handlerResponse, dbGet, dbRun);
       res.send(handlerResponse);
     }
     catch (err) {
-      console.log(`Encountered Error: ${err}`)
       res.send(`Encountered Error: ${err}`);
     }
   }));
@@ -211,7 +207,6 @@ function httpsPost({url, body, ...options}) {
       res.send(manufacturers);
     }
     catch (err) {
-      console.log(`Encountered Error: ${err}`)
       res.send(`Encountered Error: ${err}`);
     }
   }));
@@ -222,7 +217,6 @@ function httpsPost({url, body, ...options}) {
       res.send(devices);
     }
     catch (err) {
-      console.log(`Encountered Error: ${err}`)
       res.send(`Encountered Error: ${err}`);
     }
   }));
@@ -233,7 +227,6 @@ function httpsPost({url, body, ...options}) {
       res.send(devicesTypes);
     }
     catch (err) {
-      console.log(`Encountered Error: ${err}`)
       res.send(`Encountered Error: ${err}`);
     }
   }));
@@ -249,7 +242,6 @@ function httpsPost({url, body, ...options}) {
       res.send(logs);
     }
     catch (err) {
-      console.log(`Encountered Error: ${err}`)
       res.send(`Encountered Error: ${err}`);
     }
   }));
@@ -258,11 +250,9 @@ function httpsPost({url, body, ...options}) {
     try {
       const manufacturer = decodeURIComponent(req.params.manufacturer);
       const response = await getManufacturerInfo(manufacturer, dbGet);
-      console.log(response);
       res.send(response);
     }
     catch (err) {
-      console.log(`Encountered Error: ${err}`)
       res.send(`Encountered Error: ${err}`);
     }
   }));
@@ -271,11 +261,9 @@ function httpsPost({url, body, ...options}) {
     try {
       const deviceType = decodeURIComponent(req.params.deviceType);
       const response = await getDeviceTypeInfo(deviceType, dbGet);
-      console.log(response);
       res.send(response);
     }
     catch (err) {
-      console.log(`Encountered Error: ${err}`)
       res.send(`Encountered Error: ${err}`);
     }
   }));
@@ -284,11 +272,9 @@ function httpsPost({url, body, ...options}) {
     try {
       const device = decodeURIComponent(req.params.device);
       const response = await getDeviceInfo(device, dbGet);
-      console.log(response);
       res.send(response);
     }
     catch (err) {
-      console.log(`Encountered Error: ${err}`)
       res.send(`Encountered Error: ${err}`);
     }
   }));
