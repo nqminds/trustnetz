@@ -1,10 +1,8 @@
 export default async function handleDeviceTrust(claimData, dbGet, dbRun) {
   const {user, device, trust, issuanceDate} = claimData;
   let deviceId = null;
-  console.log(`device: ${device}`)
   const deviceRow = await dbGet("SELECT id from device where id = ? OR name = ?", [device, device])
   if (!deviceRow) {
-    console.log(`No device found for ID or name: ${device}`);
     return `No device with id or name ${device}`;
   } else {
     deviceId = deviceRow.id;
@@ -12,7 +10,6 @@ export default async function handleDeviceTrust(claimData, dbGet, dbRun) {
   let userId = null;
   const userRow = await dbGet("SELECT id from user where id = ? OR username = ?", [user, user])
   if (!userRow) {
-    console.log(`No user found for ID or name: ${user}`);
     return `No user with id or name ${user}`;
   } else {
     userId = userRow.id;

@@ -1,5 +1,5 @@
 {
-  "name": "nist_registrar_server",
+  "name": "@nqminds/nist_registrar_server",
   "version": "1.0.0",
   "description": "",
   "main": "src/server.js",

@@ -4,7 +4,6 @@ export default async function getManufacturerInfo(manufacturer, dbGet) {
   let trustingUser = null;
   const manufacturerRow = await dbGet("SELECT id, name from manufacturer where id = ? OR name = ?", [manufacturer, manufacturer]);
   if (!manufacturerRow) {
-    console.log(`No manufacturer found for ID or name: ${manufacturer}`);
     return `No manufacturer with id or name ${manufacturer}`;
   } else {
     manufacturerId = manufacturerRow.id;

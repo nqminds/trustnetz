@@ -7,7 +7,6 @@ export default async function getDeviceInfo(device, dbGet) {
   let trustingUser = null;
   const deviceRow = await dbGet("SELECT id, name from device where id = ? OR name = ?", [device, device])
   if (!deviceRow) {
-    console.log(`No device found for ID or name: ${device}`);
     return `No device with id or name ${device}`;
   } else {
     deviceId = deviceRow.id;
