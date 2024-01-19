@@ -18,7 +18,6 @@
   "license": "ISC",
   "dependencies": {
     "@grpc/grpc-js": "^1.9.13",
-    "@nqminds/verifiable-schemas-toolchain": "^1.0.3",
     "@tdxvolt/volt-client-grpc": "^0.15.1",
     "express": "^4.18.2",
     "express-openapi-validator": "^5.1.2",

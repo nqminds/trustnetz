@@ -23,8 +23,11 @@ fi
 echo "Port selected: $PORT"
 echo "port=$PORT" > /opt/demo-server/html/server.conf
 
-chown root:root /opt/demo-server/html/server.conf
-chmod 644 /opt/demo-server/html/server.conf
+# Install and copy the brski tool and configs, respectively
+wget -O /tmp/brski_0.2.3_arm64.deb https://github.com/nqminds/brski/releases/download/0.2.3/brski_0.2.3_arm64.deb
+dpkg -i /tmp/brski_0.2.3_arm64.deb
+cp /opt/demo-server/certs/* /etc/brski
+rm /tmp/brski_0.2.3_arm64.deb
 
 # Copy the systemd service file
 cp /opt/demo-server/demo-server.service /etc/systemd/system/

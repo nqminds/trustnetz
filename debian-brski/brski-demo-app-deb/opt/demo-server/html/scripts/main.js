@@ -29,7 +29,7 @@ function getLogFile(logFile, logElementId) {
 function sendRequest(endpoint, logElementId, statusElementId, statusText, clearLogElementId, clearStatusElementId, logFile) {
     getServerPort(function(port) {
         var xhr = new XMLHttpRequest();
-        var url = window.location.protocol + "//" + window.location.hostname + ":" + port + endpoint;
+        var url = window.location.origin + endpoint;
         xhr.open("POST", url, true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
