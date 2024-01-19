@@ -5,7 +5,7 @@ title: Demo Policy setup
 
 import ExternalContent from '@site/src/components/externalContent.js';
 
-The policy is an augmentation of the baseline BRSKI protocal which facilitates network owners to determine a policy to determine which devices are allowed onto the network, and which users have permissions to trust different entities. The policy is implemented as a Rust script which is run by the registrar 
+The policy is an augmentation of the baseline BRSKI protocal which facilitates network owners to determine a policy to determine which devices are allowed onto the network, and which users have permissions to trust different entities. The policy is implemented as a Rust library which provides a number of methods which may be run by the registrar to determine if a manufactuer of devices is to be trusted to be contacted to validate the idevID of connecting devices, if a device is trusted to onboard to the network, and determine if a device is vulnerable. An sqlite database is used to evaluate the policy Information is submitted to the the sqlite database that is used to evaluate the policy through verifiable credentials.
 
 The policy allows a network owner to enter the users in thier organisation and set thier permission levels so that users may trust other users to issue trust to other users or to connect devices. 
 
