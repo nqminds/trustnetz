@@ -15,7 +15,7 @@ Specifically build 5 has the following key attributes
 
 1. **BRSKI based**: as the baseline onboarding protocol, it will use the [Bootstrapping Remote Secure Key Infrastructure (BRSKI) RFC 8995]( https://datatracker.ietf.org/doc/rfc8995/)
 2. **WIFI aware:** the baseline BRSKI protocol does not detail the specifics of onboarding onto WIF networks. Build 5 fills this gap by specification and demonstrating full WIFI on boarding
-3. **Policy augmented**: in baseline BRSK protocol many aspects of policy (which actor can do what) are intentionally left as implementation details. Build 5 fleshed out some detail options, demonstrating a practical way of implementing flexible policy using interoperable methods 
+3. **Policy augmented**: in baseline BRSKI protocol many aspects of policy (which actor can do what) are intentionally left as implementation details. Build 5 fleshed out some detail options, demonstrating a practical way of implementing flexible policy using interoperable methods 
 4. **Continuous assurance**: the NIST project targets the problem of lifecycle management; this is much more than the initial one off trustworthiness checks that happen a singular event when on boarding a device. Build 5 demonstrates a practical but interoperable way of implementing continuous assurance methods, which can be expanded over time in combination with the flexible policy approach.
 
 
