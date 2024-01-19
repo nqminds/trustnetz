@@ -30,7 +30,7 @@ export default async function handleDeviceTypeVulnerable(claimData, dbGet, dbRun
         [deviceTypeId, demoVulnerabilityId]);
       return `device type ${deviceType} is now no longer vulnerable`;
     } else {
-      return `device type ${deviceType} is already not vulnerable`;
+      return `device type ${deviceType} has already been classified not vulnerable`;
     }
   }
 }
