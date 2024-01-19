@@ -23,12 +23,6 @@ fi
 echo "Port selected: $PORT"
 echo "port=$PORT" > /opt/demo-server/html/server.conf
 
-# Install and copy the brski tool and configs, respectively
-wget -O /tmp/brski_0.2.3_arm64.deb https://github.com/nqminds/brski/releases/download/0.2.3/brski_0.2.3_arm64.deb
-dpkg -i /tmp/brski_0.2.3_arm64.deb
-cp /opt/demo-server/certs/* /etc/brski
-rm /tmp/brski_0.2.3_arm64.deb
-
 # Copy the systemd service file
 cp /opt/demo-server/demo-server.service /etc/systemd/system/
 
@@ -36,3 +30,12 @@ cp /opt/demo-server/demo-server.service /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable demo-server.service
 systemctl start demo-server.service
+
+
+echo "Installation of demo-server is complete."
+
+echo "To finalize the installation, please follow these steps:"
+echo "1. Make the brski installation script executable:"
+echo "   sudo chmod +x /opt/demo-server/bash-scripts/install_brski.sh"
+echo "2. Run the brski installation script:"
+echo "   sudo /opt/demo-server/bash-scripts/install_brski.sh"

@@ -14,6 +14,17 @@ sudo dpkg -i brski-demo-app-deb.deb
 # enter port number
 ```
 
+### Install Brski
+Make the brski installation script executable
+```sh
+sudo chmod +x /opt/demo-server/bash-scripts/install_brski.sh
+```
+
+Run the brski installation script:
+```sh
+sudo /opt/demo-server/bash-scripts/install_brski.sh
+```
+
 ### Check status
 
 ```sh
