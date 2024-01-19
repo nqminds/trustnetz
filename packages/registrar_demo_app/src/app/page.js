@@ -5,6 +5,7 @@ import './MyComponent.css';
 
 const VCRestAPIAddress = "http://localhost:3000";
 const RegistrarAPIAddress = "http://localhost:3001";
+const user = "Nick";
 
 const ListItem = ({ leftContent, rightContent }) => (
   <div className="list-item">
@@ -12,6 +13,40 @@ const ListItem = ({ leftContent, rightContent }) => (
     <div className="right-content">{rightContent}</div>
   </div>
 );
+
+const fetchJson = async (url) => {
+  try {
+    const response = await fetch(url);
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error(`Error fetching from url ${url}:`, error);
+  }
+}
+
+const postJson = async (body, url) => {
+  try {
+    let options = {
+      method: "POST",
+      headers: {
+          "Content-Type":"application/json",
+      },
+      body: JSON.stringify(body),
+    }
+    let res = await fetch(url, options);
+    let response = null;
+    try {
+      response = await res.clone().json();
+    }
+    catch {
+      response = await res.text();
+    }
+    return response;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 
 const MyComponent = () => {
   const [vcLog, setVcLog] = useState([]);
@@ -28,77 +63,51 @@ const MyComponent = () => {
   const [selectedDeviceTypeInfo, setSelectedDeviceTypeInfo] = useState({});
 
   const fetchVcLog = async () => {
-    try {
-      const response = await fetch(`${RegistrarAPIAddress}/vc-logs`);
-      const vcLog = await response.json();
-      setVcLog(vcLog.map(({log}) => log));
-    } catch (error) {
-      console.error('Error fetching VC Log:', error);
-    }
+    const vcLog = await fetchJson(`${RegistrarAPIAddress}/vc-logs`);
+    setVcLog(vcLog.map(({log}) => log));
   };
 
   const fetchDeviceData = async (deviceToGetInfoFor) => {
-    try {
-      if (deviceToGetInfoFor) {
-        const selectedDeviceUrlEncoded = encodeURIComponent(deviceToGetInfoFor);
-        const response = await fetch(`${RegistrarAPIAddress}/info/device/${selectedDeviceUrlEncoded}`);
-        const deviceInfo = await response.json();
-        setSelectedDeviceInfo(deviceInfo);
-      }
-    } catch (error) {
-      console.error('Error fetching device data:', error);
+    if (deviceToGetInfoFor) {
+      const selectedDeviceUrlEncoded = encodeURIComponent(selectedDeviceUrlEncoded);
+      const deviceInfo = await fetchJson(`${RegistrarAPIAddress}/info/device/${selectedDeviceUrlEncoded}`);
+      setSelectedDeviceInfo(deviceInfo);
     }
   }
 
   const fetchDeviceTypeData = async (deviceTypeToGetInfoFor) => {
-    try {
-      if (deviceTypeToGetInfoFor) {
-        const selecteddeviceTypeUrlEncoded = encodeURIComponent(deviceTypeToGetInfoFor);
-        const response = await fetch(`${RegistrarAPIAddress}/info/device-type/${selecteddeviceTypeUrlEncoded}`);
-        const deviceTypeInfo = await response.json();
-        setSelectedDeviceTypeInfo(deviceTypeInfo);
-      }
-    } catch (error) {
-      console.error('Error fetching device type data:', error);
+    if (deviceTypeToGetInfoFor) {
+      const selecteddeviceTypeUrlEncoded = encodeURIComponent(deviceTypeToGetInfoFor);
+      const deviceTypeInfo = await fetchJson(`${RegistrarAPIAddress}/info/device-type/${selecteddeviceTypeUrlEncoded}`);
+      setSelectedDeviceTypeInfo(deviceTypeInfo);
     }
   }
 
   const fetchManufacturerData = async (manufacturerToGetInfoFor) => {
-    try {
-      if (manufacturerToGetInfoFor) {
-        const selectedManufacturerUrlEncoded = encodeURIComponent(manufacturerToGetInfoFor);
-        const response = await fetch(`${RegistrarAPIAddress}/info/manufacturer/${selectedManufacturerUrlEncoded}`);
-        const manufacturerInfo = await response.json();
-        setSelectedManufacturerInfo(manufacturerInfo);
-      }
-    } catch (error) {
-      console.error('Error fetching manufacturer data:', error);
+    if (manufacturerToGetInfoFor) {
+      const selectedManufacturerUrlEncoded = encodeURIComponent(manufacturerToGetInfoFor);
+      const manufacturerInfo = await fetchJson(`${RegistrarAPIAddress}/info/manufacturer/${selectedManufacturerUrlEncoded}`);
+      setSelectedManufacturerInfo(manufacturerInfo);
     }
   }
 
   useEffect(() => {
     // Fetch initial inputValue from an API route when the component mounts
     const fetchData = async () => {
-      try {
-        const response = await fetch(`${RegistrarAPIAddress}/devices`);
-        const devices = await response.json();
-        setDeviceList(devices);
-      } catch (error) {
-        console.error('Error fetching device list:', error);
+      const devices = await fetchJson(`${RegistrarAPIAddress}/devices`);
+      setDeviceList(devices);
+      if (devices.length > 0) {
+        setSelectedDevice(devices[0].name)
       }
-      try {
-        const response = await fetch(`${RegistrarAPIAddress}/manufacturers`);
-        const manufacturers = await response.json();
-        setManufacturerList(manufacturers);
-      } catch (error) {
-        console.error('Error fetching manufacturer list:', error);
+      const manufacturers = await fetchJson(`${RegistrarAPIAddress}/manufacturers`);
+      setManufacturerList(manufacturers);
+      if (manufacturers.length > 0) {
+        setSelectedManufacturer(manufacturers[0].name);
       }
-      try {
-        const response = await fetch(`${RegistrarAPIAddress}/device-types`);
-        const deviceTypes = await response.json();
-        setDeviceTypeList(deviceTypes);
-      } catch (error) {
-        console.error('Error fetching deviceType list:', error);
+      const deviceTypes = await fetchJson(`${RegistrarAPIAddress}/device-types`);
+      setDeviceTypeList(deviceTypes);
+      if (deviceTypes.length > 0) {
+        setSelectedDeviceType(deviceTypes[0].name);
       }
       await fetchVcLog();
     };
@@ -133,51 +142,14 @@ const MyComponent = () => {
     setVcLog([...vcLog, value]);
   };
 
-  const signClaim = async (body, schemaName) => {
-		try {
-      let options = {
-        method: "POST",
-        headers: {
-            "Content-Type":"application/json",
-        },
-        body: JSON.stringify(body),
-      }
-      let res = await fetch(`${VCRestAPIAddress}/sign/${schemaName}`, options);
-      let response = null;
-      try {
-        response = await res.clone().json();
-      }
-      catch {
-        response = await res.text();
-      }
-      return response;
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
+  const signClaim = async (claim, schemaName) => {
+    const response = await postJson(claim, `${VCRestAPIAddress}/sign/${schemaName}`);
+    return response;
+  }
   const submitVC = async (vc, schemaName) => {
-		try {
-      let options = {
-        method: "POST",
-        headers: {
-            "Content-Type":"application/json",
-        },
-        body: JSON.stringify(vc),
-      }
-      let res = await fetch(`${RegistrarAPIAddress}/submit-vc/${schemaName}`, options);
-      let response = null;
-      try {
-        response = await res.clone().json();
-      }
-      catch {
-        response = await res.text();
-      }
-      return response;
-		} catch (err) {
-			console.log(err);
-		}
-	};
+    const response = await postJson(vc, `${RegistrarAPIAddress}/submit-vc/${schemaName}`);
+    return response;
+  }
 
   const signAndSubmitClaim = async (claim, schemaName) => {
     try {
@@ -190,60 +162,42 @@ const MyComponent = () => {
       const response = await submitVC(vc, schemaName);
       handleButtonClick(`VC Claim: ${JSON.stringify(claim)}, Response: ${response}`);
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 		}
   }
 
+  const changeManufacturerTrust = async (trust) => {
+    const claim = {
+      user,
+      "manufacturer": selectedManufacturer,
+      trust,
+    };
+    await signAndSubmitClaim(claim, "manufacturer_trust");
+	};
+
   const trustManufacturer = async () => {
-		try {
-      const claim = {
-        "user": "Nick",
-        "manufacturer": selectedManufacturer,
-        "trust": true,
-      };
-      await signAndSubmitClaim(claim, "manufacturer_trust");
-		} catch (err) {
-			console.log(err);
-		}
+    await changeManufacturerTrust(true);
 	};
 
   const distrustManufacturer = async () => {
-    try {
-      const claim = {
-        "user": "Nick",
-        "manufacturer": selectedManufacturer,
-        "trust": false,
-      };
-      await signAndSubmitClaim(claim, "manufacturer_trust");
-		} catch (err) {
-			console.log(err);
-		}
+    await changeManufacturerTrust(false);
+  }
+
+  const changeDeviceTrust = async (trust) => {
+    const claim = {
+      user,
+      "device": selectedDevice,
+      trust,
+    };
+    await signAndSubmitClaim(claim, "device_trust");
   }
 
   const trustDevice = async () => {
-		try {
-      const claim = {
-        "user": "Nick",
-        "device": selectedDevice,
-        "trust": true,
-      };
-      await signAndSubmitClaim(claim, "device_trust");
-		} catch (err) {
-			console.log(err);
-		}
+    await changeDeviceTrust(true);
 	};
 
   const distrustDevice = async () => {
-    try {
-      const claim = {
-        "user": "Nick",
-        "device": selectedDevice,
-        "trust": false,
-      };
-      await signAndSubmitClaim(claim, "device_trust");
-		} catch (err) {
-			console.log(err);
-		}
+    await changeDeviceTrust(false);
   }
 
   const setDeviceType = async () => {
@@ -255,32 +209,24 @@ const MyComponent = () => {
       };
       await signAndSubmitClaim(claim, "device_type_binding");
 		} catch (err) {
-			console.log(err);
+			console.error(err);
 		}
+  }
+
+  const changeDeviceTypeVulnerable = async (vulnerable) => {
+    const claim = {
+      "deviceType": selectedDeviceType,
+      vulnerable,
+    };
+    await signAndSubmitClaim(claim, "device_type_vulnerable");
   }
 
   const setDeviceTypeVulnerable = async () => {
-    try {
-      const claim = {
-        "deviceType": selectedDeviceType,
-        "vulnerable": true,
-      };
-      await signAndSubmitClaim(claim, "device_type_vulnerable");
-		} catch (err) {
-			console.log(err);
-		}
+    await changeDeviceTypeVulnerable(true);
   }
 
   const setDeviceTypeNotVulnerable = async () => {
-    try {
-      const claim = {
-        "deviceType": selectedDeviceType,
-        "vulnerable": false,
-      };
-      await signAndSubmitClaim(claim, "device_type_vulnerable");
-		} catch (err) {
-			console.log(err);
-		}
+    await changeDeviceTypeVulnerable(false);
   }
 
   return (
@@ -288,7 +234,7 @@ const MyComponent = () => {
       {/* Left side with buttons */}
       <div className="button-container">
         <label>
-          Manufacturer Select:
+          Select Manufacturer:
           <select
             value={selectedManufacturer}
             onChange={(e) => {
@@ -307,7 +253,7 @@ const MyComponent = () => {
         <button onClick={trustManufacturer}>Trust Manufacturer</button>
         <button onClick={distrustManufacturer}>Distrust Manufacturer</button>
         <label>
-          Device Select:
+          Select Device:
           <select
             value={selectedDevice}
             onChange={(e) => {
@@ -326,7 +272,7 @@ const MyComponent = () => {
         <button onClick={trustDevice}>Trust Device</button>
         <button onClick={distrustDevice}>Distrust Device</button>
         <label>
-          Device Type Select:
+          Select Device Type:
           <select
             value={selectedDeviceType}
             onChange={(e) => {
@@ -372,20 +318,16 @@ const MyComponent = () => {
 
       {/* Right side with information */}
       <div className="info-container">
-      <div className="table-section">
-        <h2>Manufacturer</h2>
-        <Table data={selectedManufacturerInfo} />
-      </div>
-
-      <div className="table-section">
-        <h2>Device</h2>
-        <Table data={selectedDeviceInfo} />
-      </div>
-
-      <div className="table-section">
-        <h2>Device Type</h2>
-        <Table data={selectedDeviceTypeInfo} />
-      </div>
+      {[
+        {name: "Manufacturer", data: selectedManufacturerInfo},
+        {name: "Device", data: selectedDeviceInfo},
+        {name: "Device Type", data: selectedDeviceTypeInfo},
+      ].map(({name, data}) => 
+        <div key={name} className="table-section">
+          <h2>{name}</h2>
+          <Table data={data} />
+        </div>
+      )}
       </div>
     </div>
   );
