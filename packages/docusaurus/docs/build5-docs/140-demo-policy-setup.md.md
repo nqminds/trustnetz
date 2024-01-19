@@ -5,6 +5,10 @@ title: Demo Policy setup
 
 import ExternalContent from '@site/src/components/externalContent.js';
 
+The policy is an augmentation of the baseline BRSKI protocal 
+
+Policy augmented: in baseline BRSK protocol many aspects of policy (which actor can do what) are intentionally left as implementation details. Build 5 fleshed out some detail options, demonstrating a practical way of implementing flexible policy using interoperable methods
+Continuous assurance: the NIST project targets the problem of lifecycle management; this is much more than the initial one off trustworthiness checks that happen a singular event when on boarding a device. Build 5 demonstrates a practical but interoperable way of implementing continuous assurance methods, which can be expanded over time in combination with the flexible policy approach.
 
 <ExternalContent link="https://raw.githubusercontent.com/nqminds/nist-brski/main/packages/schemas/README.md"/>
 
