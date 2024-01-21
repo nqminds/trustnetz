@@ -16,7 +16,7 @@ This runs the command `schemaTools parse-yaml-files ./src`. This validates the y
 
 The directory structure should now look like so:
 ![Alt text](output_file_structure.png)
-![Alt text](image.png)
+
 ### Step 2 - `schemaTools init --config volt.config.json`
 Where the volt.config.json is a volt config file exported for a user on a volt, this initialises the volt connection & builds the schema directory.
 
