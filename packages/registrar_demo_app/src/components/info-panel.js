@@ -50,8 +50,8 @@ const InfoPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType}) =
     // Run the function initially
     fetchData();
 
-    // Set up an interval to run the function every 5 seconds
-    const intervalId = setInterval(fetchData, 1000);
+    // Set up an interval to run the function every 2 seconds
+    const intervalId = setInterval(fetchData, 2000);
 
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
