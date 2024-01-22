@@ -8,10 +8,14 @@ Run the [Volt, VC Rest API and Registrar Rest API following the instructions](..
 ### Step 2
 Configure the app to use the address of the VC Rest API and registrar Rest API and a user as the claim making user from the SQlite database. 
 
-You can do this by setting these 3 constants in src/config.js:
+You can do this by setting these 2 constants in server.js:
 ```js
 const VCRestAPIAddress = "http://localhost:3000";
 const RegistrarAPIAddress = "http://localhost:3001";
+```
+
+And the user constant in src/config.js:
+```js
 const user = "Nick";
 ```
 

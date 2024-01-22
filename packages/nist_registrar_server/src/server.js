@@ -162,6 +162,7 @@ function httpsPost({url, body, ...options}) {
   });
 
   router.post("/submit-vc/:schemaName", asyncHandler(async (req, res) => {
+    console.log("received vc");
     const schemaName = req.params.schemaName;
     const vc = req.body;
     const vcData = JSON.stringify(vc);
@@ -194,7 +195,7 @@ function httpsPost({url, body, ...options}) {
           break;
       }
       await storeClaimAndResponse(claimData, handlerResponse, dbGet, dbRun);
-      res.send(handlerResponse);
+      res.send({response: handlerResponse});
     }
     catch (err) {
       res.send(`Encountered Error: ${err}`);

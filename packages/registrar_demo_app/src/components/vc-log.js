@@ -35,7 +35,6 @@ const VCLog = () => {
       <ul className="scrollable-list">
         {vcLog.slice().reverse().map((item, index) => (
           <li key={index}>
-            {/* {item} */}
             <ListItem
               leftContent={item.split(", ")[0]}  // Left-aligned content
               rightContent={item.split(", ")[1]}  // Right-aligned content
