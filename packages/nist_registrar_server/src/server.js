@@ -162,7 +162,6 @@ function httpsPost({url, body, ...options}) {
   });
 
   router.post("/submit-vc/:schemaName", asyncHandler(async (req, res) => {
-    console.log("received vc");
     const schemaName = req.params.schemaName;
     const vc = req.body;
     const vcData = JSON.stringify(vc);
