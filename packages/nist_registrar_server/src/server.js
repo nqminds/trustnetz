@@ -194,7 +194,7 @@ function httpsPost({url, body, ...options}) {
           break;
       }
       await storeClaimAndResponse(claimData, handlerResponse, dbGet, dbRun);
-      res.send(handlerResponse);
+      res.send({response: handlerResponse});
     }
     catch (err) {
       res.send(`Encountered Error: ${err}`);
