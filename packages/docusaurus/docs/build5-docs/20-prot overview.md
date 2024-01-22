@@ -1,6 +1,6 @@
 ---
 
-title: Protocol Overview
+title: BRKSI Protocol Overview
 ---
 
 # Terminology
@@ -29,13 +29,13 @@ We will use the term `device` interchangeably with the term `pledge` for easier 
 
 # Stages Overview
 
-- 0 - Factory provisioning 
-- 1 - Discover onboarding network 
-- 2 - Discover registrar
-- 3 - Request voucher
-- 4 - Enrol the device
-- 5 - Join the network
-- 6 - Continuous assurance of the network 
+- O - Factory provisioning 
+- A - Discover onboarding network 
+- B - Discover registrar
+- C - Request voucher
+- D - Enrol the device
+- E - Join the network
+- F - Continuous assurance of the network 
 
 
 
@@ -60,14 +60,14 @@ The demonstrated factory provisioning flow is as follows
 
 
 
-# 1 - Onboarding discovery
+# A - Onboarding discovery
 
 There are two methods for discovering potential on boarding networks:
 
-- 1.1 - Search for public WIFIs matching a particular SSID wildcard name
-- 1.2 - Search for WIFIs advertising a particular realm
+- A.1 - Search for public WIFIs matching a particular SSID wildcard name
+- A.2 - Search for WIFIs advertising a particular realm
 
-## 1.1 BRSKI%ssidname wildcard match
+## A.1 BRSKI%ssidname wildcard match
 
 The device will search for all SSIDs matching the wildcard as specified in [^FRIEL]
 
@@ -75,7 +75,7 @@ The device will iterate round robin across successful pattern matches in strengt
 
 Every time an device finds a viable match it will connect to the onboarding network and attempt to discover the registrar.
 
-## 1.2 802.11u eap.arpa
+## A.2 802.11u eap.arpa
 
 The device will search for all networks supporting the `eap.arpa` realm
 
@@ -102,7 +102,7 @@ flowchart LR
 
 
 
-# 2 - Discover Registrar
+# B - Discover Registrar
 
 When the device has a discovered a candidate onboarding network it will attempt to discover the registrar.
 
@@ -135,7 +135,7 @@ TBD: outline the full list of methods for discovering registrar
 
 
 
-# 3 - Request Voucher Registrar
+# C - Request Voucher Registrar
 
 **Preconditions:** before we initiate the Request Voucher we assume the following conditions are met.
 
@@ -163,21 +163,20 @@ TBD: outline the full list of methods for discovering registrar
 
 
 
-
-## 3 - Request Voucher overview (basic)
+## C - Request Voucher overview (basic)
 
 The complete flow of the voucher request process is as follows 
 
-- 3.1 `device` constructs `voucher request` construct request and sign it with `iDevID` private key
-- 3.2 `device` sends `voucher request` to `registrar` 
-- 3.3 `registrar` validates `voucher request` 
-- 3.4 `registrar` forwards `voucher request` to `MASA` 
-- 3.5 `MASA` validates `voucher request`
-- 3.6 `MASA` signs `voucher`
-- 3.7 `MASA` returns `voucher` to `registrar`
-- 3.8 `registrar` validates `voucher`
-- 3.9 `registrar` returns voucher to `device`
-- 3.10. `device` validates `voucher`
+- C.1 `device` constructs `voucher request` construct request and sign it with `iDevID` private key
+- C.2 `device` sends `voucher request` to `registrar` 
+- C.3 `registrar` validates `voucher request` 
+- C.4 `registrar` forwards `voucher request` to `MASA` 
+- C.5 `MASA` validates `voucher request`
+- C.6 `MASA` signs `voucher`
+- C.7 `MASA` returns `voucher` to `registrar`
+- C.8 `registrar` validates `voucher`
+- C.9 `registrar` returns voucher to `device`
+- C.10. `device` validates `voucher`
 
 
 
@@ -199,33 +198,33 @@ sequenceDiagram
     participant MASA
    
     activate device 
-    Note right of device: 3.1 prepare and <br> sign Voucher<br> Request (VR)
-    device->>-registrar: 3.2 send VR
+    Note right of device: E.1 prepare and <br> sign Voucher<br> Request (VR)
+    device->>-registrar: E.2 send VR
   
   	activate registrar    
-    Note right of registrar: 3.3 validate VR
-    registrar->>-MASA: 3.4 forward VR
+    Note right of registrar: E.3 validate VR
+    registrar->>-MASA: E.4 forward VR
     
     activate MASA
-    Note right of MASA: 3.5 validate VR
+    Note right of MASA: E.5 validate VR
     deactivate MASA
   
     activate MASA
-    Note right of MASA: 3.6 sign voucher (V)
+    Note right of MASA: E.6 sign voucher (V)
     deactivate MASA
   
     
     
- 	MASA->>registrar : 3.7 return V
+ 	MASA->>registrar : E.7 return V
  	
  	activate registrar
-    Note right of registrar: 3.8 validate V
+    Note right of registrar: E.8 validate V
     deactivate registrar
     
-    registrar->>device : 3.9 return V
+    registrar->>device : E.9 return V
     
     activate device 
-    Note right of device: 3.10 validate V
+    Note right of device: E.10 validate V
     deactivate device 
         
     
@@ -240,28 +239,28 @@ sequenceDiagram
 
 Validation processes exist at statges
 
-- 3.1
-- 3.3
-- 3.5
-- 3.8
-- 3.10
+- C.1
+- C.3
+- C.5
+- C.8
+- C.10
 
 At each of these stages there is the option to evaluate and enforce a policy decision
 
-3.3 and 3.8 are validation and policy enforcement points implemented at the registrar and therefore ideal for implementing the core netwoking policy 
+C.3 andC.8 are validation and policy enforcement points implemented at the registrar and therefore ideal for implementing the core networking policy 
 
 
 
-# 4 Enrol the device
+# D Enrol the device
 
 Enrolling the device is relatively simple, consisting of the following steps
 
-- 4.1 - device constructs the CSR request for enrolment, which includes the iDeviD
-- 4.2 - device sends the CSR to the registrar (over the authenticated TLS session)
-- 4.3 - the registrar validates the CSR request
-- 4.4 - the registrar constructs the certificate response (LDevID)
-- 4.5 - the registrar returns the certificate to the device
-- 4.6 - the device saves the LDevID (network credentials) locally ready to attach to the network 
+- D.1 - device constructs the CSR request for enrolment, which includes the iDeviD
+- D.2 - device sends the CSR to the registrar (over the authenticated TLS session)
+- D.3 - the registrar validates the CSR request
+- D.4 - the registrar constructs the certificate response (LDevID)
+- D.5 - the registrar returns the certificate to the device
+- D.6 - the device saves the LDevID (network credentials) locally ready to attach to the network 
 
 
 
@@ -285,24 +284,24 @@ sequenceDiagram
  
    
     activate device 
-    Note right of device: 4.1 prepare CSR
-    device->>-registrar: 4.2 send CSR
+    Note right of device: D.1 prepare CSR
+    device->>-registrar: D.2 send CSR
   
   	activate registrar    
-    Note right of registrar: 4.3 validate CSR
+    Note right of registrar: D.3 validate CSR
     deactivate registrar
     
     activate registrar
-    Note right of registrar: 4.4 construct and sign certificate
+    Note right of registrar: D.4 construct and sign certificate
     deactivate registrar
 
     
     
- 	registrar->>device : 4.5 return certificate
+ 	registrar->>device : D.5 return certificate
 
     
     activate device 
-    Note right of device: 4.6 install cerificate locally 
+    Note right of device: D.6 install cerificate locally 
     deactivate device 
         
     
@@ -311,7 +310,7 @@ sequenceDiagram
 
 
 
-# 5 Join the network 
+# E Join the network
 
 Joining the network can be triggered by the device as soon as the the device is in posssions of a a valid LDevID (or other network credential)
 
@@ -327,11 +326,11 @@ sequenceDiagram
     participant registrar
  
     
-    device->>router: 5.1 attempt connection
-    router->>registrar: 5.2 check permission
+    device->>router: E.1 attempt connection
+    router->>registrar: E.2 check permission
     note right of router: this is often <br>implemented by <br>RADIUS protocl 
-    registrar->>router: 5.3 respond permission
-    router->>device: 5.4 accept connection 
+    registrar->>router: E.3 respond permission
+    router->>device: E.4 accept connection 
     
    
 
@@ -339,7 +338,7 @@ sequenceDiagram
 
 
 
-# 6 Continuous assurance of the network
+# F Continuous assurance of the network
 
 
 
@@ -354,23 +353,23 @@ sequenceDiagram
     participant registrar
     participant external-sources 
  
-    external-sources -)registrar: 6.0 attempt connection
-    registrar-)router: 6.1 attempt connection
+    external-sources -)registrar: F.0 attempt connection
+    registrar-)router:F.1 attempt connection
     
     alt CMD to device
-		router->>device: 6.2A ask device to remove itself
-		device->>router: 6.3A confirm
+		router->>device: F.2A ask device to remove itself
+		device->>router: F.3A confirm
 		note right of router: this is an <br>unreliable process<br>cant trust device
 		
 	else manage at router
-		router->>router: 6.2B check permission
+		router->>router: F.2B check permission
 		note right of router: router manages<br> through ejection<br> or subnets
 	
 	end
      
     
-    router->>registrar: 6.4 respond with status
-    router->>external-sources: 6.5 respond with status
+    router->>registrar: F.4 respond with status
+    router->>external-sources: F.5 respond with status
     
    
 
