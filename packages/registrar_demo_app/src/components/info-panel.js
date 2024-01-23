@@ -12,7 +12,7 @@ const InfoPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType}) =
 
   const fetchDeviceData = async (deviceToGetInfoFor) => {
     if (deviceToGetInfoFor) {
-      const selectedDeviceUrlEncoded = encodeURIComponent(selectedDeviceUrlEncoded);
+      const selectedDeviceUrlEncoded = encodeURIComponent(deviceToGetInfoFor);
       const deviceInfo = await fetchJson(`${RegistrarAPIAddress}/info/device/${selectedDeviceUrlEncoded}`);
       setSelectedDeviceInfo(deviceInfo);
     }
