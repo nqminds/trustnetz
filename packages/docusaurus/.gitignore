@@ -30,6 +30,7 @@ yarn-error.log*
 !/docs/build5-docs/60-CA-Demo/10-policy introduction.md
 !/docs/build5-docs/60-CA-Demo/20-steps to set up.md
 
+/docs/build5-docs/40-BRSKI-developer/*
 !/docs/build5-docs/40-BRSKI-developer/.gitkeep
 !docs/build5-docs/40-BRSKI-developer/docs/.gitkeep
 
