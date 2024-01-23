@@ -24,3 +24,7 @@ yarn-error.log*
 # Ignore auto generated schemas
 /docs/schemas/*
 !/docs/schemas/1-schemas.md
+
+/docs/build5-docs/60-CA Demo/*
+/docs/build5-docs/60-CA Demo/10-nist_policy.md
+

@@ -14,8 +14,9 @@
     "write-heading-ids": "docusaurus write-heading-ids",
     "pdf": "node ./scripts/make-pdf.js",
     "generate-proto-docs": "bash ./scripts/compile-protos.sh && docusaurus generate-proto-docs",
-    "import": "bash ./scripts/import-external.sh",
-    "prepare": "node ./scripts/import-schemas.js"
+    "import-external": "bash ./scripts/import-external.sh",
+    "import-schemas": "node ./scripts/import-schemas.js",
+    "prepare": "npm run import-external && npm run import-schemas"
   },
   "dependencies": {
     "@docusaurus/core": "3.0.1",
