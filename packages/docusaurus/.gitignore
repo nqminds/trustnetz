@@ -26,6 +26,10 @@ yarn-error.log*
 !/docs/schemas/1-schemas.md
 
 # Ignore imported files
-/docs/build5-docs/60-CA Demo/*
-/docs/build5-docs/60-CA Demo/10-nist_policy.md
-/docs/build5-docs/60-CA Demo/20-steps to set up.md
+/docs/build5-docs/60-CA-Demo/*
+/docs/build5-docs/60-CA-Demo/10-nist_policy.md
+/docs/build5-docs/60-CA-Demo/20-steps to set up.md
+
+/docs/build5-docs/40-BRSKI-developer/
+
+/docs/build5-docs/35-BRSKI-demonstrator/20-demo-setup.md
