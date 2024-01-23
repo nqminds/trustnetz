@@ -10,7 +10,7 @@ nistVcRestServerAddress: The http address of the running @nqminds/nist_vc_rest_s
 ## Setup
 
 ### Step 1
-Follow [instructions to setup and run the NIST VC Rest API](../nist_vc_rest_server/README.md)
+Follow [instructions to setup and run the NIST VC Rest API](https://github.com/nqminds/nist-brski/blob/main/packages/nist_vc_rest_server/README.md)
 
 ### Step 2
 Copy the address at which the NIST VC Rest API is running into the `config.json` file.
@@ -24,10 +24,10 @@ Run `npm run dev` to run the rest API.
 ## Usage
 
 ### Step 1
-Create a claim you wish to make following a [VC schema](../schemas/README.md).
+Create a claim you wish to make following a [VC schema](https://github.com/nqminds/nist-brski/blob/main/packages/schemas/README.md).
 
 ### Step 2
-Follow [the instructions to use the nist VC rest to sign your VC](../nist_vc_rest_server/README.md)
+Follow [the instructions to use the nist VC rest to sign your VC](https://github.com/nqminds/nist-brski/blob/main/packages/nist_vc_rest_server/README.md)
 
 ### Step 3
 Make a post request to submit your VC to the registrar specifying the schema_name in the post request parameter like so `{address}/submit-vc/{schema_name}`, it will attempt to verify your VC using the NIST VC Rest API and action the claim made by the VC to update the sqlite database.
