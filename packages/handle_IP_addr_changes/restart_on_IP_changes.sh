@@ -5,7 +5,6 @@ if [ "$#" -ne 2 ]; then
   exit 1
 fi
 
-
 interface="$1"
 json_file_path="$2"
 
@@ -41,7 +40,6 @@ post_update_actions() {
   sudo /bin/systemctl restart registrar-app.service
 }
 
-
 # Initialize the current IP address
 current_ip=$(get_ip_address)
 
@@ -51,6 +49,20 @@ if [ -z "$current_ip" ]; then
 fi
 
 echo "Initial IP address for $interface: $current_ip"
+
+# Check if the IP address in the JSON file matches the current IP address
+json_ip=$(jq -r '.volt.address' "$json_file_path")
+json_ip_without_port="${json_ip%%:*}"
+
+if [ "$json_ip_without_port" != "$current_ip" ]; then
+  echo "IP address in JSON file doesn't match current IP address. Updating..."
+  
+  # Update the JSON file
+  update_json_file "$json_ip_without_port" "$current_ip" "$json_file_path"
+  
+  # Perform additional actions after updating the JSON file
+  post_update_actions
+fi
 
 # Read the JSON file and update IP addresses
 while true; do
@@ -63,7 +75,7 @@ while true; do
     
     # Update the JSON file
     update_json_file "$current_ip" "$new_ip" "$json_file_path"
-
+    
     # Perform additional actions after updating the JSON file
     post_update_actions
     
