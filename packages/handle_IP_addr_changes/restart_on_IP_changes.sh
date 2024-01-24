@@ -36,8 +36,6 @@ post_update_actions() {
   echo "Performing post-update actions..."
   sudo systemctl restart tdxvolt.service
   sudo systemctl restart vc-server.service
-  sudo /bin/systemctl restart registrar-rest-server.service
-  sudo /bin/systemctl restart registrar-app.service
 }
 
 # Initialize the current IP address
