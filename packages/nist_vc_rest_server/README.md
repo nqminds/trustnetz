@@ -9,7 +9,7 @@ A user / process that wishes to communicate information to the registrar must si
 ## Setup
 
 ### Step 1
-Follow the [instructions to populate a volt with the schemas and set it up for the VC toolchain](../schemas/README.md)
+Follow the [instructions to populate a volt with the schemas and set it up for the VC toolchain](https://github.com/nqminds/nist-brski/blob/main/packages/schemas/README.md)
 
 
 ### Step 2

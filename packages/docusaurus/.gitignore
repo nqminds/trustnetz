@@ -24,3 +24,15 @@ yarn-error.log*
 # Ignore auto generated schemas
 /docs/schemas/*
 !/docs/schemas/1-schemas.md
+
+# Ignore imported files
+/docs/build5-docs/60-CA-Demo/*
+!/docs/build5-docs/60-CA-Demo/60-CA-Demo.md
+!/docs/build5-docs/60-CA-Demo/610-policy-introduction.md
+!/docs/build5-docs/60-CA-Demo/620-steps-to-set-up.md
+
+/docs/build5-docs/40-BRSKI-developer/*
+!/docs/build5-docs/40-BRSKI-developer/.gitkeep
+!docs/build5-docs/40-BRSKI-developer/docs/.gitkeep
+
+/docs/build5-docs/35-BRSKI-demonstrator/20-demo-setup.md

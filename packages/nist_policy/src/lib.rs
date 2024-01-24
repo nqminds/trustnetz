@@ -247,8 +247,6 @@ pub fn check_device_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool>
 
     println!("Manufacturer: {}", serde_json::to_string_pretty(&manufacturer_record).unwrap());
 
-    let manufacturer_id = manufacturer_record["id"].to_string().trim_matches('"').to_owned();
-
     // Query to check if the device is allowed to connect
     let is_allowed_to_connect: Result<Option<bool>> = conn.query_row(
         "
@@ -294,22 +292,14 @@ pub fn check_device_vulnerable(idevid: &X509, path_to_sql_db: &str) -> Result<bo
     let conn = Connection::open_with_flags(path_to_sql_db, flags)?;
 
     // extract deviceId and manufacturer from idevid
-    let issuer_name = idevid.issuer_name();
     let subject_name = idevid.subject_name();
 
-    // Convert the issuer name to a human-readable string
-    let issuer_name_str = issuer_name
-        .entries_by_nid(openssl::nid::Nid::COMMONNAME)
-        .next()
-        .map(|entry| entry.data().as_utf8().unwrap().to_string()) // Convert &str to String
-        .unwrap_or_else(|| "Unknown Issuer".to_string());
     let subject_name_str = subject_name
         .entries_by_nid(openssl::nid::Nid::COMMONNAME)
         .next()
         .map(|entry| entry.data().as_utf8().unwrap().to_string()) // Convert &str to String
         .unwrap_or_else(|| "Unknown Issuer".to_string());
 
-    let manufacturer_name = issuer_name_str.to_owned();
     let device_name = subject_name_str.to_owned();
 
     // Find pledge's device entity in device table, if it doesn't exist, add device entity
