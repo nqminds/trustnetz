@@ -3,7 +3,8 @@
 Bash script which handles changes in IP address during operation and restarts the required services.
 
 ## Requirements:
-- `sudo apt-get install jq`
+
+You will need to run `sudo apt-get install jq` to install [jq](https://linuxhint.com/bash_jq_command/) which is used to parse json files in bash.
 
 In order for this to work you also need to make sure that the user running the script has the necessary sudo privileges without a password prompt for these specific systemctl commands. You can configure sudo by editing the sudoers file using the `visudo` command:
 
