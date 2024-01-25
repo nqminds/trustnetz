@@ -103,7 +103,6 @@ const ControlPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType,
       const claim = {
         "device": selectedDevice,
         "deviceType": selectedDeviceType,
-        "trust": false,
       };
       await signAndSubmitClaim(claim, "device_type_binding");
 		} catch (err) {
