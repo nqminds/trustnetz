@@ -401,7 +401,16 @@ pub fn check_device_vulnerable(idevid: &X509, path_to_sql_db: &str) -> Result<bo
     }
 }
 
-pub fn generate_x509_certificate(serial_number: u32, issuer_name: &str) -> Result<X509, openssl::error::ErrorStack> {
+pub fn generate_x509_certificate(serial_number_hex: &str, issuer_name: &str) -> Result<X509, Box<dyn std::error::Error>> {
+    let serial_number_hex = if serial_number_hex.starts_with("0x") {
+        // Remove the "0x" prefix if present
+        &serial_number_hex[2..]
+    } else {
+        serial_number_hex
+    };
+    // Convert the hexadecimal serial number string to a number
+    let serial_number = u32::from_str_radix(serial_number_hex, 16)?;
+
     // Generate a new RSA key pair
     let rsa = Rsa::generate(2048)?;
     let private_key = PKey::from_rsa(rsa)?;
@@ -724,11 +733,12 @@ mod tests {
 
     #[test]
     fn check_generates_validx509_cert() {
-        let serial_number = 123;
+        let serial_number_hex = "0x3039";
+        let serial_number = 12345;
         let serial_number_str = serial_number.to_string();
         let issuer_name: &str = "idevca";
         
-        match generate_x509_certificate(serial_number, issuer_name) {
+        match generate_x509_certificate(serial_number_hex, issuer_name) {
             Ok(certificate) => {
                 // Get the issuer name
                 let issuer_name_extracted = certificate.issuer_name();
@@ -764,7 +774,7 @@ mod tests {
     #[test]
     fn check_generated_cert_from_serial_number_is_accepted_but_untrusted() {
         let path_to_sql_db = "./tests/EmptyTablesDatabase.sqlite";
-        let idevid = generate_x509_certificate(2, "www.manufacturer.com").unwrap();
+        let idevid = generate_x509_certificate("0x2", "www.manufacturer.com").unwrap();
 
         // Use with_temporary_database to perform the operation and check the result
         let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
@@ -777,7 +787,7 @@ mod tests {
     #[test]
     fn check_device_generating_cert_from_serial_number_is_trusted() {
         let path_to_sql_db = "./tests/ExistingDeviceUsingSerialNumberTrusted.sqlite";
-        let idevid = generate_x509_certificate(2, "www.manufacturer.com").unwrap();
+        let idevid = generate_x509_certificate("0x2", "www.manufacturer.com").unwrap();
 
         // Use with_temporary_database to perform the operation and check the result
         let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
