@@ -59,13 +59,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let message = from_str::<Value>(std::str::from_utf8(&buf[..length])
             .expect("Unexpected error parsing iDevID"))
             .expect("Unexpected error parsing json");
-
-        println!("{}", message["Revoke"]);
-
-        let args: Vec<&str> = message["Revoke"].as_str().unwrap().split(" ").collect();
-
-        let output = std::process::Command::new("/etc/hostapd/CA/local_revoke_serial.sh")
-            .args([args[0], args[1]]).output().expect("Error calling LocalRevoke");
+        let array = message["Revoke"].as_array().unwrap();
+        let mut args = Vec::new();
+        for item in array {
+            args.push(item.as_str().unwrap())
+        }
+        let output = std::process::Command::new("/etc/hostapd/CA/local_revoke_serial_multiple_args.sh")
+            .args(args).output().expect("Error calling LocalRevoke");
         stream.write_all(json!({
             "Stdout": String::from_utf8(output.stdout).expect("Error parsing local revoke output"),
             "Stderr": String::from_utf8(output.stderr).expect("Error parsing local revoke output")
