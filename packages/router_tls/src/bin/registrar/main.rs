@@ -1,5 +1,5 @@
 use std::error::Error;
-use std::fs::read;
+use std::fs::{read, read_to_string};
 use std::process::Stdio;
 use std::sync::Arc;
 use std::time::Duration;
@@ -46,21 +46,21 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let (stream, _peer_addr) = listener.accept().await?;
     let mut stream = acceptor.accept(stream).await?;
 
+    let mut buf = [0u8; 2048];
     loop {
-        let idevid_bytes = read("/etc/brski/idevid.crt").expect("Cannot read iDevID.crt"); // TODO read iDevID from database
-        let idevid_obj = X509::from_pem(idevid_bytes.as_slice()).expect("Error parsing iDevID");
+        let logs = read_to_string("/var/log/brski-registrar.log").expect("Cannot read brski-registrar.log");
+        for line in logs.split("\n") {
+            let parts: Vec<&str> = line.split(" ").collect();
+            let idevid = nist_policy::generate_x509_certificate(parts[1], "manufacturer").unwrap();
+            if !nist_policy::check_device_trusted(&idevid, TRUST_DB_PATH).expect("Error checking device trust") ||
+                !nist_policy::check_manufacturer_trusted(&idevid, TRUST_DB_PATH).expect("Error checking manufacturer trust") ||
+                nist_policy::check_device_vulnerable(&idevid, TRUST_DB_PATH).expect("Error checking device vulnerability") {
 
-        if !nist_policy::check_device_trusted(&idevid_obj, TRUST_DB_PATH).expect("Error checking device trust") ||
-            !nist_policy::check_manufacturer_trusted(&idevid_obj, TRUST_DB_PATH).expect("Error checking manufacturer trust") ||
-            nist_policy::check_device_vulnerable(&idevid_obj, TRUST_DB_PATH).expect("Error checking device vulnerability") {
-
-            stream.write_all(json!({"Revoke": String::from_utf8(idevid_bytes) // TODO should be lDevID
-                .expect("Error parsing iDevID")}).to_string().as_bytes()).await
-                .expect("Error sending message to router");
-
-            let mut buf = [0u8; 2048];
-            let length = stream.read(&mut buf).await.expect("Error receiving message from router");
-            println!("{}", std::str::from_utf8(&buf[..length]).expect("Unexpected character"));
+                stream.write_all(json!({"Revoke": format!("{} {}", parts[3], parts[4])})
+                    .to_string().as_bytes()).await.expect("Error sending message to router");
+                let length = stream.read(&mut buf).await.expect("Error receiving message from router");
+                println!("{}", std::str::from_utf8(&buf[..length]).expect("Unexpected character"));
+            }
         }
         sleep(Duration::from_secs(5)).await;
     }
