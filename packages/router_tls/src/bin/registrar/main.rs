@@ -41,7 +41,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let listener = TcpListener::bind("0.0.0.0:3030").await?;
 
     std::process::Command::new("avahi-publish")
-        .args(["-s", "brski-registrar-CA-monitor", "_brski._tcp", "3030"]).stdout(Stdio::null()).spawn().unwrap();
+        .args(["-s", "brski-registrar-CA-monitor", "_brski._tcp", "3030"]).stdout(Stdio::null()).spawn()?;
 
     let (stream, _peer_addr) = listener.accept().await?;
     let mut stream = acceptor.accept(stream).await?;
@@ -56,7 +56,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let mut revoke = Vec::new();
         for line in lines {
             let parts: Vec<&str> = line.split(" ").collect();
-            let idevid = nist_policy::generate_x509_certificate(parts[1], "manufacturer").unwrap();
+            let idevid = nist_policy::generate_x509_certificate(parts[1], "manufacturer")
+                .expect("Error generating certificate from serial number");
             if !nist_policy::check_device_trusted(&idevid, TRUST_DB_PATH).expect("Error checking device trust") ||
                 !nist_policy::check_manufacturer_trusted(&idevid, TRUST_DB_PATH).expect("Error checking manufacturer trust") ||
                 nist_policy::check_device_vulnerable(&idevid, TRUST_DB_PATH).expect("Error checking device vulnerability") {

@@ -31,8 +31,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
             ))
         )?;
 
-    let output = std::process::Command::new("avahi-browse").args(["-r", "_brski._tcp", "-t", "-p"]).output().unwrap();
-    let output = String::from_utf8(output.stdout).unwrap();
+    let output = std::process::Command::new("avahi-browse").args(["-r", "_brski._tcp", "-t", "-p"]).output()?;
+    let output = String::from_utf8(output.stdout)?;
 
     let mut address = "";
     let mut port = "";
@@ -59,10 +59,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let message = from_str::<Value>(std::str::from_utf8(&buf[..length])
             .expect("Unexpected error parsing iDevID"))
             .expect("Unexpected error parsing json");
-        let array = message["Revoke"].as_array().unwrap();
         let mut args = Vec::new();
-        for item in array {
-            args.push(item.as_str().unwrap())
+        for item in message["Revoke"].as_array().expect("Error parsing arguments") {
+            if let Some(str) = item.as_str() {
+                args.push(str);
+            }
         }
         let output = std::process::Command::new("/etc/hostapd/CA/local_revoke_serial_multiple_args.sh")
             .args(args).output().expect("Error calling LocalRevoke");
