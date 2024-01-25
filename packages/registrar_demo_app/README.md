@@ -1,4 +1,4 @@
-This is the NIST Registrar Demo App 
+# Registrar Demo App
 
 ## Setup
 
