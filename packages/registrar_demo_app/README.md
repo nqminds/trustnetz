@@ -1,9 +1,9 @@
-This is the NIST Registrar Demo App 
+# Registrar Demo App
 
 ## Setup
 
 ### Step 1
-Run the [Volt, VC Rest API and Registrar Rest API following the instructions](../nist_registrar_server/README.md).
+Run the [Volt, VC Rest API and Registrar Rest API following the instructions](https://github.com/nqminds/nist-brski/blob/main/packages/nist_registrar_server/README.md).
 
 ### Step 2
 Configure the app to use the address of the VC Rest API and registrar Rest API and a user as the claim making user from the SQlite database. 

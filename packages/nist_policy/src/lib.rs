@@ -1,4 +1,7 @@
-use openssl::x509::{X509};
+use openssl::asn1::Asn1Integer;
+use openssl::x509::{X509, X509Name, X509Builder};
+use openssl::rsa::Rsa;
+use openssl::pkey::PKey;
 use rusqlite::{params, Connection, Error, Result, OpenFlags};
 use serde::{Serialize, Deserialize};
 use serde_json::{Value, to_value};
@@ -172,7 +175,7 @@ pub fn check_device_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool>
         .entries_by_nid(openssl::nid::Nid::COMMONNAME)
         .next()
         .map(|entry| entry.data().as_utf8().unwrap().to_string()) // Convert &str to String
-        .unwrap_or_else(|| "Unknown Issuer".to_string());
+        .unwrap_or_else(|| "Unknown Subject Name".to_string());
 
     let manufacturer_name = issuer_name_str.to_owned();
     let device_name = subject_name_str.to_owned();
@@ -298,7 +301,7 @@ pub fn check_device_vulnerable(idevid: &X509, path_to_sql_db: &str) -> Result<bo
         .entries_by_nid(openssl::nid::Nid::COMMONNAME)
         .next()
         .map(|entry| entry.data().as_utf8().unwrap().to_string()) // Convert &str to String
-        .unwrap_or_else(|| "Unknown Issuer".to_string());
+        .unwrap_or_else(|| "Unknown Subject Name".to_string());
 
     let device_name = subject_name_str.to_owned();
 
@@ -396,6 +399,47 @@ pub fn check_device_vulnerable(idevid: &X509, path_to_sql_db: &str) -> Result<bo
             Err(err)
         }
     }
+}
+
+pub fn generate_x509_certificate(serial_number: u32, issuer_name: &str) -> Result<X509, openssl::error::ErrorStack> {
+    // Generate a new RSA key pair
+    let rsa = Rsa::generate(2048)?;
+    let private_key = PKey::from_rsa(rsa)?;
+
+    // Create a new X.509 certificate
+    let mut builder = X509Builder::new()?;
+    builder.set_version(2)?;
+
+    // Set the serial number
+    let serial_asn1 = Asn1Integer::from_bn(&openssl::bn::BigNum::from_u32(serial_number).unwrap())?;
+    builder.set_serial_number(&serial_asn1)?;
+
+    // Set the issuer name
+    let mut issuer_name_builder = X509Name::builder()?;
+    issuer_name_builder.append_entry_by_nid(openssl::nid::Nid::COMMONNAME, issuer_name)?;
+    let issuer_name = issuer_name_builder.build();
+    builder.set_issuer_name(&issuer_name)?;
+
+    // Convert the serial number to a string for the subject name
+    let subject_name_str = serial_number.to_string();
+    // Set the subject name to the serial number converted to a string
+    let mut subject_name_builder = X509Name::builder()?;
+    subject_name_builder.append_entry_by_nid(openssl::nid::Nid::COMMONNAME, &subject_name_str)?;
+    let subject_name = subject_name_builder.build();
+    builder.set_subject_name(&subject_name)?;
+    
+
+    // Set validity period (in this example, valid for 365 days)
+    builder.set_not_before(openssl::asn1::Asn1Time::days_from_now(0)?.as_ref())?;
+    builder.set_not_after(openssl::asn1::Asn1Time::days_from_now(365)?.as_ref())?;
+
+    // Attach a public key to the certificate
+    builder.set_pubkey(&private_key)?;
+
+    // Build the X509 certificate
+    let certificate = builder.build();
+
+    Ok(certificate)
 }
 
 #[cfg(test)]
@@ -673,6 +717,71 @@ mod tests {
         // Use with_temporary_database to perform the operation and check the result
         let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
             let result = check_device_vulnerable(idevid, temp_file_path).unwrap();
+            assert_eq!(result, true);
+            Ok(true)
+        }).unwrap();
+    }
+
+    #[test]
+    fn check_generates_validx509_cert() {
+        let serial_number = 123;
+        let serial_number_str = serial_number.to_string();
+        let issuer_name: &str = "idevca";
+        
+        match generate_x509_certificate(serial_number, issuer_name) {
+            Ok(certificate) => {
+                // Get the issuer name
+                let issuer_name_extracted = certificate.issuer_name();
+                // Convert the issuer name to a human-readable string
+                let issuer_name_str = issuer_name_extracted
+                    .entries_by_nid(openssl::nid::Nid::COMMONNAME)
+                    .next()
+                    .map(|entry| entry.data().as_utf8().unwrap().to_string()) // Convert &str to String
+                    .unwrap_or_else(|| "Unknown Issuer".to_string());
+                println!("ISSUER NAME::: {:?}", issuer_name_extracted);
+                println!("ISSUER NAME STR::: {:?}", issuer_name_str);
+                let manufacturer_name = issuer_name_str.to_owned();
+                println!("MANUFACTURER NAME::: {:?}", manufacturer_name);
+                assert_eq!(manufacturer_name, issuer_name);
+
+                // Get the subject name
+                let subject_name = certificate.subject_name();
+
+                let subject_name_str = subject_name
+                    .entries_by_nid(openssl::nid::Nid::COMMONNAME)
+                    .next()
+                    .map(|entry| entry.data().as_utf8().unwrap().to_string()) // Convert &str to String
+                    .unwrap_or_else(|| "Unknown Subject Name".to_string());
+            
+                let device_name = subject_name_str.to_owned();
+                println!("DEVICE NAME::: {:?}", device_name);
+                assert_eq!(device_name, serial_number_str);
+            }
+            Err(err) => eprintln!("Error generating certificate: {}", err),
+        }
+    }
+
+    #[test]
+    fn check_generated_cert_from_serial_number_is_accepted_but_untrusted() {
+        let path_to_sql_db = "./tests/EmptyTablesDatabase.sqlite";
+        let idevid = generate_x509_certificate(2, "www.manufacturer.com").unwrap();
+
+        // Use with_temporary_database to perform the operation and check the result
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            let result = check_device_trusted(idevid, temp_file_path).unwrap();
+            assert_eq!(result, false);
+            Ok(true)
+        }).unwrap();
+    }
+
+    #[test]
+    fn check_device_generating_cert_from_serial_number_is_trusted() {
+        let path_to_sql_db = "./tests/ExistingDeviceUsingSerialNumberTrusted.sqlite";
+        let idevid = generate_x509_certificate(2, "www.manufacturer.com").unwrap();
+
+        // Use with_temporary_database to perform the operation and check the result
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            let result = check_device_trusted(idevid, temp_file_path).unwrap();
             assert_eq!(result, true);
             Ok(true)
         }).unwrap();
