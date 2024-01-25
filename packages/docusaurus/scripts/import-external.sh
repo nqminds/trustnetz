@@ -16,6 +16,8 @@ cp ../../../nist_vc_rest_server/*.png "60-CA-Demo/"
 cp "../../../nist_registrar_server/README.md" "60-CA-Demo/660-nist_registrar_server.md"
 cp ../../../nist_registrar_server/*.png "60-CA-Demo/"
 
+cp "../../../registrar_demo_app/README.md" "60-CA-Demo/670-registrar_demo_app.md"
+cp ../../../registrar_demo_app/*.png "60-CA-Demo/"
 
 
 wget "https://raw.githubusercontent.com/nqminds/brski/main/README.md" -O "40-BRSKI developer/10-BRSKI-build-instructions.md"
