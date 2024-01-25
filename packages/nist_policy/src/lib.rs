@@ -1,5 +1,5 @@
 use openssl::asn1::Asn1Integer;
-use openssl::x509::{X509, X509Name, X509Extension, X509Builder};
+use openssl::x509::{X509, X509Name, X509Builder};
 use openssl::rsa::Rsa;
 use openssl::pkey::PKey;
 use rusqlite::{params, Connection, Error, Result, OpenFlags};
@@ -401,7 +401,7 @@ pub fn check_device_vulnerable(idevid: &X509, path_to_sql_db: &str) -> Result<bo
     }
 }
 
-fn generate_x509_certificate(serial_number: u32, issuer_name: &str) -> Result<X509, openssl::error::ErrorStack> {
+pub fn generate_x509_certificate(serial_number: u32, issuer_name: &str) -> Result<X509, openssl::error::ErrorStack> {
     // Generate a new RSA key pair
     let rsa = Rsa::generate(2048)?;
     let private_key = PKey::from_rsa(rsa)?;
@@ -435,10 +435,6 @@ fn generate_x509_certificate(serial_number: u32, issuer_name: &str) -> Result<X5
 
     // Attach a public key to the certificate
     builder.set_pubkey(&private_key)?;
-
-    // Add a basic key usage extension (if needed)
-    let key_usage_extension = X509Extension::new(None, None, "keyUsage", "digitalSignature")?;
-    builder.append_extension(key_usage_extension)?;
 
     // Build the X509 certificate
     let certificate = builder.build();
