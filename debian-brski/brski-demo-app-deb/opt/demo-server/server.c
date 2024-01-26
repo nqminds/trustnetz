@@ -99,6 +99,51 @@ static int execute_script_async(const char *script, const char *output_file) {
     }
 }
 
+static int handle_wlan0_status(struct MHD_Connection *connection) {
+    char buffer[1024];
+    FILE *fp = popen("iw wlan0 link", "r");
+    if (fp == NULL) {
+        fprintf(stderr, "Failed to run command\n");
+        return MHD_NO;
+    }
+
+    // Use dynamic string to accumulate the output
+    size_t capacity = 1024;
+    size_t size = 0;
+    char *output = malloc(capacity);
+    if (output == NULL) {
+        perror("Memory allocation failed");
+        pclose(fp);
+        return MHD_NO;
+    }
+
+    // Read the output in chunks
+    while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+        size_t chunk_size = strlen(buffer);
+        if (size + chunk_size >= capacity) {
+            capacity *= 2; // Double the capacity
+            char *new_output = realloc(output, capacity);
+            if (new_output == NULL) {
+                perror("Memory reallocation failed");
+                free(output);
+                pclose(fp);
+                return MHD_NO;
+            }
+            output = new_output;
+        }
+        memcpy(output + size, buffer, chunk_size);
+        size += chunk_size;
+    }
+    output[size] = '\0'; // Null-terminate the output
+
+    pclose(fp);
+
+    struct MHD_Response *response = MHD_create_response_from_buffer(size, output, MHD_RESPMEM_MUST_FREE);
+    int ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+    MHD_destroy_response(response);
+    return ret;
+}
+
 
 static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *connection,
                                             const char *url, const char *method,
@@ -106,6 +151,10 @@ static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *co
                                             size_t *upload_data_size, void **con_cls) {
     static int dummy;
     enum MHD_Result ret;
+
+    if (strcmp(url, "/wlan0-status") == 0) {
+        return handle_wlan0_status(connection);
+    }
     
     if (strcmp(method, "GET") == 0) {
         struct MHD_Response *response;

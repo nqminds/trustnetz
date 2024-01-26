@@ -54,6 +54,17 @@ function sendRequest(endpoint, logElementId, statusElementId, statusText, clearL
     });
 }
 
+function updateWlanStatus() {
+    fetch('/wlan0-status')
+        .then(response => response.text())
+        .then(text => {
+            document.getElementById('wlanStatus').textContent = text;
+        })
+        .catch(error => {
+            console.error('Error fetching wlan0 status:', error);
+        });
+}
+
 document.getElementById('onboard').onclick = function() {
     sendRequest('/onboard', 'onboardLog', 'onboardStatus', 'Onboarded', 'offboardLog', 'offboardStatus', '../onboarding_log_file.txt');
 };
@@ -61,3 +72,6 @@ document.getElementById('onboard').onclick = function() {
 document.getElementById('offboard').onclick = function() {
     sendRequest('/offboard', 'offboardLog', 'offboardStatus', 'Offboarded', 'onboardLog', 'onboardStatus', '../offboarding_log_file.txt');
 };
+
+// Update every 10 seconds
+setInterval(updateWlanStatus, 10000);
