@@ -104,10 +104,20 @@ When you want to remove the IoT device from the secure network and delete its ne
 **Completes Offboarding:** The device is now offboarded, and the secure connection profile is successfully removed.
 
 
+### The same functionality is directly accessible through scripts
+
+For onboarding/offboarding we can run the following commands:
+
+Onboard
+```sh
+sudo ./opt/demo-server/bash-scripts/onboard.sh
+```
 
 
-
-
+Offboard
+```sh
+sudo ./opt/demo-server/bash-scripts/offboard.sh
+```
 
 
 
