@@ -62,8 +62,7 @@ Remotley at [http://openport.io:36701/](http://openport.io:36701/) or locally at
 
 #### Onboard Button
 
-Initiates the onboarding process for an IoT device, connecting it to a secure network
-
+Initiates the onboarding process for an IoT device, connecting it to a secure network.
 **Start Onboarding:** The application begins the onboarding process.
 
 **Disconnects from Wi-Fi:** If the device is currently connected to any Wi-Fi network, it attempts to disconnect.
@@ -75,9 +74,10 @@ If the device is not active on a network, it may show an error but will proceed 
 **Finds Registrar:** The app looks for the registrar's IP address and port.
 
 **Runs BRSKI Commands:** It executes the BRSKI (Bootstrapping Remote Secure Key Infrastructures) process, which includes:
-    *Sending a voucher* request to the registrar.
-    *Signing certificates* with the registrar's information.
-    *Receives Certificates: *The app retrieves signed certificates necessary for secure communication.
+
+*Sending a voucher* request to the registrar.
+*Signing certificates* with the registrar's information.
+*Receives Certificates:* The app retrieves signed certificates necessary for secure communication.
 
 **Disconnects from brski-open:** After obtaining the certificates, the device disconnects from the brski-open network.
 
@@ -90,12 +90,18 @@ If the device is not active on a network, it may show an error but will proceed 
 ![Onboarding](https://github.com/ionut-cmd/tmp_img_storage/blob/main/offboard.png?raw=true)
 
 
+#### Offboard Button
+
+When you want to remove the IoT device from the secure network and delete its network profile, you use this button. Here's the offboarding sequence:
 
 
+**Begins Offboarding:** The application starts the offboarding process for the IoT device.
 
+**Disconnects from Network:** The device is disconnected from the current network (registrar-tls-ca).
 
+**Removes Connection Profile:** The network connection profile for registrar-tls-ca is deleted from the device, ensuring it no longer automatically connects to this network.
 
-
+**Completes Offboarding:** The device is now offboarded, and the secure connection profile is successfully removed.
 
 
 
