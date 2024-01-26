@@ -7,4 +7,4 @@
 
 ![Onboarding](https://drive.google.com/ucexport=view&id=1VzdIlyfIkCzffxPAWTQUXCKbd_mD2xGB)
 
-![Example Image](https://drive.google.com/uc?id=1VzdIlyfIkCzffxPAWTQUXCKbd_mD2xGB)
+![Onboarding](https://drive.google.com/uc?id=1VzdIlyfIkCzffxPAWTQUXCKbd_mD2xGB)
