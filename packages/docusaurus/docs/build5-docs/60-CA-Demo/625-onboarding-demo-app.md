@@ -57,15 +57,36 @@ Remotley at [http://openport.io:36701/](http://openport.io:36701/) or locally at
 
 ## Usage
 
-### Onboarding Process
+### Onboarding Process:
 ![Onboarding](https://github.com/ionut-cmd/tmp_img_storage/blob/main/onboard.png?raw=true)
 
 #### Onboard Button
 
 Initiates the onboarding process for an IoT device, connecting it to a secure network
 
+**Start Onboarding:** The application begins the onboarding process.
+
+**Disconnects from Wi-Fi:** If the device is currently connected to any Wi-Fi network, it attempts to disconnect.
+
+If the device is not active on a network, it may show an error but will proceed with the process.
+
+**Connects to brski-open Network:** The device connects to an open Wi-Fi network named brski-open to discover the registrar.
+
+**Finds Registrar:** The app looks for the registrar's IP address and port.
+
+**Runs BRSKI Commands:** It executes the BRSKI (Bootstrapping Remote Secure Key Infrastructures) process, which includes:
+    *Sending a voucher* request to the registrar.
+    *Signing certificates* with the registrar's information.
+    *Receives Certificates: *The app retrieves signed certificates necessary for secure communication.
+
+**Disconnects from brski-open:** After obtaining the certificates, the device disconnects from the brski-open network.
+
+**Connects to registrar-tls-ca Network:** It connects to a secure network named registrar-tls-ca, which uses the obtained certificates for secure EAP-TLS authentication.
+
+**Completes Onboarding:** The onboarding process is completed, and the device is now securely connected to the registrar-tls-ca network.
 
 
+### Offboarding Process:
 ![Onboarding](https://github.com/ionut-cmd/tmp_img_storage/blob/main/offboard.png?raw=true)
 
 
