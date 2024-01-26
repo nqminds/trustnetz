@@ -53,23 +53,32 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let stream = TcpStream::connect(format!("{}:{}", address, port)).await?;
     let mut stream = connector.connect(server_name, stream).await?;
 
-    let mut buf = [0u8; 2048];
     loop {
-        let length = stream.read(&mut buf).await.expect("Error receiving message from registrar");
-        let message = from_str::<Value>(std::str::from_utf8(&buf[..length])
-            .expect("Unexpected error parsing iDevID"))
-            .expect("Unexpected error parsing json");
+        let mut received = Vec::new();
+        loop {
+            let mut buf = [0u8; 64];
+            let length = stream.read(&mut buf).await.expect("Error receiving message from router");
+            received.append(&mut buf[..length].to_vec());
+            if buf[length-1] == 0u8 {
+                received.pop();
+                break;
+            }
+        }
+        let json = from_str::<Value>(String::from_utf8(received)?.as_str())?;
+        println!("Command received: {}", json);
         let mut args = Vec::new();
-        for item in message["Revoke"].as_array().expect("Error parsing arguments") {
+        for item in json["Revoke"].as_array().expect("Error parsing arguments") {
             if let Some(str) = item.as_str() {
                 args.push(str);
             }
         }
         let output = std::process::Command::new("/etc/hostapd/CA/local_revoke_serial_multiple_args.sh")
             .args(args).output().expect("Error calling LocalRevoke");
-        stream.write_all(json!({
-            "Stdout": String::from_utf8(output.stdout).expect("Error parsing local revoke output"),
-            "Stderr": String::from_utf8(output.stderr).expect("Error parsing local revoke output")
-        }).to_string().as_bytes()).await.expect("Error sending message to registrar");
+        let message = [json!({
+                "Stdout": String::from_utf8(output.stdout).expect("Error parsing local revoke output"),
+                "Stderr": String::from_utf8(output.stderr).expect("Error parsing local revoke output")
+            }).to_string().as_bytes(),
+            [b'\0'].as_slice()].concat();
+        stream.write_all(message.as_slice()).await.expect("Error sending message to registrar");
     }
 }

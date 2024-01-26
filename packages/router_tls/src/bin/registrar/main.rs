@@ -5,7 +5,7 @@ use std::sync::Arc;
 use std::time::Duration;
 use openssl::pkey::PKey;
 use openssl::x509::X509;
-use serde_json::json;
+use serde_json::{from_str, json, Value};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpListener;
 use tokio::time::sleep;
@@ -46,7 +46,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let (stream, _peer_addr) = listener.accept().await?;
     let mut stream = acceptor.accept(stream).await?;
 
-    let mut buf = [0u8; 2048];
     loop {
         let logs = read_to_string("/var/log/brski-registrar.log").expect("Cannot read brski-registrar.log");
         let mut lines: Vec<&str> = logs.split("\n").collect();
@@ -66,10 +65,22 @@ async fn main() -> Result<(), Box<dyn Error>> {
             }
         }
         if !revoke.is_empty() {
-            stream.write_all(json!({"Revoke": revoke}).to_string().as_bytes()).await.expect("Error sending message to router");
-            let length = stream.read(&mut buf).await.expect("Error receiving message from router");
-            println!("{}", std::str::from_utf8(&buf[..length]).expect("Unexpected character"));
+            let message = [json!({"Revoke": revoke}).to_string().as_bytes(), [b'\0'].as_slice()].concat();
+            stream.write_all(message.as_slice()).await.expect("Error sending message to router");
+            let mut received = Vec::new();
+            loop {
+                let mut buf = [0u8; 64];
+                let length = stream.read(&mut buf).await.expect("Error receiving message from router");
+                received.append(&mut buf[..length].to_vec());
+                if buf[length-1] == 0u8 {
+                    received.pop();
+                    break;
+                }
+            }
+            let json = from_str::<Value>(String::from_utf8(received)?.as_str())?;
+            println!("Stdout:\n{}", json["Stdout"].as_str().expect("Error parsing message"));
+            println!("Stderr:\n{}", json["Stderr"].as_str().expect("Error parsing message"));
         }
-        sleep(Duration::from_secs(30)).await;
+        sleep(Duration::from_secs(60)).await;
     }
 }
