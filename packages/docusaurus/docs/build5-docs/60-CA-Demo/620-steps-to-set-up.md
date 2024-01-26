@@ -121,6 +121,50 @@ Where `/home/registrar/.nvm/versions/node/v18.19.0/bin/node` is the path to the 
 
 Run the service you've just created with `systemctl start vc-server.service` you can check it has run correctly with `systemctl status vc-server.service`.
 
+### Set up script to restart services if the IP address changes
+If the IP address of the registrar changes then the tdx volt needs to be restarted to run on the new IP address, and the volt config needs to be updated.
+
+We have implemented a bash script which watches the IP address of the `network interface` which is connecting the registrar to to the internet and the `volt config file` being used for the VC REST API Server. This script updates the IP address in the volt config file if it doesn't match the IP address of the network interface on it's initial run or if the IP address changes at a later time while the script is running.
+
+You will need to run `sudo apt-get install jq` to install [jq](https://linuxhint.com/bash_jq_command/) which is used to parse json files in bash.
+
+In order for this script to work you also need to make sure that the user running the script has the necessary sudo privileges without a password prompt for these specific systemctl commands. You can configure sudo by editing the sudoers file using the `visudo` command:
+
+```bash
+sudo visudo
+```
+
+Add the following lines to allow the user to run systemctl restart commands without a password prompt:
+
+```bash
+your_username ALL=(ALL) NOPASSWD: /bin/systemctl restart tdxvolt.service
+your_username ALL=(ALL) NOPASSWD: /bin/systemctl restart vc-server.service
+your_username ALL=(ALL) NOPASSWD: /bin/systemctl restart registrar-rest-server.service
+your_username ALL=(ALL) NOPASSWD: /bin/systemctl restart registrar-app.service
+```
+
+We can set this script to run as a service so that the volt should always be running on the correct IP address and the VC REST API should always be instantiated with the correct volt config.
+
+```bash
+# restart-on-ip-change.service
+[Unit]
+Description=Restart Volt update volt config file and start dependant services on IP address change
+
+[Service]
+ExecStart=/home/registrar/Documents/nist-brski/packages/handle_IP_addr_changes/restart_on_IP_changes.sh eth0 /home/registrar/Documents/nist-brski/packages/nist_vc_rest_server/volt-config.json
+WorkingDirectory=/home/registrar/Documents/nist-brski/packages/handle_IP_addr_changes
+Restart=on-failure
+User=registrar
+Group=registrar
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Where `/home/registrar/Documents/nist-brski/packages/handle_IP_addr_changes/restart_on_IP_changes.sh` is the path to the script in the cloned github repo, `eth0` is the network interface we are using to connect to the internet from the registrar machine, this can be found using `ifconfig` on linux, and `/home/registrar/Documents/nist-brski/packages/nist_vc_rest_server/volt-config.json` is the path to the `volt-config.json` file being used for the VC REST API server we exported earlier.
+
+Run the service you've just created with `systemctl start restart-on-ip-change.service` you can check it is running correctly with `systemctl status restart-on-ip-change.service`.
+
 ### Setup service to run Registrar REST API
 Now we will setup a service to run the regisrar REST API, this is the API that receives VCs from agents which wish to make claims to the registrar.
 
@@ -200,7 +244,9 @@ Run the service you've just created with `systemctl start registrar-app.service`
 
 The web app should now be running on your selected port on the machine.
 
+### Share port with openport
 You can now [use openport service to open share the port with the openport application](https://openport.readthedocs.io/en/latest/usage.html) like so:
+
 
 ```
 sudo openport 3002 --restart-on-reboot --daemonize
