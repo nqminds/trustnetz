@@ -12,7 +12,7 @@ Then please follow the installation instructions found in the [nist-brski](https
 
 During installation, a <span style="color:#ff0000;">PORT</span> number must be specified for the service.
 
-For publishing the demo-app localy please follow the instructions bellow
+To publish the demo app locally, please follow the methods below.
     
 1. Install avahi-deamon
 ```sh
@@ -52,7 +52,7 @@ sudo YOUR_CHOSEN_PORT_NUMBER --http-forward --restart-on-reboot --daemonize
 
 On the supplied devices, the app can be accesed as follow:
 
-Remotley at [http://openport.io:36701/](http://openport.io:36701/) or locally at [http://192.168.20.113:8082](http://192.168.20.113:8082)
+Remotley at [http://openport.io:36701/](http://openport.io:36701/) or locally at [http://http://192.168.1.159/:8082](http://http://192.168.1.159/:8082)
 
 
 ## Usage
