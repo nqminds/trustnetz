@@ -1,6 +1,6 @@
 # Build 5 Web application
 
-### Build
+## Build
 
 Download the most recent arm64 debian package [release](https://github.com/nqminds/nist-brski/releases/tag/v0.0.1)
 
@@ -55,8 +55,16 @@ On the supplied devices, the app can be accesed as follow:
 Remotley at [http://openport.io:36701/](http://openport.io:36701/) or locally at [http://192.168.20.113:8082](http://192.168.20.113:8082)
 
 
-### Usage
+## Usage
+
+### Onboarding Process
 ![Onboarding](https://github.com/ionut-cmd/tmp_img_storage/blob/main/onboard.png?raw=true)
+
+#### Onboard Button
+
+Initiates the onboarding process for an IoT device, connecting it to a secure network
+
+
 
 ![Onboarding](https://github.com/ionut-cmd/tmp_img_storage/blob/main/offboard.png?raw=true)
 
