@@ -44,7 +44,15 @@ sudo service avahi-daemon restart
 avahi-publish -s demo-server _demo-server._tcp  YOUR_CHOSEN_PORT_NUMBER
 ```
 
-Can be accessed remotley at [http://openport.io:36701/](http://openport.io:36701/) or locally at [http://192.168.20.113:8082](http://192.168.20.113:8082)
+4. Publish using openport
+
+```sh
+sudo YOUR_CHOSEN_PORT_NUMBER --http-forward --restart-on-reboot --daemonize
+```
+
+The app can be accesed on the supplied devices as follow:
+
+Remotley at [http://openport.io:36701/](http://openport.io:36701/) or locally at [http://192.168.20.113:8082](http://192.168.20.113:8082)
 
 
 ### Usage
