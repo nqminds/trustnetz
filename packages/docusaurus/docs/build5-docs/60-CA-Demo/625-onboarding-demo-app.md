@@ -7,7 +7,10 @@ Download the most recent debina package release for arm64 from https://github.co
 ```sh
 wget https://github.com/nqminds/nist-brski/releases/download/v0.0.1/brski-demo-app-deb_arm64.deb
 ```
-Then please follow the installation instructions found [here.] (https://github.com/nqminds/nist-brski/blob/main/debian-brski/README.md) Durring the instalation a Port number for the service will have to be prov
+Then please follow the installation instructions found [here.] (https://github.com/nqminds/nist-brski/blob/main/debian-brski/README.md)
+
+
+During installation, a <span style="color:#ff0000;">PORT</span> number must be specified for the service.
 
 For broadcasting the app localy please follow the instructions bellow
     
