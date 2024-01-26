@@ -26,10 +26,22 @@ sudo apt install avahi-daemon
  <name replace-wildcards="yes">%h Demo Server</name>
   <service>
    <type>_demo-server._tcp</type>
-   <port>8082</port>
+   <port>YOUR_CHOSEN_PORT_NUMBER</port>
   </service>
 </service-group>
 
+```
+
+2. Restart the deamon
+
+```sh
+sudo service avahi-daemon restart
+```
+
+3. Advertise the new service 
+
+```sh
+avahi-publish -s demo-server _demo-server._tcp  YOUR_CHOSEN_PORT_NUMBER
 ```
 
 Can be accessed remotley at [http://openport.io:36701/](http://openport.io:36701/) or locally at [http://192.168.20.113:8082](http://192.168.20.113:8082)
@@ -39,6 +51,40 @@ Can be accessed remotley at [http://openport.io:36701/](http://openport.io:36701
 ![Onboarding](https://github.com/ionut-cmd/tmp_img_storage/blob/main/onboard.png?raw=true)
 
 ![Onboarding](https://github.com/ionut-cmd/tmp_img_storage/blob/main/offboard.png?raw=true)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
