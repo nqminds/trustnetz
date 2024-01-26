@@ -45,7 +45,7 @@ Before we trigger the CSR provisioning we expect the following conditions to be 
 >
 > Is there a universal method by which this is retrieved 
 
-
+1. Get iDeviD 
 
 ## Current implementation
 
@@ -71,7 +71,7 @@ https://github.com/nqminds/brski/blob/main/src/voucher/crypto_wssl.c
 
 ## Factory use case: data flows
 
-
+??
 
 ```mermaid
    
@@ -90,7 +90,7 @@ sequenceDiagram
     
     MASA->>-device: 0.7 return iDeviD
     activate device 
-    Note right of device: O.7 save iDevID on device 
+    Note right of device: O.8 save iDevID on device 
      deactivate device 
     
 ```
