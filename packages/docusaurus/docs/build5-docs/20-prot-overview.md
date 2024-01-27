@@ -255,7 +255,7 @@ C.3 andC.8 are validation and policy enforcement points implemented at the regis
 
 Enrolling the device is relatively simple, consisting of the following steps
 
-- D.1 - device constructs the CSR request for enrolment, which includes the iDeviD
+- D.1 - device constructs the CSR request for enrolment, which includes the iDeviD and is signed by iDeviD-
 - D.2 - device sends the CSR to the registrar (over the authenticated TLS session)
 - D.3 - the registrar validates the CSR request
 - D.4 - the registrar constructs the certificate response (LDevID)
