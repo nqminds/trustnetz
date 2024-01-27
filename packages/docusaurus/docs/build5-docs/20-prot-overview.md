@@ -167,6 +167,7 @@ TBD: outline the full list of methods for discovering registrar
 
 The complete flow of the voucher request process is as follows 
 
+- C.0 `device` creates *partially* authenticated TLS connection wiht registrar 
 - C.1 `device` constructs `voucher request` construct request and sign it with `iDevID` private key
 - C.2 `device` sends `voucher request` to `registrar` 
 - C.3 `registrar` validates `voucher request` 
@@ -197,34 +198,35 @@ sequenceDiagram
     participant registrar
     participant MASA
    
+    device->>registrar: C.0 partially authenticated TLS 
     activate device 
-    Note right of device: E.1 prepare and <br> sign Voucher<br> Request (VR)
-    device->>-registrar: E.2 send VR
+    Note right of device: C.1 prepare and <br> sign Voucher<br> Request (VR)
+    device->>-registrar: C.2 send VR
   
   	activate registrar    
-    Note right of registrar: E.3 validate VR
-    registrar->>-MASA: E.4 forward VR
+    Note right of registrar:C.3 validate VR
+    registrar->>-MASA: C.4 forward VR
     
     activate MASA
-    Note right of MASA: E.5 validate VR
+    Note right of MASA: C.5 validate VR
     deactivate MASA
   
     activate MASA
-    Note right of MASA: E.6 sign voucher (V)
+    Note right of MASA:C.6 sign voucher (V)
     deactivate MASA
   
     
     
- 	MASA->>registrar : E.7 return V
+ 	MASA->>registrar :C.7 return V
  	
  	activate registrar
-    Note right of registrar: E.8 validate V
+    Note right of registrar:C.8 validate V
     deactivate registrar
     
-    registrar->>device : E.9 return V
+    registrar->>device : C.9 return V
     
     activate device 
-    Note right of device: E.10 validate V
+    Note right of device:C.10 validate V
     deactivate device 
         
     
@@ -253,14 +255,16 @@ C.3 andC.8 are validation and policy enforcement points implemented at the regis
 
 # D Enrol the device
 
-Enrolling the device is relatively simple, consisting of the following steps
+Enrolling the device is relatively simple, consisting of the following steps. These steps are predomintaly defined it the EST specification 
 
-- D.1 - device constructs the CSR request for enrolment, which includes the iDeviD and is signed by iDeviD-
-- D.2 - device sends the CSR to the registrar (over the authenticated TLS session)
-- D.3 - the registrar validates the CSR request
-- D.4 - the registrar constructs the certificate response (LDevID)
-- D.5 - the registrar returns the certificate to the device
-- D.6 - the device saves the LDevID (network credentials) locally ready to attach to the network 
+- D.0 - fully authenticated the TLS connection, using iDevID (using the pinned cert in the voucher response)
+- D.1 - generated LDevID public private key pair 
+- D.2 - device constructs the CSR request for enrolment, which includes the iDeviD and is signed by iDeviD-
+- D.3 - device sends the CSR to the registrar (over the authenticated TLS session)
+- D.4 - the registrar validates the CSR request
+- D.5 - the registrar constructs the certificate response (LDevID)
+- D.6- the registrar returns the certificate to the device
+- D.7 - the device saves the LDevID (network credentials) locally ready to attach to the network 
 
 
 
@@ -282,26 +286,27 @@ sequenceDiagram
     participant device
     participant registrar
  
-   
+    device->>registrar: D.0 fully authenticated TLS connection 
     activate device 
-    Note right of device: D.1 prepare CSR
-    device->>-registrar: D.2 send CSR
+    Note right of device: D.1 gen LDevID+/- key pairs
+    Note right of device: D.2 prepare CSR
+    device->>-registrar: D.3 send CSR
   
   	activate registrar    
-    Note right of registrar: D.3 validate CSR
+    Note right of registrar: D.4 validate CSR
     deactivate registrar
     
     activate registrar
-    Note right of registrar: D.4 construct and sign certificate
+    Note right of registrar: D.5 construct and sign certificate
     deactivate registrar
 
     
     
- 	registrar->>device : D.5 return certificate
+ 	registrar->>device : D.6 return certificate
 
     
     activate device 
-    Note right of device: D.6 install cerificate locally 
+    Note right of device: D.7 install cerificate locally 
     deactivate device 
         
     
@@ -326,7 +331,8 @@ sequenceDiagram
     participant registrar
  
     
-    device->>router: E.1 attempt connection
+    device->>router: 
+    
     router->>registrar: E.2 check permission
     note right of router: this is often <br>implemented by <br>RADIUS protocl 
     registrar->>router: E.3 respond permission

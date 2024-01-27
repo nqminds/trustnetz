@@ -86,6 +86,10 @@ iDevID provisioning, is provided as static code, which deterministically calls o
 
 Logically provisioning uses the following flow 
 
+This process is a privileged event and is assumed to take place on a physically protected network. Without this constraint any device (iDevID key pair) could register isself with the manufacturer and obtain a valid iDevID certificate  
+
+
+
 
 
 ```mermaid
@@ -165,154 +169,38 @@ Where critically one of the key processes that needs to be signed by the iDevID 
 
 ## Detailed reconciliation with onboarding process
 
-In the iDevID provisioning process 
+In the iDevID provisioning process, the steps that need to explicitly interact with the TPM are
 
 * O.1 generate device key pair (iDevID +/-)
 * O.2 prepare CSR and sign with iDevID
 
 The last state O.8 save on device, can be done on the device; it is not mandatory this is stored on the TPM 
 
+In the iDevID utilisation phase, and with reference to the numbering scheme defined in [../20-prot-overview.md], the following steps need to interact with the TOM 
 
-
-For 
-
-Using the numbering scheme defined in [../20-prot-overview.md] 
-
-* O.1 generate device key pair (iDevID +/-)
-* O.2 prepare CSR and sign with iDevID
+* C.0: `iDevID` private key is needed to establish the "partial" TLS connection.
 * C.1: `device` constructs `voucher request` construct request and sign it with `iDevID` private key
-* D.1 - device constructs the CSR request for enrolment, which includes the iDeviD and is signed by iDeviD-
+* D.0: `iDevID` private key is needed to establish the "full " TLS connection.
+
+Again we assume the full iDevID certificate can be stored on the device; it is not mandatory this is stored on the TPM 
 
 
 
-ce: O.1 generate device key pair (iDevID +/-)
-    Note right of device: O.2 prepare CSR and sign with iDevID
+**Note**: the LDevID Lifecyle also requires manipulation of private keys. However we deem this a "nice to have", secure implementation detail of the device, and not a mandatory part of the factory provisioning flow. The LDevID is not a direct result of the factory provisioning process, but a downstream artefact. It is an security implementation detail of the device whether this more ephemeral credential is manged by the TPM. There is also a technical reason why this is hard to achieve in the short term.     
 
-## Factory use case: preconditions
+The optional steps, where the LDevID can interact with the TPM are: 
 
-Before we trigger the CSR provisioning we expect the following conditions to be met.
+* D.1 - generated LDeviID +/- key pairs 
+* D.2 - device constructs the CSR request for enrolment, which includes the iDeviD and is signed by LDevID-
 
-1. The device in question is setup with a standard firmware image
-2. This image contains a root certificate of the MASA
-3. The root certificate of the MASA contains the URI
-4. We have established a common URI end point to which we will present the CSR
+* E.1: use of LDevID in the EAP-TLS wifi connection request 
 
 
 
-:exclamation: :exclamation:  are we are integrating with WISEKEY CA:exclamation: :exclamation:
+The last stage is the most complex. We would have to recompile networkmanager or similar to make use of the specific TPM implementation. 
+
+Primarily for this reason we are keeping LDevID TPM considerations out of scope for the the initial factory provisioning proof of concept 
 
 
 
-#### Implementation
 
-> To implement the above we can manually create the openssl commands to issue a new MASA public key and manually put on the device
->
-> ?? Do we need to/want to store in wisekey trusted storages
->
-> Is there a universal method by which this is retrieved 
-
-1. Get iDeviD 
-
-## Current implementation
-
-The current implementation of the key components is in the following public repo
-
-https://github.com/nqminds/brski 
-
-
-
-The bindings to the dependent SSL functions are defined in the following header file 
-
-https://github.com/nqminds/brski/blob/main/src/voucher/crypto.h
-
-There are two implementation: an Open SSL binding 
-
-https://github.com/nqminds/brski/blob/main/src/voucher/crypto_ossl.c
-
-And an optional (not fully complete) wolfssl binding 
-
-https://github.com/nqminds/brski/blob/main/src/voucher/crypto_wssl.c
-
-
-
-## Factory use case: data flows
-
-??
-
-```mermaid
-   
-sequenceDiagram
-    participant device
-    participant MASA
-   
-    activate device 
-    Note right of device: O.1 generate device key pair
-    Note right of device: O.2 prepare CSR
-    device->>-MASA: O.3 send CSR
-  
-  	activate MASA    
-    Note right of MASA: O.4 validate CSR
-    Note right of MASA: O.6 sign iDevID
-    
-    MASA->>-device: 0.7 return iDeviD
-    activate device 
-    Note right of device: O.8 save iDevID on device 
-     deactivate device 
-    
-```
-
-
-
-## Physical setup and installation
-
-> What do we need to know here  ??
-
-##  API Integration with Wisekey-Build 5
-
-The full wisely build integration needs to identify the specific integration points wiht the code and identify any certificate formats that need aligning 
-
-
-
-### O.1 generate device key pair
-
-:exclamation: :exclamation:  need to call wisekey gey gen operations :exclamation: :exclamation:
-
-which from our side i think is here
-
-https://github.com/nqminds/brski/blob/8db9d5d94bf0d529531f2ccd9c4c87be32e81f5e/src/voucher/crypto_ossl.c#L455
-
-
-
-question is does the wisekey bind invisibly to the openSSL if we link differently 
-
-
-
-### O.2 prepare CSR
-
-Use normal OpenSSL functions
-
-We assume this is not impacted by and wisekey code 
-
-### O.3 send CSR
-
-Does this have to be EST - or simple rest (curl command )?
-
-### O.4-6 MASA bits
-
-I suggest in the first instance we just use the existing MASA implementation - wiht a new HTTP endpoint for iDevID provisioning 
-
-Should we agree and URI
-
-We can add a wisekey CA later - but not sure it really demonstrates anything substantive, with regards to the 
-
-### O.7 return iDeviD
-
-Simply the inverse of O.3
-
-### O.8 install iDeviD 
-
-
-
-Where do we want to put it. On device or TPM
-
-is there a universal access method 
