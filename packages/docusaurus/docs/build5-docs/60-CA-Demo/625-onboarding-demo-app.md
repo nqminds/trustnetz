@@ -10,7 +10,7 @@ wget https://github.com/nqminds/nist-brski/releases/download/v0.0.1/brski-demo-a
 Then please follow the installation instructions found in the [nist-brski](https://github.com/nqminds/nist-brski/blob/main/debian-brski/README.md) repository.
 
 
-During installation, a <span style="color:#ff0000;">PORT</span> number must be specified for the service.
+During installation, a **PORT** number must be specified for the service.
 
 To publish the demo app locally, please follow the methods below.
     
