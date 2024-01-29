@@ -52,7 +52,7 @@ sudo YOUR_CHOSEN_PORT_NUMBER --http-forward --restart-on-reboot --daemonize
 
 On the supplied devices, the app can be accesed as follow:
 
-Remotley at [https://openport.io/l/36701/Hml13gRqlf8l8006](https://openport.io/l/36701/Hml13gRqlf8l8006) or locally at [http://pledge.local:8082/](http://pledge.local:8082/)
+Remotley at https://openport.io/l/36701/Hml13gRqlf8l8006 or locally at http://pledge.local:8082
 
 
 ## Usage
