@@ -4,7 +4,7 @@ The Registrar Demo App is a web-based user interface running on the access point
 
 ![Web based UI displaying control panel buttons and, list of VCs and information about manufacturer, device and device type](app-page.png)
 
-The app is split into 3 panels, the left-most panel allows you to select, from the registrar's database, a manufacturer, a device, and a device type. The information on the right-most panel reflects the information in the database on the selected entities. The middle panel displays all the verifiable credential (VC) claims submitted to the registrar and the response the registrar responded with upon receiving the claim.
+The app is split into 3 panels, the left-most panel allows you to select, from the registrar's database, a manufacturer, a device, and a device type. The information on the middle panel reflects the information in the database on the selected entities. The right panel displays all the verifiable credential (VC) claims submitted to the registrar and the response the registrar responded with upon receiving the claim.
 
 When a device attempts to onboard onto the access point the policy is checked on the registrar using the rust library functions, these 3 methods check the following 3 queries:
 
