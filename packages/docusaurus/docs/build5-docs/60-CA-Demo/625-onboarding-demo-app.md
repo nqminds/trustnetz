@@ -52,7 +52,7 @@ sudo YOUR_CHOSEN_PORT_NUMBER --http-forward --restart-on-reboot --daemonize
 
 On the supplied devices, the app can be accesed as follow:
 
-Remotley at [http://openport.io:36701/](http://openport.io:36701/) or locally at [http://http://192.168.1.159/:8082](http://http://192.168.1.159/:8082)
+Remotley at [http://openport.io:36701/](http://openport.io:36701/) or locally at [192.168.1.159:8082](192.168.1.159:8082)
 
 
 ## Usage
