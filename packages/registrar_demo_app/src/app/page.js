@@ -16,9 +16,9 @@ const Page = () => {
         setSelectedDevice={setSelectedDevice} setSelectedDeviceType={setSelectedDeviceType} setSelectedManufacturer={setSelectedManufacturer} 
       />
       <div className="vertical-line"></div>
-      <VCLog />
-      <div className="vertical-line"></div>
       <InfoPanel selectedDevice={selectedDevice} selectedDeviceType={selectedDeviceType} selectedManufacturer={selectedManufacturer} />
+      <div className="vertical-line"></div>
+      <VCLog />
     </div>
   );
 };
