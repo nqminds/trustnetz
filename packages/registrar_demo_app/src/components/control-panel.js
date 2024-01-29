@@ -128,9 +128,10 @@ const ControlPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType,
 
   return (
     <div className="button-container">
-      <label>
+      <label style={{ fontSize: '20px', padding: '20px' }}>
         Select Manufacturer:
         <select
+          style={{ fontSize: '20px', padding: '2px' }}
           value={selectedManufacturer}
           onChange={(e) => {
             setSelectedManufacturer(e.target.value);
@@ -146,9 +147,10 @@ const ControlPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType,
       </label>
       <button onClick={trustManufacturer}>Trust Manufacturer</button>
       <button onClick={distrustManufacturer}>Distrust Manufacturer</button>
-      <label>
+      <label style={{ fontSize: '20px', padding: '20px' }}>
         Select Device:
         <select
+          style={{ fontSize: '20px', padding: '2px' }}
           value={selectedDevice}
           onChange={(e) => {
             setSelectedDevice(e.target.value);
@@ -164,9 +166,10 @@ const ControlPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType,
       </label>
       <button onClick={trustDevice}>Trust Device</button>
       <button onClick={distrustDevice}>Distrust Device</button>
-      <label>
+      <label style={{ fontSize: '20px', padding: '20px' }}>
         Select Device Type:
         <select
+          style={{ fontSize: '20px', padding: '2px' }}
           value={selectedDeviceType}
           onChange={(e) => {
             setSelectedDeviceType(e.target.value);

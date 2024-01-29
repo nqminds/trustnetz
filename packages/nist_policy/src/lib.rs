@@ -17,6 +17,13 @@ struct Manufacturer {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+struct Manufactured {
+    device_id: String,
+    manufacturer_id: String,
+    created_at: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 struct User {
     id: String,
     username: String,
@@ -79,7 +86,7 @@ pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result
                 params![manufacturer_entry.id, manufacturer_entry.name, manufacturer_entry.created_at],
             )?;
 
-            println!("Added manufacturer and manufactured_by relationship to database, {:?}", manufacturer_entry);
+            println!("Added manufacturer to database, {:?}", manufacturer_entry);
             to_value(&manufacturer_entry).unwrap()
         }
         Err(err) => {
@@ -229,7 +236,7 @@ pub fn check_device_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool>
    let device_id = pledge_device["id"].to_string().trim_matches('"').to_owned();
 
 
-    // Find pledge's manufacturer entity in manufacturer table and insert manufactured_by relationship,
+    // Find pledge's manufacturer entity in manufacturer table
     let mut get_manufacturer_statement = conn.prepare("SELECT * FROM manufacturer WHERE manufacturer.name = ?")?;
     let manufacturer_record: Value = match get_manufacturer_statement.query_row(params![manufacturer_name.to_owned()], |row| {
         Ok(Manufacturer {
@@ -249,6 +256,48 @@ pub fn check_device_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool>
     };
 
     println!("Manufacturer: {}", serde_json::to_string_pretty(&manufacturer_record).unwrap());
+    let manufacturer_id = manufacturer_record["id"].to_string().trim_matches('"').to_owned();
+
+    // Find pledge's manufactured relationship in manufactured table and insert if doesn't exist
+    let mut get_manufacturer_statement = conn.prepare("SELECT * FROM manufactured WHERE (device_id = ? AND manufacturer_id = ?)")?;
+    let _manufactured_record: Value = match get_manufacturer_statement.query_row(params![device_id.to_owned(), manufacturer_id], |row| {
+        Ok(Manufactured {
+            device_id: row.get(0)?,
+            manufacturer_id: row.get(1)?,
+            created_at: row.get(2)?,
+        })
+    }) {
+        Ok(manufactured) => {
+            println!("Manufactured relationship found in database: {:?}", manufactured);
+            to_value(&manufactured).unwrap()
+        }
+        Err(rusqlite::Error::QueryReturnedNoRows) => {
+            println!("No matching manufactured relationship found in database");
+ 
+            // Adding the device to the database
+            let now = Utc::now();
+            let datetime = DateTime::<Utc>::from(now);
+            let timestamp_str = datetime.format("%Y-%m-%dT%H:%M:%S.%3fZ").to_string();
+         
+            conn.execute(
+                "INSERT INTO manufactured (device_id, manufacturer_id, created_at) VALUES (?, ?, ?)",
+                params![device_id.to_owned(), manufacturer_id, timestamp_str],
+            )?;
+
+            let manufactured = Manufactured {
+                device_id: device_id.to_owned(),
+                manufacturer_id: manufacturer_id,
+                created_at: timestamp_str,
+            };
+ 
+            println!("Added manufactured relationship to database");
+            to_value(&manufactured).unwrap()
+        }
+        Err(err) => {
+            eprintln!("Error querying database: {:?}", err);
+            Value::Null
+        }
+    };
 
     // Query to check if the device is allowed to connect
     let is_allowed_to_connect: Result<Option<bool>> = conn.query_row(
@@ -664,7 +713,7 @@ mod tests {
             let count: i64 = stmt.query_row(params![], |row| row.get(0))?;
 
             // Check if the inserted row is present
-            assert_eq!(count, 1);
+            assert_eq!(count, 2);
 
             assert_eq!(result, false);
             Ok(true)
