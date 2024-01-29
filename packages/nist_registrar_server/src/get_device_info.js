@@ -27,6 +27,11 @@ export default async function getDeviceInfo(device, dbGet) {
     const manufacturerInfo = await getManufacturerInfo(manufacturer_id, dbGet);
     manufacturer = manufacturerInfo.name;
     manufacturerTrusted = manufacturerInfo.trusted;
+  } else {
+    // THIS IS PURELY HERE FOR THE DEMO, AS THE RUST CODE HAD A BUG AND WAS NOT INSERTING A MANUFACTURED ENTRY
+    const manufacturerInfo = await getManufacturerInfo("manufacturer", dbGet);
+    manufacturer = manufacturerInfo.name;
+    manufacturerTrusted = manufacturerInfo.trusted;
   }
   const trustRow = await dbGet("SELECT * from allow_to_connect WHERE device_id = ?", [deviceId])
   if (trustRow) {
