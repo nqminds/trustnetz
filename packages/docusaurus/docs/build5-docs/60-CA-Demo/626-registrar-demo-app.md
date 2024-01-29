@@ -6,8 +6,7 @@ On the supplied devices, the app can be accesed as follow:
 
 Remotley at http://openport.io:21423/ or locally at http://registrar.local:3002/
 
-Remotley at [https://openport.io/l/21423/Hml13gRqlf8l8006](https://openport.io/l/36701/Hml13gRqlf8l8006) or locally at [http://pledge.local:8082/](http://pledge.local:8082/)
-
+Remotley at [https://openport.io/l/21423/5FbFMfRa0Nx9RG0i](https://openport.io/l/21423/Hml13gRqlf8l8006) or locally at [http://registrar.local:3002/](http://registrar.local:3002/)
 
 ![Web based UI displaying control panel buttons and, list of VCs and information about manufacturer, device and device type](app-page.png)
 
