@@ -1,12 +1,13 @@
 use std::error::Error;
 use std::fs::read;
-use std::io::ErrorKind;
 use std::sync::Arc;
+use std::time::Duration;
 use openssl::pkey::PKey;
 use openssl::x509::X509;
 use serde_json::{from_str, json, Value};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpStream;
+use tokio::time::sleep;
 use tokio_rustls::rustls::pki_types::{CertificateDer, DnsName, PrivateKeyDer, PrivatePkcs8KeyDer, ServerName};
 use tokio_rustls::rustls::{ClientConfig, RootCertStore};
 use tokio_rustls::TlsConnector;
@@ -31,27 +32,28 @@ async fn main() -> Result<(), Box<dyn Error>> {
             ))
         )?;
 
-    let output = std::process::Command::new("avahi-browse").args(["-r", "_brski._tcp", "-t", "-p"]).output()?;
-    let output = String::from_utf8(output.stdout)?;
-
-    let mut address = "";
-    let mut port = "";
-    for line in output.split("\n") {
-        let service: Vec<&str> = line.split(";").collect();
-        if service[0] == "=" && service[2] == "IPv4" && service[3] == "brski-registrar-CA-monitor" {
-            address = service[7];
-            port = service[8];
-            break
+    let address;
+    let port;
+    'outer: loop {
+        let output = std::process::Command::new("avahi-browse").args(["-r", "_brski._tcp", "-t", "-p"]).output()?;
+        let output = String::from_utf8(output.stdout)?;
+        for line in output.split("\n") {
+            let service: Vec<&str> = line.split(";").collect();
+            if service[0] == "=" && service[2] == "IPv4" && service[3] == "brski-registrar-CA-monitor" {
+                address = String::from(service[7]);
+                port = String::from(service[8]);
+                break 'outer;
+            }
         }
-    }
-    if address == "" || port == "" {
-        return Err(Box::new(std::io::Error::new(ErrorKind::NotFound, "Service not found")) as Box<dyn Error>);
+        println!("Service not found, retrying in 10 seconds");
+        sleep(Duration::from_secs(10)).await;
     }
 
     let server_name = ServerName::DnsName(DnsName::try_from("registrar")?);
     let connector = TlsConnector::from(Arc::new(config.clone()));
     let stream = TcpStream::connect(format!("{}:{}", address, port)).await?;
     let mut stream = connector.connect(server_name, stream).await?;
+    println!("Connected");
 
     loop {
         let mut received = Vec::new();
