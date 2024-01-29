@@ -6,6 +6,9 @@ On the supplied devices, the app can be accesed as follow:
 
 Remotley at http://openport.io:21423/ or locally at http://registrar.local:3002/
 
+Remotley at [https://openport.io/l/21423/Hml13gRqlf8l8006](https://openport.io/l/36701/Hml13gRqlf8l8006) or locally at [http://pledge.local:8082/](http://pledge.local:8082/)
+
+
 ![Web based UI displaying control panel buttons and, list of VCs and information about manufacturer, device and device type](app-page.png)
 
 The app is split into 3 panels, the left-most panel allows you to select, from the registrar's database, a manufacturer, a device, and a device type. The information on the middle panel reflects the information in the database on the selected entities. The right panel displays all the verifiable credential (VC) claims submitted to the registrar and the response the registrar responded with upon receiving the claim.
