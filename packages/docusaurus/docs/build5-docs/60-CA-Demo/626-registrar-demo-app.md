@@ -2,7 +2,7 @@
 
 The Registrar Demo App is a web-based user interface running on the access point which allows you to send sign and send verifiable credential claims as if you were a network owner.
 
-On the supplied devices, the app can be accessed as follow:
+On the supplied devices, the app can be accessed as follows:
 
 Remotely at [https://openport.io/l/21423/5FbFMfRa0Nx9RG0i](https://openport.io/l/21423/5FbFMfRa0Nx9RG0i) or locally at [http://registrar.local:3002/](http://registrar.local:3002/)
 
