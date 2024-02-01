@@ -1,55 +1,5 @@
 # Build 5 Web application
 
-## Build
-
-Download the most recent arm64 debian package [release](https://github.com/nqminds/nist-brski/releases/tag/v0.0.1)
-
-```sh
-wget https://github.com/nqminds/nist-brski/releases/download/v0.0.1/brski-demo-app-deb_arm64.deb
-```
-Then please follow the installation instructions found in the [nist-brski](https://github.com/nqminds/nist-brski/blob/main/debian-brski/README.md) repository.
-
-
-During installation, a **PORT** number must be specified for the service.
-
-To publish the demo app locally, please follow the methods below.
-    
-1. Install avahi-deamon
-```sh
-sudo apt install avahi-daemon
-```
-
-2. Create a new  service for the app and add it to ```/etc/avahi/services/demo-server.service``` 
-```htmlbars=
-<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
-<service-group>
- <name replace-wildcards="yes">%h Demo Server</name>
-  <service>
-   <type>_demo-server._tcp</type>
-   <port>YOUR_CHOSEN_PORT_NUMBER</port>
-  </service>
-</service-group>
-
-```
-
-2. Restart the deamon
-
-```sh
-sudo service avahi-daemon restart
-```
-
-3. Advertise the new service 
-
-```sh
-avahi-publish -s demo-server _demo-server._tcp  YOUR_CHOSEN_PORT_NUMBER
-```
-
-4. Publish using openport
-
-```sh
-sudo YOUR_CHOSEN_PORT_NUMBER --http-forward --restart-on-reboot --daemonize
-```
-
 On the supplied devices, the app can be accesed as follow:
 
 Remotley at [https://openport.io/l/36701/Hml13gRqlf8l8006](https://openport.io/l/36701/Hml13gRqlf8l8006) or locally at [http://pledge.local:8082/](http://pledge.local:8082/)
@@ -120,6 +70,55 @@ sudo ./opt/demo-server/bash-scripts/offboard.sh
 ```
 
 
+## Build
+
+Download the most recent arm64 debian package [release](https://github.com/nqminds/nist-brski/releases/tag/v0.0.1)
+
+```sh
+wget https://github.com/nqminds/nist-brski/releases/download/v0.0.1/brski-demo-app-deb_arm64.deb
+```
+Then please follow the installation instructions found in the [nist-brski](https://github.com/nqminds/nist-brski/blob/main/debian-brski/README.md) repository.
+
+
+During installation, a **PORT** number must be specified for the service.
+
+To publish the demo app locally, please follow the methods below.
+    
+1. Install avahi-deamon
+```sh
+sudo apt install avahi-daemon
+```
+
+2. Create a new  service for the app and add it to ```/etc/avahi/services/demo-server.service``` 
+```htmlbars=
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<service-group>
+ <name replace-wildcards="yes">%h Demo Server</name>
+  <service>
+   <type>_demo-server._tcp</type>
+   <port>YOUR_CHOSEN_PORT_NUMBER</port>
+  </service>
+</service-group>
+
+```
+
+2. Restart the deamon
+
+```sh
+sudo service avahi-daemon restart
+```
+
+3. Advertise the new service 
+
+```sh
+avahi-publish -s demo-server _demo-server._tcp  YOUR_CHOSEN_PORT_NUMBER
+```
+
+4. Publish using openport
+
+```sh
+sudo YOUR_CHOSEN_PORT_NUMBER --http-forward --restart-on-reboot --daemonize
+```
 
 
 
