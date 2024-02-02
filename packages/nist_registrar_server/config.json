@@ -1,4 +1,6 @@
 {
-  "sqliteDBPath": "../MyLocalDatabase.sqlite",
-  "nistVcRestServerAddress": "http://localhost:3000"
+  "sqliteDBPath": "../testDb.sqlite",
+  "nistVcRestServerAddress": "http://localhost:3000",
+  "sbomToolAddress": "http://openport.io:12064",
+  "secondsVulnerabilityScoreValid": 60
 }

@@ -95,3 +95,15 @@ CREATE TABLE allow_to_connect (
   FOREIGN KEY (device_id) REFERENCES device (id),
   FOREIGN KEY (authoriser_id) REFERENCES user (id)
 );
+
+CREATE TABLE sbom (
+  id TEXT,
+  sbom TEXT,
+  vulnerability_score NUMBER,
+  vulnerability_score_updated TIMESTAMP
+);
+
+CREATE TABLE has_sbom (
+  sbom_id TEXT,
+  device_type_id TEXT
+);

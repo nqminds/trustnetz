@@ -2,12 +2,13 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import {createRequire} from "node:module";
 import express from 'express';
-import grpc from "@grpc/grpc-js";
 import * as OpenApiValidator from 'express-openapi-validator';
-import {v4 as uuidv4} from "uuid";
 import http from 'http';
 import sqlite3 from "sqlite3";
 import util from 'util';
+import FormData from 'form-data';
+import fetch from 'node-fetch';
+import { Readable } from "stream";
 
 import intitialiseDemoDatabase from "./initialise_demo_database.js";
 import handleDeviceTrust from "./handle_device_trust.js"
@@ -18,6 +19,15 @@ import storeClaimAndResponse from "./store_claim_and_response.js";
 import getManufacturerInfo from "./get_manufacturer_info.js";
 import getDeviceTypeInfo from "./get_device_type_info.js";
 import getDeviceInfo from "./get_device_info.js";
+
+function hasProperties(object, properties) {
+  for (const property of properties) {
+    if (!object.hasOwnProperty(property)) {
+      return false;
+    }
+  }
+  return true;
+}
 
 function httpsPost({url, body, ...options}) {
     return new Promise((resolve,reject) => {
@@ -117,6 +127,8 @@ function httpsPost({url, body, ...options}) {
    let dbAll = null;
    let dbRun = null;
    let nistVcRestServerAddress = null;
+   let sbomToolAddress = null;
+   let secondsVulnerabilityScoreValid = null;
    if (!config) {
      config = /** @type {ServerConfig} */ (JSON.parse(await readFile(
        new URL("../config.json", import.meta.url),
@@ -139,11 +151,14 @@ function httpsPost({url, body, ...options}) {
     throw Error("Config missing sqliteDBPath")
    }
 
-   if (config.nistVcRestServerAddress) {
+   if (hasProperties(config, ["nistVcRestServerAddress", "sbomToolAddress", "secondsVulnerabilityScoreValid"])) {
     nistVcRestServerAddress = config.nistVcRestServerAddress;
-   } else {
-    throw Error("Config missing nistVcRestServerAddress");
-   }
+    sbomToolAddress = config.sbomToolAddress;
+    secondsVulnerabilityScoreValid = config.secondsVulnerabilityScoreValid;
+  } else {
+    console.log('Config is missing some required properties, requires "nistVcRestServerAddress", "sbomToolAddress", "secondsVulnerabilityScoreValid".');
+  }
+  
 
    // Body parser middleware
    router.use(express.urlencoded({ extended: false }));
@@ -160,6 +175,49 @@ function httpsPost({url, body, ...options}) {
     }
     next(err);
   });
+
+  // Add the fetchDataFromExternalAPI function
+  async function fetchDataFromExternalAPI() {
+    try {
+      const sbomsNeedingVulnerabilityScore = await dbAll(`
+        SELECT id, sbom FROM sbom 
+        WHERE (vulnerability_score IS NULL) 
+        OR (strftime('%s', 'now') - strftime('%s', vulnerability_score_updated) > ${secondsVulnerabilityScoreValid});`);
+
+      for (const sbombRow of sbomsNeedingVulnerabilityScore) {
+        const {id, sbom} = sbombRow;
+
+        // Convert the sbom string to a readable stream
+        const sbomStream = new Readable();
+        sbomStream.push(sbom);
+        sbomStream.push(null); // Signal the end of the stream
+
+        // Create FormData and append the stream
+        const form = new FormData();
+        form.append('file', sbomStream, 'sbom.txt'); // 'sbom.txt' is the desired filename
+
+        const response = await fetch(`${sbomToolAddress}/sbomRiskAverage`, { method: 'POST', body: form })
+    
+        const data = await response.text();
+        const vulnerabilityScore = Number(data);
+
+        // Update the database record with retrieved data
+        const updateQuery = `
+          UPDATE sbom
+          SET vulnerability_score = ?, vulnerability_score_updated = ?
+          WHERE id = ?;
+        `;
+        const currentDate = new Date();
+        const params = [vulnerabilityScore, currentDate.toISOString(), id];
+        await dbRun(updateQuery, params);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  // Set up interval to run fetchDataFromExternalAPI every minute
+  setInterval(fetchDataFromExternalAPI, 10000);
 
   router.post("/submit-vc/:schemaName", asyncHandler(async (req, res) => {
     const schemaName = req.params.schemaName;
