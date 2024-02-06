@@ -34,6 +34,8 @@ struct User {
     can_issue_trust: bool,
 }
 
+const VULNERABILITY_THRESHOLD: i32 = 5;
+
 pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool> {
     // Create OpenFlags without SQLITE_OPEN_CREATE flag
     let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_FULL_MUTEX;
@@ -407,26 +409,18 @@ pub fn check_device_vulnerable(idevid: &X509, path_to_sql_db: &str) -> Result<bo
     let is_device_type_safe: Result<Option<bool>> = conn.query_row(
         "
         SELECT CASE
-                WHEN dtv.critical_count = 0 AND dtv.high_count = 0 
+                WHEN s.vulnerability_score < ?
                 THEN 1
                 ELSE 0
             END AS is_device_type_safe
         FROM device d
         LEFT JOIN is_of_type iot ON d.id = iot.device_id
         LEFT JOIN device_type dt ON iot.device_type_id = dt.id
-        LEFT JOIN (
-            SELECT 
-                dt.id AS device_type_id, 
-                COUNT(CASE WHEN v.severity = 'Critical' THEN 1 ELSE NULL END) AS critical_count,
-                COUNT(CASE WHEN v.severity = 'High' THEN 1 ELSE NULL END) AS high_count
-            FROM device_type dt
-            LEFT JOIN has_vulnerability hv ON dt.id = hv.device_type_id
-            LEFT JOIN vulnerability v ON hv.vulnerability_id = v.id
-            GROUP BY dt.id
-        ) dtv ON dt.id = dtv.device_type_id
+		LEFT JOIN has_sbom hs ON dt.id = hs.device_type_id
+		LEFT JOIN sbom s ON hs.sbom_id = s.id
         WHERE d.id = ?;
         ",
-        params![device_id],
+        params![VULNERABILITY_THRESHOLD, device_id],
         |row| row.get(0),
     );
 
@@ -540,14 +534,14 @@ mod tests {
             "device",
             "device_type",
             "gives_connection_rights",
-            "has_vulnerability",
+            "has_sbom",
             "is_of_type",
             "manufactured",
             "manufacturer",
             "owns",
             "trusts",
             "user",
-            "vulnerability",
+            "sbom",
         ];
 
         // Iterate over each table and create it in tempdb
@@ -751,7 +745,7 @@ mod tests {
     }
 
     #[test]
-    fn check_device_with_type_with_no_vulnerabilities_is_not_vulnerable() {
+    fn check_device_with_type_with_no_sbom_is_vulnerable() {
         let path_to_sql_db = "./tests/ExistingTrustedDeviceWithType.sqlite";
         let idevid = read(format!("./tests/iDevID"))
             .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
@@ -760,14 +754,14 @@ mod tests {
         // Use with_temporary_database to perform the operation and check the result
         let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
             let result = check_device_vulnerable(idevid, temp_file_path).unwrap();
-            assert_eq!(result, false);
+            assert_eq!(result, true);
             Ok(true)
         }).unwrap();
     }
 
     #[test]
-    fn check_device_with_type_with_vulnerabilities_is_vulnerable() {
-        let path_to_sql_db = "./tests/ExistingTrustedDeviceWithVulnerableType.sqlite";
+    fn check_device_with_type_with_vulnerable_sbom_is_vulnerable() {
+        let path_to_sql_db = "./tests/ExistingTrustedDeviceWithTypeWithVulnerableSbom.sqlite";
         let idevid = read(format!("./tests/iDevID"))
             .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
             .unwrap();
@@ -776,6 +770,21 @@ mod tests {
         let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
             let result = check_device_vulnerable(idevid, temp_file_path).unwrap();
             assert_eq!(result, true);
+            Ok(true)
+        }).unwrap();
+    }
+
+    #[test]
+    fn check_device_with_type_with_safe_sbom_is_not_vulnerable() {
+        let path_to_sql_db = "./tests/ExistingTrustedDeviceWithTypeWithSafeSbom.sqlite";
+        let idevid = read(format!("./tests/iDevID"))
+            .map(|bytes| X509::from_pem(bytes.as_slice()).unwrap())
+            .unwrap();
+
+        // Use with_temporary_database to perform the operation and check the result
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            let result = check_device_vulnerable(idevid, temp_file_path).unwrap();
+            assert_eq!(result, false);
             Ok(true)
         }).unwrap();
     }
