@@ -19,4 +19,4 @@ If the device doesn't exist in the device table, it will add an entry for the de
 
 ## check_device_vulnerable
 
-`check_device_vulnerable` finds the device type which has been set as the type of the device and checks whether that device type has any `High` or `Critical` severity vulnerabilities. It returns a boolean which states if the device (`subject_name` in the idevid) is vulnerable. 
+`check_device_vulnerable` finds the device type which has been set as the type of the device and checks whether that device type has an SBOM bound to it, if not it is considered vulnerable, if it does, then it checks the vulnerability score of that SBOM to see if it's lower than the set threshold value. It returns a boolean which states if the device (`subject_name` in the idevid) is vulnerable. 
