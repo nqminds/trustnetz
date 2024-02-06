@@ -15,9 +15,9 @@ When a device attempts to onboard onto the access point the policy is checked on
 
 1) if the device manufacturer (the issuer of the device's IdevID) has been trusted by the network owner or someone with permissions to trust manufacturers
 2) if the device is trusted by someone with permissions to permit connection of devices
-3) if the device type bound to the device has any vulnerabilities above the set threshold - for the demo policy we have set if the device type has any High or Critical severity vulnerabilities as the threshold.
+3) if the SBOM of the device type bound to the device has any  a vulnerability score above the set threshold
 
-If the manufacturer is not found in the database it is added, and returns that it is not trusted, likewise, if the device is not found by the method used to check it's trust it is also added to the database, and an entry binding it to it's manufacturer is inserted. If the device has not been bound to a device type, which must currently be done by a sufficiently permissioned user through the UI, then the vulnerability check assumes the device is vulnerable. 
+If the manufacturer is not found in the database it is added, and returns that it is not trusted, likewise, if the device is not found by the method used to check it's trust it is also added to the database, and an entry binding it to it's manufacturer is inserted. If the device has not been bound to a device type, which must currently be done by a sufficiently permissioned user through the UI, then the vulnerability check assumes the device is vulnerable. It also assumed vulnerability if the device type is missing an SBOM or the SBOM is missing a vulnerability score. The vulnerability score is calculated using an instace of NquiringMinds' [SBOM CLI tool](https://github.com/nqminds/sbom-cli).
 
 Select the device of interest using the **Select Device** selection box, the device for the demo system is 12345, which is the serial number of the device:
 
