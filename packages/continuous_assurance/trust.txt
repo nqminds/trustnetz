@@ -1,0 +1,9 @@
+Device1 Y
+Device2 Y
+Device3 N
+Device4 Y
+Device5 N
+Device6 Y
+Device7 Y
+Device8 N
+Device9 Y
