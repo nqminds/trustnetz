@@ -2,7 +2,7 @@
 
 
 
-In order for the pledge to find the registrar, we make use of mdns capabilities.
+In order for the pledge to find the registrar, we make use of MDNS capabilities.
 
 (We also reuse this method to establish the router-registrar connection needed for the continuous assurance piece).
 

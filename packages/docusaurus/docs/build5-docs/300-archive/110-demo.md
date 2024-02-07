@@ -52,7 +52,7 @@ These are
 
 
 
-1. DomainTrustsManufactuer (domain+, manufacturer+)
+1. DomainTrustsManufacturer (domain+, manufacturer+)
 2. DomainTrustsDevice (domain+,iDevID+)
 3. DeviceIsSafe (iDevID+)
 
@@ -64,7 +64,7 @@ The inputs to these scripts could be the public keys, or alternatively an object
 
 ### Policy insertion points
 
-**DomainTrustsManufactuer**
+**DomainTrustsManufacturer**
 
 This script should be called at the Registrar before the voucher request is sent to the MASA.
 
@@ -76,7 +76,7 @@ If there is no trust in the manufacturer, there should be no communication to th
 
 This script should also be called at the Registrar before the voucher request is sent to the MASA.
 
-We need an additional asserted VC to be implmented
+We need an additional asserted VC to be implemented
 
 - SetPromiscuousMode (true, false)
 
@@ -90,10 +90,10 @@ Should be called before the device is enrolled (ie before the LDevID is created)
 
 ### Continuous Assurance process
 
-When the CA check is triggered, all of the followins should be checked
+When the CA check is triggered, all of the following should be checked
 
-* DomainTrustsManufactuer
-* DomainTrustsDevice (depending on promiscuouse mode setting)
+* DomainTrustsManufacturer
+* DomainTrustsDevice (depending on promiscuous mode setting)
 * DeviceIsSafe
 
 If any of the above checks fail - we should trigger the revoke command 

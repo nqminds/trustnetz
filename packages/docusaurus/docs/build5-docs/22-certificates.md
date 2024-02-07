@@ -27,7 +27,7 @@ classDiagram
     manufacturer "1" --> "*" iDevID: signed by
     domain "1" --> "*" router: signed by
     registrar "1" ..> "*" router: managed by
-    radius "1" ..> "*" router: authorises connections
+    radius "1" ..> "*" router: authorizes connections
     LDevID "1" ..> "*" router: authenticates with
    
 ```
@@ -38,7 +38,7 @@ classDiagram
 
 The iDevID sits on the device (pledge).
 
-It is typically created as a one off process. It should not change during the devices lifecyle
+It is typically created as a one off process. It should not change during the devices lifecycle
 
 It typically is installed by the manufacture as a privileged process. 
 
@@ -48,7 +48,7 @@ The method of installing a manufacturer created iDevID is covered in depth in th
 
 1. [@ DEVICE] create a public private key pair
 2. [@ DEVICE] create a CSR
-3. [TO MANUFACTUER] send CSR
+3. [TO MANUFACTURER] send CSR
 4. [@ MANUFACTURER] validate CSR
 5. [@ MANUFACTURER] create and sign certificate with manufacture key 
 6. [TO DEVICE] return signed iDevID certificate
@@ -91,9 +91,9 @@ Practically for the purposes of the demo, the domain is collocated with the regi
 
 | X509 Attribute             | Description/use                                              |
 | -------------------------- | ------------------------------------------------------------ |
-| `Subject`                  | Name of the owner <br />CN="name of owner"<br />OU="www.manufacture.com" OR emai@address |
+| `Subject`                  | Name of the owner <br />CN="name of owner"<br />OU="www.manufacture.com" OR email@address |
 | `Subject Key Identifier`   | Public key of the `domain+`                                  |
-| `Issuer`                   | Name of the manufacture <br />CN="name of owner"<br />OU="www.manufacture.com" OR emai@address |
+| `Issuer`                   | Name of the manufacture <br />CN="name of owner"<br />OU="www.manufacture.com" OR email@address |
 | `Authority Key Identifier` | Public key of the `domain+`                                  |
 | (signed by)                | Private key of the `domain-`                                 |
 
@@ -261,7 +261,7 @@ Simplified
 
 5. [@ REGISTRAR] signs the LDevID with the registrar- private key (where in turn the registrar has been signed with the domain-)
 
-6. [-> DEVICE] send certifcate back to device 
+6. [-> DEVICE] send certificate back to device 
 
 7. [@ DEVICE] install LDevID
 

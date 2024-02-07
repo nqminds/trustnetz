@@ -70,7 +70,7 @@ Key questions
 >
 > Logic being
 >
-> - if no iDevID - call iDev provisioning on partiotion 1
+> - if no iDevID - call iDev provisioning on partition 1
 > - if iDevD - move execution to partition 2.
 > - Option on partition 2 - to remove iDevID and reboot - to simulate a full wipe and re-provisioning.
 >
@@ -86,7 +86,7 @@ iDevID provisioning, is provided as static code, which deterministically calls o
 
 Logically provisioning uses the following flow 
 
-This process is a privileged event and is assumed to take place on a physically protected network. Without this constraint any device (iDevID key pair) could register isself with the manufacturer and obtain a valid iDevID certificate  
+This process is a privileged event and is assumed to take place on a physically protected network. Without this constraint any device (iDevID key pair) could register itself with the manufacturer and obtain a valid iDevID certificate  
 
 
 
@@ -151,7 +151,7 @@ All we need is the ability to check we have a well formed iDevID, and we can shi
 
 # iDevID utilisation 
 
-The iDevID utilisation, is the full BRKSI WIFI provisioning flow.
+The iDevID utilisation, is the full BRSKI WIFI provisioning flow.
 
 The "ideal requirements" for this process are
 
@@ -186,7 +186,7 @@ Again we assume the full iDevID certificate can be stored on the device; it is n
 
 
 
-**Note**: the LDevID Lifecyle also requires manipulation of private keys. However we deem this a "nice to have", secure implementation detail of the device, and not a mandatory part of the factory provisioning flow. The LDevID is not a direct result of the factory provisioning process, but a downstream artefact. It is an security implementation detail of the device whether this more ephemeral credential is manged by the TPM. There is also a technical reason why this is hard to achieve in the short term.     
+**Note**: the LDevID Lifecycle also requires manipulation of private keys. However we deem this a "nice to have", secure implementation detail of the device, and not a mandatory part of the factory provisioning flow. The LDevID is not a direct result of the factory provisioning process, but a downstream artefact. It is an security implementation detail of the device whether this more ephemeral credential is managed by the TPM. There is also a technical reason why this is hard to achieve in the short term.     
 
 The optional steps, where the LDevID can interact with the TPM are: 
 
@@ -197,7 +197,7 @@ The optional steps, where the LDevID can interact with the TPM are:
 
 
 
-The last stage is the most complex. We would have to recompile networkmanager or similar to make use of the specific TPM implementation. 
+The last stage is the most complex. We would have to recompile network manager or similar to make use of the specific TPM implementation. 
 
 Primarily for this reason we are keeping LDevID TPM considerations out of scope for the the initial factory provisioning proof of concept 
 

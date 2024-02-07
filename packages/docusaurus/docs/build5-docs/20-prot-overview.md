@@ -1,6 +1,6 @@
 ---
 
-title: BRKSI Protocol Overview
+title: BRSKI Protocol Overview
 ---
 
 # Terminology
@@ -23,7 +23,7 @@ We will use the term `device` interchangeably with the term `pledge` for easier 
 
 * `iDevID`: a unique device certificate, issued by the manufacture
 
-* `LDevID`: a certificate used by the device to get network accesss (EAP certificate)
+* `LDevID`: a certificate used by the device to get network access (EAP certificate)
 
   
 
@@ -43,7 +43,7 @@ We will use the term `device` interchangeably with the term `pledge` for easier 
 sequenceDiagram
 autonumber
     critical Private Network
-    	Device->>Manufactuer: 0-Request iDevID
+    	Device->>Manufacturer: 0-Request iDevID
     end
 ```
 
@@ -151,7 +151,7 @@ TBD: outline the full list of methods for discovering registrar
 
 **Post conditions (success):** if the voucher request is successful IF
 
-* `device` is in posession of a valid `voucher` 
+* `device` is in possession of a valid `voucher` 
 
 * where the voucher tests that need to pass are
 
@@ -167,7 +167,7 @@ TBD: outline the full list of methods for discovering registrar
 
 The complete flow of the voucher request process is as follows 
 
-- C.0 `device` creates *partially* authenticated TLS connection wiht registrar 
+- C.0 `device` creates *partially* authenticated TLS connection with registrar 
 - C.1 `device` constructs `voucher request` construct request and sign it with `iDevID` private key
 - C.2 `device` sends `voucher request` to `registrar` 
 - C.3 `registrar` validates `voucher request` 
@@ -239,7 +239,7 @@ sequenceDiagram
 
 ## 3 - Request Voucher overview (advanced policy )
 
-Validation processes exist at statges
+Validation processes exist at stages
 
 - C.1
 - C.3
@@ -255,7 +255,7 @@ C.3 andC.8 are validation and policy enforcement points implemented at the regis
 
 # D Enrol the device
 
-Enrolling the device is relatively simple, consisting of the following steps. These steps are predomintaly defined it the EST specification 
+Enrolling the device is relatively simple, consisting of the following steps. These steps are predominately defined it the EST specification 
 
 - D.0 - fully authenticated the TLS connection, using iDevID (using the pinned cert in the voucher response)
 - D.1 - generated LDevID public private key pair 
@@ -306,7 +306,7 @@ sequenceDiagram
 
     
     activate device 
-    Note right of device: D.7 install cerificate locally 
+    Note right of device: D.7 install certificate locally 
     deactivate device 
         
     
@@ -317,7 +317,7 @@ sequenceDiagram
 
 # E Join the network
 
-Joining the network can be triggered by the device as soon as the the device is in posssions of a a valid LDevID (or other network credential)
+Joining the network can be triggered by the device as soon as the the device is in possession of a valid LDevID (or other network credential)
 
 The router will receive the network connection request. It may confer with the registrar, to check that the device is adequately permissioned to join the network. Typically this maybe be performed through the RADIUS interface. 
 
@@ -334,7 +334,7 @@ sequenceDiagram
     device->>router: 
     
     router->>registrar: E.2 check permission
-    note right of router: this is often <br>implemented by <br>RADIUS protocl 
+    note right of router: this is often <br>implemented by <br>RADIUS protocol 
     registrar->>router: E.3 respond permission
     router->>device: E.4 accept connection 
     
