@@ -25,7 +25,7 @@ Specifically build 5 has the following key attributes
 Build 5 currently comes in two distinct version
 
 * Build 5 V1: delivers the first two objectives. The BRSKI end to end demonstrator working with EAP TLS security on a WIFI connection
-* Build 5 V2: additionally adds the second two features; it implements a continuous assurance process wiht a dynamic policy  
+* Build 5 V2: additionally adds the second two features; it implements a continuous assurance process with a dynamic policy  
 
 
 
