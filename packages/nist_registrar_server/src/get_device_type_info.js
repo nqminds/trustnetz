@@ -2,13 +2,22 @@ const demoSafeSbomId = 'e944293e-8ee8-416d-8063-44ae588058b6';
 
 export default async function getDeviceTypeInfo(deviceType, dbGet) {
   let deviceTypeId = null;
+  let sbomId = null;
+  let sbomVulnerabilityScore = null;
+  let sbomVulnerabilityScoreUpdated = null;
   const deviceTypeRow = await dbGet("SELECT id, name from device_type where id = ? OR name = ?", [deviceType, deviceType])
   if (!deviceTypeRow) {
     return `No device type with id or name ${deviceType}`;
   } else {
     deviceTypeId = deviceTypeRow.id;
   }
-  const has_safe_sbom = await dbGet("SELECT * from has_sbom WHERE device_type_id = ? AND sbom_id = ?", [deviceTypeId, demoSafeSbomId]);
-  const deviceTypeData = {name: deviceTypeRow.name, vulnerable: !Boolean(has_safe_sbom)};
+  const has_sbom = await dbGet("SELECT * from has_sbom WHERE device_type_id = ?", [deviceTypeId]);
+  if (has_sbom) {
+    const sbom = await dbGet("SELECT id, vulnerability_score, vulnerability_score_updated FROM sbom WHERE id = ?", [has_sbom.sbom_id]);
+    sbomId = sbom.id;
+    sbomVulnerabilityScore = sbom.vulnerability_score;
+    sbomVulnerabilityScoreUpdated = sbom.vulnerability_score_updated;
+  }
+  const deviceTypeData = {name: deviceTypeRow.name, sbomId, sbomVulnerabilityScore, vulnerable: sbomVulnerabilityScore > 5, sbomVulnerabilityScoreUpdated};
   return deviceTypeData;
 }
