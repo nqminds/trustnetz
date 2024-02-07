@@ -18,6 +18,7 @@ export default async function getDeviceTypeInfo(deviceType, dbGet) {
     sbomVulnerabilityScore = sbom.vulnerability_score;
     sbomVulnerabilityScoreUpdated = sbom.vulnerability_score_updated;
   }
-  const deviceTypeData = {name: deviceTypeRow.name, sbomId, sbomVulnerabilityScore, vulnerable: sbomVulnerabilityScore > 5, sbomVulnerabilityScoreUpdated};
+  const vulnerable = has_sbom ? sbomVulnerabilityScore > 5 : true;
+  const deviceTypeData = {name: deviceTypeRow.name, sbomId, sbomVulnerabilityScore, vulnerable, sbomVulnerabilityScoreUpdated};
   return deviceTypeData;
 }

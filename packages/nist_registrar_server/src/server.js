@@ -255,6 +255,7 @@ function httpsPost({url, body, ...options}) {
       res.send({response: handlerResponse});
     }
     catch (err) {
+      console.log(`Encountered Error: ${err}`);
       res.send(`Encountered Error: ${err}`);
     }
   }));
