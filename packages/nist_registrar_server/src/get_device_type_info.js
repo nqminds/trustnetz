@@ -1,4 +1,4 @@
-const demoVulnerableSbomId = '9062a818-a03d-4fef-b570-593e62d01681';
+const demoSafeSbomId = 'e944293e-8ee8-416d-8063-44ae588058b6';
 
 export default async function getDeviceTypeInfo(deviceType, dbGet) {
   let deviceTypeId = null;
@@ -8,7 +8,7 @@ export default async function getDeviceTypeInfo(deviceType, dbGet) {
   } else {
     deviceTypeId = deviceTypeRow.id;
   }
-  const has_demo_sbom = await dbGet("SELECT * from has_sbom WHERE device_type_id = ? AND sbom_id = ?", [deviceTypeId, demoVulnerableSbomId]);
-  const deviceTypeData = {name: deviceTypeRow.name, vulnerable: Boolean(has_demo_sbom)};
+  const has_safe_sbom = await dbGet("SELECT * from has_sbom WHERE device_type_id = ? AND sbom_id = ?", [deviceTypeId, demoSafeSbomId]);
+  const deviceTypeData = {name: deviceTypeRow.name, vulnerable: !Boolean(has_safe_sbom)};
   return deviceTypeData;
 }
