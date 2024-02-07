@@ -27,14 +27,6 @@ CREATE TABLE device_type (
   created_at TIMESTAMP
 );
 
-CREATE TABLE vulnerability (
-  id TEXT PRIMARY KEY,
-  name TEXT,
-  severity TEXT,
-  url TEXT,
-  created_at TIMESTAMP
-);
-
 CREATE TABLE owns (
   user_id TEXT,
   device_id TEXT,
@@ -73,13 +65,6 @@ CREATE TABLE gives_connection_rights (
   created_at TIMESTAMP,
   FOREIGN KEY (recipient_id) REFERENCES user (id),
   FOREIGN KEY (authoriser_id) REFERENCES user (id)
-);
-
-CREATE TABLE has_vulnerability (
-  vulnerability_id TEXT,
-  device_type_id TEXT,
-  FOREIGN KEY (vulnerability_id) REFERENCES vulnerability (id),
-  FOREIGN KEY (device_type_id) REFERENCES device_type (id)
 );
 
 CREATE TABLE is_of_type (
