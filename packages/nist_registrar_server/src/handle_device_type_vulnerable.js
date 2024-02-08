@@ -82,25 +82,19 @@ const safeSbom = `
 {
   "bomFormat": "CycloneDX",
   "components": [
-    {
-      "cpe": "cpe:/a:gnome:glib:2.66.4",
+     {
+      "cpe": "cpe:/a:kernel:util-linux:2.36.1",
       "group": "",
       "licenses": [
         {
           "license": {
-            "name": "LGPL-2.1-or-later"
+            "name": "GPL-2.0"
           }
         }
-      ],
-      "name": "glib2",
-      "supplier": {
-        "name": "Organization: OpenWrt ()"
-      },
-      "type": "application",
-      "version": "2.66.4"
-    }
+	]
+	}
   ],
-  "serialNumber": "urn:uuid:00000000-0000-0000-0000-000000000000",
+  "serialNumber": "urn:uuid:00000000-0000-0000-0000-000000000001",
   "specVersion": "1.4",
   "version": 1
 }
@@ -123,7 +117,7 @@ export default async function handleDeviceTypeVulnerable(claimData, dbGet, dbRun
   const demoSafeSbom = await dbGet("SELECT id from sbom where id = ?", [demoSafeSbomId]);
   if (!demoSafeSbom) {
     const currentDate = new Date().toISOString();
-    await dbRun("INSERT INTO sbom (id, sbom, vulnerability_score, vulnerability_score_updated) VALUES (?, ?, ?, ?)", [demoSafeSbomId, safeSbom, 6.76, currentDate]);
+    await dbRun("INSERT INTO sbom (id, sbom, vulnerability_score, vulnerability_score_updated) VALUES (?, ?, ?, ?)", [demoSafeSbomId, safeSbom, 5.5, currentDate]);
   }
   let has_demo_vuln_sbom = await dbGet("SELECT * from has_sbom WHERE device_type_id = ? AND sbom_id = ?", [deviceTypeId, demoVulnerableSbomId]);
   let has_demo_safe_sbom = await dbGet("SELECT * from has_sbom WHERE device_type_id = ? AND sbom_id = ?", [deviceTypeId, demoSafeSbomId]);

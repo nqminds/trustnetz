@@ -1,4 +1,5 @@
 const demoSafeSbomId = 'e944293e-8ee8-416d-8063-44ae588058b6';
+const VULNERABILITY_THRESHOLD = 6;
 
 export default async function getDeviceTypeInfo(deviceType, dbGet) {
   let deviceTypeId = null;
@@ -18,7 +19,7 @@ export default async function getDeviceTypeInfo(deviceType, dbGet) {
     sbomVulnerabilityScore = sbom.vulnerability_score;
     sbomVulnerabilityScoreUpdated = sbom.vulnerability_score_updated;
   }
-  const vulnerable = has_sbom ? sbomVulnerabilityScore > 5 : true;
+  const vulnerable = has_sbom ? sbomVulnerabilityScore > VULNERABILITY_THRESHOLD : true;
   const deviceTypeData = {name: deviceTypeRow.name, sbomId, sbomVulnerabilityScore, vulnerable, sbomVulnerabilityScoreUpdated};
   return deviceTypeData;
 }

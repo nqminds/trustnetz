@@ -34,7 +34,7 @@ struct User {
     can_issue_trust: bool,
 }
 
-const VULNERABILITY_THRESHOLD: i32 = 7;
+const VULNERABILITY_THRESHOLD: i32 = 6;
 
 pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool> {
     // Create OpenFlags without SQLITE_OPEN_CREATE flag
