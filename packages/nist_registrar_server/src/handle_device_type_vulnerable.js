@@ -117,11 +117,13 @@ export default async function handleDeviceTypeVulnerable(claimData, dbGet, dbRun
   }
   const demoVulnSbom = await dbGet("SELECT id from sbom where id = ?", [demoVulnerableSbomId]);
   if (!demoVulnSbom) {
-    await dbRun("INSERT INTO sbom (id, sbom, vulnerability_score, vulnerability_score_updated) VALUES (?, ?, ?, ?)", [demoVulnerableSbomId, vulnerableSbom, 7, '2024-02-05T16:21:27.870Z']);
+    const currentDate = new Date().toISOString();
+    await dbRun("INSERT INTO sbom (id, sbom, vulnerability_score, vulnerability_score_updated) VALUES (?, ?, ?, ?)", [demoVulnerableSbomId, vulnerableSbom, 7.21, currentDate]);
   }
   const demoSafeSbom = await dbGet("SELECT id from sbom where id = ?", [demoSafeSbomId]);
   if (!demoSafeSbom) {
-    await dbRun("INSERT INTO sbom (id, sbom, vulnerability_score, vulnerability_score_updated) VALUES (?, ?, ?, ?)", [demoSafeSbomId, safeSbom, 1, '2024-02-05T16:21:27.870Z']);
+    const currentDate = new Date().toISOString();
+    await dbRun("INSERT INTO sbom (id, sbom, vulnerability_score, vulnerability_score_updated) VALUES (?, ?, ?, ?)", [demoSafeSbomId, safeSbom, 6.76, currentDate]);
   }
   let has_demo_vuln_sbom = await dbGet("SELECT * from has_sbom WHERE device_type_id = ? AND sbom_id = ?", [deviceTypeId, demoVulnerableSbomId]);
   let has_demo_safe_sbom = await dbGet("SELECT * from has_sbom WHERE device_type_id = ? AND sbom_id = ?", [deviceTypeId, demoSafeSbomId]);
