@@ -1,5 +1,7 @@
 # Implementation notes
 
+:::danger TODO: Awaiting input from Steve on Wisekeys
+:::
 ## Code repositories
 
 
@@ -84,8 +86,6 @@ We then need to change XXXX code to change where this is sourced in the current 
 #### C.0 partial TLS
 
 The partial TLS establishment, needs access to the iDevID signing key.
-
-TODO detail ALEX - i think its code here that needs changing 
 
 https://github.com/nqminds/brski/blob/main/src/brski/http/httplib_wrapper.cpp#L264
 

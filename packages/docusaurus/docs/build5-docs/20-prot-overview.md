@@ -153,14 +153,15 @@ TBD: outline the full list of methods for discovering registrar
 
 * `device` is in possession of a valid `voucher` 
 
+:::danger TODO: Requires completion - post conditions voucher
 * where the voucher tests that need to pass are
 
-  * x
+  * x :::danger TODO
 
-  * y
+  * y :::danger TODO
 
-  * z
-
+  * z :::danger TODO
+:::
 
 
 ## C - Request Voucher overview (basic)
@@ -249,7 +250,7 @@ Validation processes exist at stages
 
 At each of these stages there is the option to evaluate and enforce a policy decision
 
-C.3 andC.8 are validation and policy enforcement points implemented at the registrar and therefore ideal for implementing the core networking policy 
+C.3 and C.8 are validation and policy enforcement points implemented at the registrar and therefore ideal for implementing the core networking policy 
 
 
 

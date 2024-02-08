@@ -64,13 +64,6 @@ The method of installing a manufacturer created iDevID is covered in depth in th
 | `Authority Key Identifier` | Public key of the `manufacturer+`                            |
 | (signed by)                | Private key of the `manufacturer-`                           |
 
-#### Example openssl commands
-
-
-
-```bash
-
-```
 
 
 
@@ -96,13 +89,6 @@ Practically for the purposes of the demo, the domain is collocated with the regi
 | `Issuer`                   | Name of the manufacture <br />CN="name of owner"<br />OU="www.manufacture.com" OR email@address |
 | `Authority Key Identifier` | Public key of the `domain+`                                  |
 | (signed by)                | Private key of the `domain-`                                 |
-
-#### Example openssl commands
-
-```bash
-
-```
-
 
 
 ## Registrar
@@ -141,13 +127,6 @@ The process should be in infrequent setup process
 | `Authority Key Identifier` | Public key of the `domain+`    |
 | (signed by)                | Private key of the `domain-`   |
 
-#### Example openssl commands
-
-```bash
-
-```
-
-
 
 ## Radius
 
@@ -174,13 +153,6 @@ The creation process for the RADIUS certificate is identical to the creation pro
 | `Issuer`                   | ??                           |
 | `Authority Key Identifier` | Public key of the `domain+`  |
 | (signed by)                | Private key of the `domain-` |
-
-#### Example openssl commands
-
-```bash
-
-```
-
 
 
 ### Use of Radius certificate
@@ -218,13 +190,6 @@ Essentially its just an iDevID
 | `Issuer`                   | Name of the manufacture <br />CN="Manufacturer ltd"<br />OU="www.manufacture.com" |
 | `Authority Key Identifier` | Public key of the `manufacturer+`                            |
 | (signed by)                | Private key of the `manufacturer-`                           |
-
-#### Example openssl commands
-
-```bash
-
-```
-
 
 
 ### Use of router certificate
@@ -276,13 +241,6 @@ Simplified
 | `Issuer`                   | Name of the registrar??<br />                                |
 | `Authority Key Identifier` | Public key of the `registrar+`                               |
 | (signed by)                | Private key of the `registrar-`                              |
-
-#### Example openssl commands
-
-```bash
-
-```
-
 
 
 ### Use of LDevID certificate
