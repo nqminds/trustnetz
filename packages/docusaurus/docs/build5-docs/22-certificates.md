@@ -1,4 +1,4 @@
-# Certificates lifecycle
+# Certificate Lifecycle
 
 Certificates are used throughout the BRSKI-WIFI onboarding process. 
 
@@ -175,7 +175,9 @@ Many routers can be connected to a single registrar.
 
 For the purposes of the Build 5 demonstrator, we assume the router certificate to have been created and provisioned before time. 
 
-Interestingly however, a router joining a network, is not dissimilar to an IOT device joining a network. It just happens that after joining, the router (over and above a normal IOT device), can physically extend or bridge the network.
+Interestingly however, a router joining a network, is not dissimilar to an IOT device joining a network.
+
+ It just happens that after joining, the router (over and above a normal IOT device), can physically extend or bridge the network.
 
 A later demonstrator should show how live router provisioning can be performed using  BRSKI provisioning 
 
@@ -254,6 +256,3 @@ LDeviD is presented by the device as its EAP-TLS certificate when attempting to 
 LDevID is intercepted by the router, past to the RADIUS server and checked to see it has a common signing root as the RADIUS server, before allowing access. 
 
 LDevID is sent to the router from the registrar, across the continuous assurance line, if the device is deemed untrustworthy.
-
-
-
