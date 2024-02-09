@@ -1,5 +1,7 @@
 # Implementation notes
 
+:::danger TODO: Awaiting input from Steve on Wisekeys
+:::
 ## Code repositories
 
 
@@ -7,7 +9,7 @@
 The respective code repositories and relevant documentation are to be found here 
 
 * Wisekey: https://github.com/sclark-wisekey/NCCoE
-* BRKSI core: https://github.com/nqminds/brski 
+* BRSKI core: https://github.com/nqminds/brski 
 * NIST BRSKI demonstrator: https://github.com/nqminds/nist-brski
 
 We will consider each of the primary factory provisioning steps in turn
@@ -85,23 +87,21 @@ We then need to change XXXX code to change where this is sourced in the current 
 
 The partial TLS establishment, needs access to the iDevID signing key.
 
-TODO detail ALEX - i think its code here that needs changing 
-
 https://github.com/nqminds/brski/blob/main/src/brski/http/httplib_wrapper.cpp#L264
 
-> NOTE: the complexity here is BRSK uses a slightly non standard TLS process - where this initial stage C.0 is only partially authenticate. We need to work out how to map it 
+> NOTE: the complexity here is BRSKI uses a slightly non standard TLS process - where this initial stage C.0 is only partially authenticate. We need to work out how to map it 
 
 #### C.1: voucher signing 
 
 We need to use the TPM stored iDevID- to sign the voucher request
 
-I think it is these CCM sigining functions that need to change
+I think it is these CCM signing functions that need to change
 
 https://github.com/nqminds/brski/blob/585badfd80921df08baeaa1fba9f0945e4b55825/src/voucher/voucher.c#L875
 
-In theory if we use wolfssl configured to use wisekey this would happen automaticialyl
+In theory if we use wolfssl configured to use wisekey this would happen automatically
 
-If not, we need to change this signing functions wiht wisekey functions. 
+If not, we need to change this signing functions with wisekey functions. 
 
 
 

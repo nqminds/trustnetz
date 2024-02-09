@@ -2,7 +2,7 @@
 title: Instructions to set up on registrar
 ---
 
-Follow these steps on the machine acting as the registrar in order to run the Continous Assurance workflow.
+Follow these steps on the machine acting as the registrar in order to run the Continuous Assurance workflow.
 
 ### Install TDX Volt
 Install V0.14.* of [the volt](https://docs.tdxvolt.com/en/clients/web).
@@ -166,7 +166,7 @@ Where `/home/registrar/Documents/nist-brski/packages/handle_IP_addr_changes/rest
 Run the service you've just created with `systemctl start restart-on-ip-change.service` you can check it is running correctly with `systemctl status restart-on-ip-change.service`.
 
 ### Setup service to run Registrar REST API
-Now we will setup a service to run the regisrar REST API, this is the API that receives VCs from agents which wish to make claims to the registrar.
+Now we will setup a service to run the registrar REST API, this is the API that receives VCs from agents which wish to make claims to the registrar.
 
 First open the config.json file in `nist-brski/packages/nist-registrar-server/config.json` and enter the path to the sqlite database file you would like to use, it's created if it doesn't exist and populated with some demo data. Also set the address that the VC Rest API is running at, it should be `http://localhost:3000` by default.
 

@@ -1,4 +1,4 @@
-# Certificates lifecycle
+# Certificate Lifecycle
 
 Certificates are used throughout the BRSKI-WIFI onboarding process. 
 
@@ -27,7 +27,7 @@ classDiagram
     manufacturer "1" --> "*" iDevID: signed by
     domain "1" --> "*" router: signed by
     registrar "1" ..> "*" router: managed by
-    radius "1" ..> "*" router: authorises connections
+    radius "1" ..> "*" router: authorizes connections
     LDevID "1" ..> "*" router: authenticates with
    
 ```
@@ -38,7 +38,7 @@ classDiagram
 
 The iDevID sits on the device (pledge).
 
-It is typically created as a one off process. It should not change during the devices lifecyle
+It is typically created as a one off process. It should not change during the devices lifecycle
 
 It typically is installed by the manufacture as a privileged process. 
 
@@ -48,7 +48,7 @@ The method of installing a manufacturer created iDevID is covered in depth in th
 
 1. [@ DEVICE] create a public private key pair
 2. [@ DEVICE] create a CSR
-3. [TO MANUFACTUER] send CSR
+3. [TO MANUFACTURER] send CSR
 4. [@ MANUFACTURER] validate CSR
 5. [@ MANUFACTURER] create and sign certificate with manufacture key 
 6. [TO DEVICE] return signed iDevID certificate
@@ -64,13 +64,6 @@ The method of installing a manufacturer created iDevID is covered in depth in th
 | `Authority Key Identifier` | Public key of the `manufacturer+`                            |
 | (signed by)                | Private key of the `manufacturer-`                           |
 
-#### Example openssl commands
-
-
-
-```bash
-
-```
 
 
 
@@ -91,18 +84,11 @@ Practically for the purposes of the demo, the domain is collocated with the regi
 
 | X509 Attribute             | Description/use                                              |
 | -------------------------- | ------------------------------------------------------------ |
-| `Subject`                  | Name of the owner <br />CN="name of owner"<br />OU="www.manufacture.com" OR emai@address |
+| `Subject`                  | Name of the owner <br />CN="name of owner"<br />OU="www.manufacture.com" OR email@address |
 | `Subject Key Identifier`   | Public key of the `domain+`                                  |
-| `Issuer`                   | Name of the manufacture <br />CN="name of owner"<br />OU="www.manufacture.com" OR emai@address |
+| `Issuer`                   | Name of the manufacture <br />CN="name of owner"<br />OU="www.manufacture.com" OR email@address |
 | `Authority Key Identifier` | Public key of the `domain+`                                  |
 | (signed by)                | Private key of the `domain-`                                 |
-
-#### Example openssl commands
-
-```bash
-
-```
-
 
 
 ## Registrar
@@ -141,13 +127,6 @@ The process should be in infrequent setup process
 | `Authority Key Identifier` | Public key of the `domain+`    |
 | (signed by)                | Private key of the `domain-`   |
 
-#### Example openssl commands
-
-```bash
-
-```
-
-
 
 ## Radius
 
@@ -175,13 +154,6 @@ The creation process for the RADIUS certificate is identical to the creation pro
 | `Authority Key Identifier` | Public key of the `domain+`  |
 | (signed by)                | Private key of the `domain-` |
 
-#### Example openssl commands
-
-```bash
-
-```
-
-
 
 ### Use of Radius certificate
 
@@ -203,7 +175,9 @@ Many routers can be connected to a single registrar.
 
 For the purposes of the Build 5 demonstrator, we assume the router certificate to have been created and provisioned before time. 
 
-Interestingly however, a router joining a network, is not dissimilar to an IOT device joining a network. It just happens that after joining, the router (over and above a normal IOT device), can physically extend or bridge the network.
+Interestingly however, a router joining a network, is not dissimilar to an IOT device joining a network.
+
+ It just happens that after joining, the router (over and above a normal IOT device), can physically extend or bridge the network.
 
 A later demonstrator should show how live router provisioning can be performed using  BRSKI provisioning 
 
@@ -218,13 +192,6 @@ Essentially its just an iDevID
 | `Issuer`                   | Name of the manufacture <br />CN="Manufacturer ltd"<br />OU="www.manufacture.com" |
 | `Authority Key Identifier` | Public key of the `manufacturer+`                            |
 | (signed by)                | Private key of the `manufacturer-`                           |
-
-#### Example openssl commands
-
-```bash
-
-```
-
 
 
 ### Use of router certificate
@@ -261,7 +228,7 @@ Simplified
 
 5. [@ REGISTRAR] signs the LDevID with the registrar- private key (where in turn the registrar has been signed with the domain-)
 
-6. [-> DEVICE] send certifcate back to device 
+6. [-> DEVICE] send certificate back to device 
 
 7. [@ DEVICE] install LDevID
 
@@ -277,13 +244,6 @@ Simplified
 | `Authority Key Identifier` | Public key of the `registrar+`                               |
 | (signed by)                | Private key of the `registrar-`                              |
 
-#### Example openssl commands
-
-```bash
-
-```
-
-
 
 ### Use of LDevID certificate
 
@@ -296,6 +256,3 @@ LDeviD is presented by the device as its EAP-TLS certificate when attempting to 
 LDevID is intercepted by the router, past to the RADIUS server and checked to see it has a common signing root as the RADIUS server, before allowing access. 
 
 LDevID is sent to the router from the registrar, across the continuous assurance line, if the device is deemed untrustworthy.
-
-
-

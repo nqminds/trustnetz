@@ -200,7 +200,7 @@ sudo nano /etc/hostapd/eap_user
 sudo nano /etc/sysctl.conf
 ```
 
-add or uncoment
+add or uncomment
 
 ```shell=
 net.ipv4.ip_forward = 1
@@ -241,7 +241,7 @@ sudo systemctl start hostapd
 sudo systemctl status hostapd
 ```
 
-Start hostapd in debugg mode
+Start hostapd in debug mode
 ```sh
 sudo hostapd -dd /etc/hostapd/hostapd.conf
 ```
@@ -469,7 +469,7 @@ or by
 ```sh
 openssl crl -in ca_and_crl.pem -text -noout
 ```
-If succesfful the output should be:
+If successful the output should be:
 
 ```sh
 error 23 at 0 depth lookup: certificate revoked
@@ -487,7 +487,7 @@ ca_cert=/etc/hostapd/CA/ca_and_crl.pem
 sudo systemctl restart hostapd
 ```
 
-### Before trying to reconect the device using a revoked certificate we must flush the network to remove any stored credentials
+### Before trying to reconnect the device using a revoked certificate we must flush the network to remove any stored credentials
 
 ```sh
 # Add the necessary SSID at the end
