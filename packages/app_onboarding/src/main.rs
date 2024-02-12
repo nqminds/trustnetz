@@ -5,9 +5,9 @@ use warp::hyper::body::Bytes;
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
-    let args = std::env::args().collect::<Vec<_>>();
-    let path = String::from(".");
-    let key_path = args.get(2).unwrap_or(&path);
+    let args: Vec<_> = std::env::args().collect();
+    let default = String::from(".");
+    let path = args.get(2).unwrap_or(&default);
 
     let route = warp::any()
         .and(warp::filters::body::bytes())
@@ -24,10 +24,8 @@ async fn main() {
 
     warp::serve(route)
         .tls()
-        .cert_path(format!("{}/app.crt", key_path))
-        .key_path(format!("{}/app.key", key_path))
-        .client_auth_required_path(format!("{}/manufacturer.crt", key_path))
+        .cert_path(format!("{}/app.crt", path))
+        .key_path(format!("{}/app.key", path))
+        .client_auth_required_path(format!("{}/manufacturer.crt", path))
         .run(([127, 0, 0, 1], 6789)).await;
 }
-
-// curl --cert idevid.crt --key client.key --cacert ca.crt https://127.0.0.1:6789 -d <<< echo "$(date)"
