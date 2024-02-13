@@ -7,7 +7,7 @@ use warp::hyper::body::Bytes;
 async fn main() {
     let args: Vec<_> = std::env::args().collect();
     let default = String::from(".");
-    let path = args.get(2).unwrap_or(&default);
+    let path = args.get(1).unwrap_or(&default);
 
     let route = warp::any()
         .and(warp::filters::body::bytes())
