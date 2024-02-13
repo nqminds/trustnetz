@@ -24,7 +24,7 @@ use tokio_rustls::TlsAcceptor;
 async fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = std::env::args().collect();
     let binding = String::from(".");
-    let key_path = args.get(2).unwrap_or(&binding);
+    let key_path = args.get(1).unwrap_or(&binding);
 
     let private_key = PKey::private_key_from_pem(read(format!("{}/registrar.key", key_path))?.as_slice())?;
     let mut root_store = RootCertStore::empty();
