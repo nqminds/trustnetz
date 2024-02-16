@@ -12,8 +12,9 @@ async fn main() {
     let route = warp::any()
         .and(warp::filters::body::bytes())
         .map(|csr: Bytes| {
+            std::fs::write("v3.ext", "basicConstraints=CA:FALSE").unwrap();
             let command = std::process::Command::new("openssl")
-                .args(["x509", "-req", "-CA", "mcr.crt", "-CAkey", "mcr.key", "-days", "365", "-sha256"])
+                .args(["x509", "-req", "-CA", "mcr.crt", "-CAkey", "mcr.key", "-days", "365", "-sha256", "-extfile", "v3.ext"])
                 .stdin(Stdio::piped())
                 .stdout(Stdio::piped())
                 .spawn()
@@ -21,6 +22,7 @@ async fn main() {
             command.stdin.unwrap().write(csr.as_ref()).unwrap();
             let mut output = String::new();
             command.stdout.unwrap().read_to_string(&mut output).unwrap();
+            std::fs::remove_file("v3.ext").unwrap();
             output
         });
 
