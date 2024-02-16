@@ -10,7 +10,7 @@ import FormData from 'form-data';
 import fetch from 'node-fetch';
 import { Readable } from "stream";
 
-import intitialiseDemoDatabase from "./initialise_demo_database.js";
+import initialiseDemoDatabase from "./initialise_demo_database.js";
 import handleDeviceTrust from "./handle_device_trust.js"
 import handleManufacturerTrust from "./handle_manufacturer_trust.js";
 import handleDeviceTypeBinding from "./handle_device_type_binding.js";
@@ -19,6 +19,8 @@ import storeClaimAndResponse from "./store_claim_and_response.js";
 import getManufacturerInfo from "./get_manufacturer_info.js";
 import getDeviceTypeInfo from "./get_device_type_info.js";
 import getDeviceInfo from "./get_device_info.js";
+import getMudInfo from "./get_mud_info.js";
+import handleDeviceTypeMudBinding from "./handle_device_type_mud_binding.js";
 
 function hasProperties(object, properties) {
   for (const property of properties) {
@@ -93,7 +95,7 @@ function httpsPost({url, body, ...options}) {
     try {
       db = new sqlite3.Database(sqliteDBPath, sqlite3.OPEN_READWRITE, (err) => {
         if (err) {
-          db = intitialiseDemoDatabase(sqliteDBPath);
+          db = initialiseDemoDatabase(sqliteDBPath);
           resolve(db)
         } else {
           console.log('Connected to the database');
@@ -250,6 +252,9 @@ function httpsPost({url, body, ...options}) {
         case 'device_type_vulnerable':
           handlerResponse = await handleDeviceTypeVulnerable(claimData, dbGet, dbRun);
           break;
+        case 'device_type_mud_binding':
+          handlerResponse = await handleDeviceTypeMudBinding(claimData, dbGet, dbRun);
+          break;
       }
       await storeClaimAndResponse(claimData, handlerResponse, dbGet, dbRun);
       res.send({response: handlerResponse});
@@ -284,6 +289,16 @@ function httpsPost({url, body, ...options}) {
     try {
       const devicesTypes = await dbAll("SELECT * from device_type");
       res.send(devicesTypes);
+    }
+    catch (err) {
+      res.send(`Encountered Error: ${err}`);
+    }
+  }));
+
+  router.get("/muds", asyncHandler(async (req, res) => {
+    try {
+      const muds = await dbAll("SELECT * from mud");
+      res.send(muds);
     }
     catch (err) {
       res.send(`Encountered Error: ${err}`);
@@ -337,7 +352,18 @@ function httpsPost({url, body, ...options}) {
       res.send(`Encountered Error: ${err}`);
     }
   }));
-   
+
+  router.get("/info/mud/:mud", asyncHandler(async (req, res) => {
+    try {
+      const mud = decodeURIComponent(req.params.mud);
+      const response = await getMudInfo(mud, dbGet);
+      res.send(response);
+    }
+    catch (err) {
+      res.send(`Encountered Error: ${err}`);
+    }
+  }));
+
    /** Error handling */
    router.use((req, res, next) => {
        const error = new Error('not found');

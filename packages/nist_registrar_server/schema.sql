@@ -92,3 +92,17 @@ CREATE TABLE has_sbom (
   sbom_id TEXT,
   device_type_id TEXT
 );
+
+
+CREATE TABLE mud (
+  id TEXT,
+  name TEXT,
+  mud TEXT
+);
+
+CREATE TABLE has_mud (
+  mud_id TEXT,
+  device_type_id TEXT,
+  FOREIGN KEY (mud_id) REFERENCES mud (id),
+  FOREIGN KEY (device_type_id) REFERENCES device_type (id)
+);

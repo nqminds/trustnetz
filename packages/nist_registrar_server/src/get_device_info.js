@@ -8,6 +8,8 @@ export default async function getDeviceInfo(device, dbGet) {
   let trustingUser = null;
   let manufacturer = null;
   let manufacturerTrusted = null;
+  let mudId = null;
+  let mudName = null;
   const deviceRow = await dbGet("SELECT id, name from device where id = ? OR name = ?", [device, device])
   if (!deviceRow) {
     return `No device with id or name ${device}`;
@@ -20,6 +22,8 @@ export default async function getDeviceInfo(device, dbGet) {
     const deviceTypeInfo = await getDeviceTypeInfo(boundTypeId, dbGet);
     deviceType = deviceTypeInfo.name;
     vulnerable = deviceTypeInfo.vulnerable;
+    mudId = deviceTypeInfo.mudId;
+    mudName = deviceTypeInfo.mudName;
   }
   const manufacturedByRow = await dbGet("SELECT manufacturer_id from manufactured where device_id =?", [deviceId]);
   if (manufacturedByRow) {

@@ -6,6 +6,8 @@ export default async function getDeviceTypeInfo(deviceType, dbGet) {
   let sbomId = null;
   let sbomVulnerabilityScore = null;
   let sbomVulnerabilityScoreUpdated = null;
+  let mudId = null;
+  let mudName = null;
   const deviceTypeRow = await dbGet("SELECT id, name from device_type where id = ? OR name = ?", [deviceType, deviceType])
   if (!deviceTypeRow) {
     return `No device type with id or name ${deviceType}`;
@@ -20,6 +22,12 @@ export default async function getDeviceTypeInfo(deviceType, dbGet) {
     sbomVulnerabilityScoreUpdated = sbom.vulnerability_score_updated;
   }
   const vulnerable = has_sbom ? sbomVulnerabilityScore > VULNERABILITY_THRESHOLD : true;
-  const deviceTypeData = {name: deviceTypeRow.name, sbomId, sbomVulnerabilityScore, vulnerable, sbomVulnerabilityScoreUpdated};
+  const has_mud = await dbGet("SELECT * from has_mud WHERE device_type_id = ?", [deviceTypeId]);
+  if (has_mud) {
+    const mud = await dbGet("SELECT id, name FROM mud WHERE id = ?", [has_mud.mud_id]);
+    mudId = mud.id;
+    mudName = mud.name;
+  }
+  const deviceTypeData = {name: deviceTypeRow.name, sbomId, sbomVulnerabilityScore, vulnerable, sbomVulnerabilityScoreUpdated, mudId, mudName};
   return deviceTypeData;
 }
