@@ -1,0 +1,1 @@
+openssl req -x509 -sha256 -nodes -days 365 -subj "/CN=MCR" -newkey ec:<(openssl ecparam -name prime256v1) -keyout mcr.key -out mcr.crt -addext "subjectAltName=IP:89.21.226.142"
