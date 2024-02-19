@@ -444,6 +444,79 @@ pub fn check_device_vulnerable(idevid: &X509, path_to_sql_db: &str) -> Result<bo
     }
 }
 
+pub fn check_device_mud<'a>(idevid: &'a X509, path_to_sql_db: &'a str) -> Result<Option<String>, rusqlite::Error> {
+    // Create OpenFlags without SQLITE_OPEN_CREATE flag
+    let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_FULL_MUTEX;
+    
+    // Connect to SqlDB database from a file
+    let conn = Connection::open_with_flags(path_to_sql_db, flags)?;
+
+    // extract deviceId and manufacturer from idevid
+    let subject_name = idevid.subject_name();
+
+    let subject_name_str = subject_name
+        .entries_by_nid(openssl::nid::Nid::COMMONNAME)
+        .next()
+        .map(|entry| entry.data().as_utf8().unwrap().to_string()) // Convert &str to String
+        .unwrap_or_else(|| "Unknown Subject Name".to_string());
+
+    let device_name = subject_name_str.to_owned();
+
+    // Find pledge's device entity in device table, if it doesn't exist, add device entity
+    let mut get_device_statement = conn.prepare("SELECT * FROM device WHERE device.name = ?")?;
+
+    let pledge_device: Value = match get_device_statement.query_row(params![device_name], |row| {
+        Ok(Device {
+            id: row.get(0)?,
+            name: row.get(1)?,
+            idevid: row.get(2)?,
+            created_at: row.get(3)?,
+        })
+    }) {
+       Ok(pledge) => {
+           println!("Device found in database: {:?}", pledge);
+           to_value(&pledge).unwrap()
+       }
+       Err(rusqlite::Error::QueryReturnedNoRows) => {
+           println!("No matching device found in database");
+           return Ok(None); // Return early when no rows are found
+       }
+       Err(err) => {
+           eprintln!("Error querying database: {:?}", err);
+           Value::Null
+       }
+   };
+
+   println!("Pledge device: {}", serde_json::to_string_pretty(&pledge_device).unwrap());
+   let device_id = pledge_device["id"].to_string().trim_matches('"').to_owned();
+
+
+    // Query to check the mud statement of the device
+    let mud_name: Result<Option<String>> = conn.query_row(
+        "
+        SELECT m.id, m.name, m.mud FROM device d
+        LEFT JOIN is_of_type iot ON d.id = iot.device_id
+        LEFT JOIN device_type dt ON iot.device_type_id = dt.id
+        LEFT JOIN has_mud hm ON dt.id = hm.device_type_id
+        LEFT JOIN mud m ON hm.mud_id = m.id
+        WHERE d.id = ?;
+        ",
+        params![device_id], 
+        |row| {
+            row.get::<usize, String>(1).map(|s| Some(s.to_owned())) // Convert &str to String
+        },
+    );
+
+    println!("{:?}", mud_name);
+
+    let _name = "name".to_owned();
+    match mud_name {
+        Ok(mud_name) => mud_name.map_or(Ok(None), |name| Ok(Some(name))),
+        Err(rusqlite::Error::InvalidColumnType(1, _name, rusqlite::types::Type::Null)) => Ok(None),
+        Err(err) => Err(err),
+    }
+}
+
 pub fn generate_x509_certificate(serial_number_hex: &str, issuer_name: &str) -> Result<X509, Box<dyn std::error::Error>> {
     let serial_number_hex = if serial_number_hex.starts_with("0x") {
         // Remove the "0x" prefix if present
@@ -542,6 +615,8 @@ mod tests {
             "trusts",
             "user",
             "sbom",
+            "has_mud",
+            "mud"
         ];
 
         // Iterate over each table and create it in tempdb
@@ -851,6 +926,36 @@ mod tests {
         let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
             let result = check_device_trusted(idevid, temp_file_path).unwrap();
             assert_eq!(result, true);
+            Ok(true)
+        }).unwrap();
+    }
+
+    #[test]
+    fn check_device_mud_file_device_with_no_mud() {
+        let path_to_sql_db = "./tests/ExistingDeviceWithoutMud.sqlite";
+        let idevid = generate_x509_certificate("0x2", "www.manufacturer.com").unwrap();
+
+        // Use with_temporary_database to perform the operation and check the result
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            let result = check_device_mud(idevid, temp_file_path).map_err(|err| format!("{} at {}:{}:{}", err, file!(), line!(), column!())).unwrap();
+            print!("{:?}", result);
+            // let result = check_device_mud(idevid, temp_file_path).unwrap();
+            assert_eq!(result, None);
+            Ok(true)
+        }).unwrap();
+    }
+
+    #[test]
+    fn check_device_mud_file_device_with_mud() {
+        let path_to_sql_db = "./tests/ExistingDeviceWithMuds.sqlite";
+        let idevid = generate_x509_certificate("0x2", "www.manufacturer.com").unwrap();
+
+        // Use with_temporary_database to perform the operation and check the result
+        let _ = with_temporary_database(idevid, path_to_sql_db, |idevid, temp_file_path| {
+            let result = check_device_mud(idevid, temp_file_path).map_err(|err| format!("{} at {}:{}:{}", err, file!(), line!(), column!())).unwrap();
+            print!("{:?}", result);
+            // let result = check_device_mud(idevid, temp_file_path).unwrap();
+            assert_eq!(result, Some(String::from("internal traffic")));
             Ok(true)
         }).unwrap();
     }
