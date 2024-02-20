@@ -8,6 +8,10 @@ use serde_json::{Value, to_value};
 use chrono::prelude::DateTime;
 use chrono::Utc;
 use uuid::Uuid;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+use std::net::Ipv4Addr;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Manufacturer {
@@ -567,6 +571,54 @@ pub fn generate_x509_certificate(serial_number_hex: &str, issuer_name: &str) -> 
     Ok(certificate)
 }
 
+
+pub fn search_log_for_ips_since(log_file_path: &str, device_ip: Ipv4Addr, ips: &[String], minutes: u64) -> Vec<String> {
+    let current_time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+    let start_time = current_time - (minutes * 60);
+    
+    let mut matching_entries = Vec::new();
+    
+    if let Ok(file) = File::open(log_file_path) {
+        let reader = BufReader::new(file);
+
+        for line in reader.lines() {
+            if let Ok(entry) = line {
+                if entry.trim().is_empty() {
+                    continue; // Skip empty lines
+                }
+                
+                let parts: Vec<&str> = entry.split_whitespace().collect();
+                if parts.len() >= 2 {
+                    if let Ok(timestamp) = parts[0].parse::<u64>() {
+                        if timestamp < start_time {
+                            continue; // Skip entries before the start time
+                        }
+                    }
+                
+                    if parts.len() >= 5 && parts[1] == "IP" && parts[3] == ">" {
+                        if let Ok(source_ip) = parts[2].parse::<Ipv4Addr>() {
+                            if source_ip != device_ip {
+                                continue; // Skip entries where source ip is not the device ip address
+                            }
+                        }
+
+                        if let Ok(target_ip) = parts[4].replace(":", "").parse::<Ipv4Addr>() {
+                            if ips.iter().any(|ip| target_ip.to_string() == *ip) {
+                                matching_entries.push(entry);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        println!("COULDN'T OPEN FILE")
+    }
+    
+    matching_entries
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -958,5 +1010,27 @@ mod tests {
             assert_eq!(result, Some(String::from("internal traffic")));
             Ok(true)
         }).unwrap();
+    }
+
+    #[test]
+    fn check_searching_log_file_finds_blacklisted_ips() {
+        let log_file_path = "./tests/log.txt";
+        let device_ip = "192.168.16.121".parse::<Ipv4Addr>().unwrap();
+        let ips = vec!["151.101.129.141".to_string()];
+        let minutes = 10000000; // ~20 years
+
+        let matching_entries = search_log_for_ips_since(&log_file_path, device_ip, &ips, minutes);
+        assert_eq!(matching_entries.len(), 38);
+    }
+
+    #[test]
+    fn check_searching_log_file_finds_no_blacklisted_ips() {
+        let log_file_path = "./tests/log.txt";
+        let device_ip = "192.168.16.121".parse::<Ipv4Addr>().unwrap();
+        let ips = vec!["151.101.129.141".to_string()];
+        let minutes = 5;
+
+        let matching_entries = search_log_for_ips_since(&log_file_path, device_ip, &ips, minutes);
+        assert_eq!(matching_entries.len(), 38);
     }
 }
