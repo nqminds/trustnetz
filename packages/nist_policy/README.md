@@ -27,7 +27,7 @@ Checks if the device has a mud file, and outputs the `name` field of the mud fil
 
 ## check_for_blacklisted_requests
 
-This function uses a tcpdump log file created with `stdbuf -o0 tcpdump --interface wlan1 >> log.txt` where `wan1` is the network interface running the brski secure wifi, it checks in the file if any requests to blacklisted IP addresses have been made in the last X minutes.
+This function uses a tcpdump log file created with `stdbuf -o0 tcpdump --interface wlan0 | while IFS= read -r line; do echo "$(date +'%Y-%m-%dT%H:%M:%S') $line"; done >> log.txt` where `wan1` is the network interface running the brski secure wifi, it checks in the file if any requests to blacklisted IP addresses have been made in the last X minutes.
 
 It takes as arguments:
 - file path to log file

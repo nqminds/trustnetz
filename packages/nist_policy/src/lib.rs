@@ -12,6 +12,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::net::Ipv4Addr;
 use std::time::{SystemTime, UNIX_EPOCH};
+use std::collections::HashSet;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Manufacturer {
@@ -571,6 +572,16 @@ pub fn generate_x509_certificate(serial_number_hex: &str, issuer_name: &str) -> 
     Ok(certificate)
 }
 
+fn parse_datetime_to_timestamp(datetime_str: &str) -> Option<u64> {
+    // match DateTime::parse_from_str(datetime_str, "%Y-%m-%dT%H:%M:%S") {
+    match chrono::NaiveDateTime::parse_from_str(&datetime_str, "%Y-%m-%dT%H:%M:%S") {
+        Ok(datetime) => Some(datetime.timestamp() as u64),
+        Err(err) => {
+            println!("Failed to parse datetime string: {}", err);
+            None
+        },
+    }
+}
 
 pub fn search_log_for_ips_since(log_file_path: &str, device_ip: Ipv4Addr, ips: &[String], minutes: u64) -> Vec<String> {
     let current_time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
@@ -589,20 +600,20 @@ pub fn search_log_for_ips_since(log_file_path: &str, device_ip: Ipv4Addr, ips: &
                 
                 let parts: Vec<&str> = entry.split_whitespace().collect();
                 if parts.len() >= 2 {
-                    if let Ok(timestamp) = parts[0].parse::<u64>() {
+                    if let Some(timestamp) = parse_datetime_to_timestamp(parts[0]) {
                         if timestamp < start_time {
                             continue; // Skip entries before the start time
                         }
                     }
                 
-                    if parts.len() >= 5 && parts[1] == "IP" && parts[3] == ">" {
-                        if let Ok(source_ip) = parts[2].parse::<Ipv4Addr>() {
+                    if parts.len() >= 5 && parts[2] == "IP" && parts[4] == ">" {
+                        if let Ok(source_ip) = parts[3].parse::<Ipv4Addr>() {
                             if source_ip != device_ip {
                                 continue; // Skip entries where source ip is not the device ip address
                             }
                         }
 
-                        if let Ok(target_ip) = parts[4].replace(":", "").parse::<Ipv4Addr>() {
+                        if let Ok(target_ip) = parts[5].replace(":", "").parse::<Ipv4Addr>() {
                             if ips.iter().any(|ip| target_ip.to_string() == *ip) {
                                 matching_entries.push(entry);
                             }
@@ -618,6 +629,39 @@ pub fn search_log_for_ips_since(log_file_path: &str, device_ip: Ipv4Addr, ips: &
     matching_entries
 }
 
+fn get_unique_source_ips(log_file_path: &str) -> HashSet<Ipv4Addr> {
+    let mut unique_ips = HashSet::new();
+
+    if let Ok(file) = File::open(log_file_path) {
+        let reader = BufReader::new(file);
+        for line in reader.lines() {
+            if let Ok(line) = line {
+                let parts: Vec<&str> = line.split(' ').collect();
+                if parts.len() >= 4 {
+                    if let Ok(source_ip) = parts[3].parse::<Ipv4Addr>() {
+                        unique_ips.insert(source_ip);
+                    }
+                }
+            }
+        }
+    }
+
+    unique_ips
+}
+
+pub fn demo_get_ips_to_kick(log_file_path: &str, blacklisted_ips: &[String], minutes: u64) -> HashSet<Ipv4Addr> {
+    let source_ips = get_unique_source_ips(log_file_path);
+    let mut matched_ips = HashSet::new();
+
+    for ip in source_ips.iter() {
+        let matching_entries = search_log_for_ips_since(log_file_path, ip.to_owned(), blacklisted_ips, minutes);
+        if !matching_entries.is_empty() {
+            matched_ips.insert(ip.clone());
+        }
+    }
+
+    matched_ips
+}
 
 #[cfg(test)]
 mod tests {
@@ -1013,24 +1057,55 @@ mod tests {
     }
 
     #[test]
-    fn check_searching_log_file_finds_blacklisted_ips() {
+    fn check_searching_log_file_finds_no_blacklisted_ips_in_last_5_mins() {
         let log_file_path = "./tests/log.txt";
-        let device_ip = "192.168.16.121".parse::<Ipv4Addr>().unwrap();
-        let ips = vec!["151.101.129.141".to_string()];
-        let minutes = 10000000; // ~20 years
+        let device_ip = "192.168.17.101".parse::<Ipv4Addr>().unwrap();
+        let blacklisted_ips = vec!["151.101.1.140".to_string()];
+        let minutes = 5;
 
-        let matching_entries = search_log_for_ips_since(&log_file_path, device_ip, &ips, minutes);
-        assert_eq!(matching_entries.len(), 38);
+        let matching_entries = search_log_for_ips_since(&log_file_path, device_ip, &blacklisted_ips, minutes);
+        assert_eq!(matching_entries.len(), 0);
     }
 
     #[test]
-    fn check_searching_log_file_finds_no_blacklisted_ips() {
+    fn check_searching_log_file_finds_correct_number_of_requests_for_blacklisted_ips() {
         let log_file_path = "./tests/log.txt";
-        let device_ip = "192.168.16.121".parse::<Ipv4Addr>().unwrap();
-        let ips = vec!["151.101.129.141".to_string()];
-        let minutes = 5;
+        let device_ip = "192.168.17.101".parse::<Ipv4Addr>().unwrap();
+        let blacklisted_ips = vec!["151.101.1.140".to_string()];
+        let minutes = 10000000; // ~20 years
 
-        let matching_entries = search_log_for_ips_since(&log_file_path, device_ip, &ips, minutes);
-        assert_eq!(matching_entries.len(), 38);
+        let matching_entries = search_log_for_ips_since(&log_file_path, device_ip, &blacklisted_ips, minutes);
+        assert_eq!(matching_entries.len(), 148);
+
+        let device_ip = "192.168.16.123".parse::<Ipv4Addr>().unwrap();
+        let matching_entries = search_log_for_ips_since(&log_file_path, device_ip, &blacklisted_ips, minutes);
+        assert_eq!(matching_entries.len(), 9);
+
+        let device_ip = "151.101.1.140".parse::<Ipv4Addr>().unwrap();
+        let matching_entries = search_log_for_ips_since(&log_file_path, device_ip, &blacklisted_ips, minutes);
+        assert_eq!(matching_entries.len(), 0);
     }
+
+    #[test]
+    fn check_get_source_ips() {
+        let log_file_path = "./tests/log.txt";
+        let source_ips = get_unique_source_ips(&log_file_path);
+        assert_eq!(source_ips.len(), 3);
+        assert_eq!(source_ips.contains(&"192.168.17.101".parse::<Ipv4Addr>().unwrap()), true);
+        assert_eq!(source_ips.contains(&"192.168.16.123".parse::<Ipv4Addr>().unwrap()), true);
+        assert_eq!(source_ips.contains(&"192.168.16.121".parse::<Ipv4Addr>().unwrap()), true);
+    }
+
+    #[test]
+    fn check_() {
+        let log_file_path = "./tests/log.txt";
+        let blacklisted_ips = vec!["151.101.1.140".to_string()];
+        let minutes = 10000000; // ~20 years
+
+        let bad_ips = demo_get_ips_to_kick(&log_file_path, &blacklisted_ips, minutes);
+        assert_eq!(bad_ips.len(), 2);
+        assert_eq!(bad_ips.contains(&"192.168.17.101".parse::<Ipv4Addr>().unwrap()), true);
+        assert_eq!(bad_ips.contains(&"192.168.16.123".parse::<Ipv4Addr>().unwrap()), true);
+    }
+
 }
