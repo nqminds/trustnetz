@@ -75,18 +75,18 @@ This process is a privileged event and is assumed to take place on a physically 
 ```mermaid
 sequenceDiagram
     participant device
-    participant MASA
+    participant MPR
 
     activate device 
     Note right of device: O.1 generate device key pair (iDevID +/-)
     Note right of device: O.2 prepare CSR and sign with iDevID
-    device->>-MASA: O.3 send CSR
+    device->>-MPR: O.3 send CSR
 
-    activate MASA    
-    Note right of MASA: O.4 validate CSR
-    Note right of MASA: O.6 sign iDevID
+    activate MPR    
+    Note right of MPR: O.4 validate CSR
+    Note right of MPR: O.6 sign iDevID
 
-    MASA->>-device: O.7 return iDeviD
+    MPR->>-device: O.7 return iDeviD
     activate device 
     Note right of device: O.8 save iDevID on device 
     deactivate device
