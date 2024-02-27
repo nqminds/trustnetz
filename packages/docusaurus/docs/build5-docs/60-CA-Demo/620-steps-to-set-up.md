@@ -9,7 +9,13 @@ Install V0.14.* of [the volt](https://docs.tdxvolt.com/en/clients/web).
 
 
 ### Create a volt to host the VC toolchain
-[Follow the instructions to create a volt with an alias](https://docs.tdxvolt.com/en/how-to/create-volt) in this demo I have used the alias `@registrar14`. 
+[Follow the instructions to create a volt with an alias](https://docs.tdxvolt.com/en/how-to/create-volt) in this demo I have used the alias `@registrar14`.
+
+```
+./volt create -n "Your Volt Name" -a yourVoltAlias -k /path/to/keyfile
+```
+
+
 
 ### Clone the nist-brski github repo
 Clone the [nist-brski github repo](https://github.com/nqminds/nist-brski)
