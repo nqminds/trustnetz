@@ -3,10 +3,11 @@ CONFIG="/home/alexandru/projects/brski/build/linux/tests/brski/test-config.ini"
 REGISTRAR_TLS_PATH="/tmp/registrar_tls.crt"
 REGISTRAR_ADDRESS="127.0.0.1"
 REGISTRAR_PORT="12345"
+REGISTRAR_REST_URL="/.well-known/brski/requestvoucher"
 
 VOUCHER_REQUEST=`${BRSKI} -c ${CONFIG} epvr`
 
-HTTP_REQUEST="POST /.well-known/brski/requestvoucher HTTP/1.1\r\nHost: ${REGISTRAR_ADDRESS}\r\nContent-Type: application/voucher-cms+json\r\nContent-Length: ${#VOUCHER_REQUEST}\r\n\r\n${VOUCHER_REQUEST}"
+HTTP_REQUEST="POST ${REGISTRAR_REST_URL} HTTP/1.1\r\nHost: ${REGISTRAR_ADDRESS}\r\nContent-Type: application/voucher-cms+json\r\nContent-Length: ${#VOUCHER_REQUEST}\r\n\r\n${VOUCHER_REQUEST}"
 
 openssl s_client -connect ${REGISTRAR_ADDRESS}:${REGISTRAR_PORT} -tls1_3 -showcerts 2>/dev/null | sed -n '/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/p' > ${REGISTRAR_TLS_PATH}
 
