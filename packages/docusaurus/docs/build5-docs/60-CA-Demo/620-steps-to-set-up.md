@@ -41,6 +41,8 @@ Clone the [nist-brski github repo](https://github.com/nqminds/nist-brski)
 ### Install npm
 Install node v18 & npm, I'd suggest installed nvm with `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash` followed by running `source ~/.bashrc` to load nvm into your current shell. You can then use `nvm install 18` followed by `nvm use 18` to install node version 18 and set it as the active node version.
 
+### Install verfiable credential schemas toolchain
+Run `npm i -g @nqminds/verifiable-schemas-toolchain` to install the verifiable credentail schema toolchain globally.
 
 
 ### npm install packages
