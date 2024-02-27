@@ -67,7 +67,7 @@ In this directory create a file titled `tdxvolt.service` with the following cont
 Description=tdxVolt
 
 [Service]
-ExecStart=/home/registrar/volt-0.14/bin/volt run -i @registrar14 -l /home/registrar/volt-0.14/battery
+ExecStart=/home/registrar/volt-0.14/bin/volt run -i @registrar14
 WorkingDirectory=/home/registrar/volt-0.14
 Environment="TDXVOLT_LOG_LEVEL=DEBUG"
 Environment="TDXVOLT_LOG_DEBUG=all,-database,-policy"
