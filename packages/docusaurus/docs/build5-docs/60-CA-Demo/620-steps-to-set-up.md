@@ -14,16 +14,16 @@ Install V0.14.* of [the volt](https://docs.tdxvolt.com/en/clients/web).
 For example I have used:
 
 ```
-/home/registrarOffice/volt-0.14/bin/volt create -n "Your Volt Name" -a yourVoltAlias -k /path/to/keyfile
+/home/registrar/volt-0.14/bin/volt create -n "Your Volt Name" -a yourVoltAlias -k /path/to/keyfile
 ```
 
-Your keyfile will then be populated with the private key generated for the volt, you can then securely copy this to your local machine to connect to the volt with the fusebox. The config will be logged to the terminal on creation, you can also use `/home/registrarOffice/volt-0.14/bin/volt config` to list all the volts on your machine, which should produce something like:
+Your keyfile will then be populated with the private key generated for the volt, you can then securely copy this to your local machine to connect to the volt with the fusebox. The config will be logged to the terminal on creation, you can also use `/home/registrar/volt-0.14/bin/volt config` to list all the volts on your machine, which should produce something like:
 ```
 ----------------------------------------
 uuid: 89e124fb-1e5e-46f4-aae8-f0fa8035e180
-alias: nistregitsrarpx5
-name: Nist Registrar Volt - px5
-location: /home/registrarOffice/Public/tdxVolt/battery/volt/89e124fb-1e5e-46f4-aae8-f0fa8035e180
+alias: yourVoltAlias
+name: Your Volt Name
+location: /home/registrar/Public/tdxVolt/battery/volt/89e124fb-1e5e-46f4-aae8-f0fa8035e180
 
 ----------------------------------------
 ```
