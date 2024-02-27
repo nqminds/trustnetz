@@ -11,11 +11,28 @@ Install V0.14.* of [the volt](https://docs.tdxvolt.com/en/clients/web).
 ### Create a volt to host the VC toolchain
 [Follow the instructions to create a volt with an alias](https://docs.tdxvolt.com/en/how-to/create-volt) in this demo I have used the alias `@registrar14`.
 
+For example I have used:
+
 ```
-./volt create -n "Your Volt Name" -a yourVoltAlias -k /path/to/keyfile
+/home/registrarOffice/volt-0.14/bin/volt create -n "Your Volt Name" -a yourVoltAlias -k /path/to/keyfile
 ```
 
+Your keyfile will then be populated with the private key generated for the volt, you can then securely copy this to your local machine to connect to the volt with the fusebox. The config will be logged to the terminal on creation, you can also use `/home/registrarOffice/volt-0.14/bin/volt config` to list all the volts on your machine, which should produce something like:
+```
+----------------------------------------
+uuid: 89e124fb-1e5e-46f4-aae8-f0fa8035e180
+alias: nistregitsrarpx5
+name: Nist Registrar Volt - px5
+location: /home/registrarOffice/Public/tdxVolt/battery/volt/89e124fb-1e5e-46f4-aae8-f0fa8035e180
 
+----------------------------------------
+```
+
+And you can then use the uuid to get the config details for the volt you have created with:
+
+`./volt config -i 89e124fb-1e5e-46f4-aae8-f0fa8035e180`
+
+You can then paste this config into your fusebox running on your local machine, along with loading the keyfile to remotely connect to your newly created volt.
 
 ### Clone the nist-brski github repo
 Clone the [nist-brski github repo](https://github.com/nqminds/nist-brski)
