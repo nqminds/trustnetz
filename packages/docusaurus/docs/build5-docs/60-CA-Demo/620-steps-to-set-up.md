@@ -28,9 +28,9 @@ location: /home/registrarOffice/Public/tdxVolt/battery/volt/89e124fb-1e5e-46f4-a
 ----------------------------------------
 ```
 
-And you can then use the uuid to get the config details for the volt you have created with:
+And you can use this command with either the alias (prepended with an `@` symbol) or uuid get the config details for the volt you have created with:
 
-`./volt config -i 89e124fb-1e5e-46f4-aae8-f0fa8035e180`
+`./volt config -i @yourVoltAlias`
 
 You can then paste this config into your fusebox running on your local machine, along with loading the keyfile to remotely connect to your newly created volt.
 
