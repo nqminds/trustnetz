@@ -1,5 +1,6 @@
 #!/bin/bash
 
+SERVER_CONFIG="/opt/demo-server/html/server.conf"
 # Create necessary directories
 mkdir -p /opt/demo-server/html
 mkdir -p /opt/demo-server/bash-scripts
@@ -19,9 +20,12 @@ if ! [[ "$PORT" =~ ^[0-9]+$ ]] || [ "$PORT" -lt 1024 ] || [ "$PORT" -gt 65535 ];
     exit 1
 fi
 
-# Write the port number to the configuration file
 echo "Port selected: $PORT"
-echo "port=$PORT" > /opt/demo-server/html/server.conf
+if grep -q "^port=" "$SERVER_CONFIG"; then
+    sed -i "s/^port=.*/port=$PORT/" "$SERVER_CONFIG"
+else
+    echo "port=$PORT" >> "$SERVER_CONFIG"
+fi
 
 # Copy the systemd service file
 cp /opt/demo-server/demo-server.service /etc/systemd/system/
