@@ -14,6 +14,22 @@ function getServerPort(callback) {
         });
 }
 
+function getPingIP(callback) {
+    fetch('server.conf')
+        .then(response => response.text())
+        .then(text => {
+            const match = text.match(/ping_ip=([0-9.]+)/);
+            if (match && match[1]) {
+                callback(match[1]);
+            } else {
+                throw new Error('Ping IP not found in server configuration.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching server config:', error);
+        });
+}
+
 function getLogFile(logFile, logElementId) {
     fetch(logFile)
         .then(response => response.text())
@@ -65,6 +81,27 @@ function updateWlanStatus() {
         });
 }
 
+function sendPingRequest() {
+    getPingIP(function(ip) {
+        fetch(`/ping?ip=${ip}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(text => {
+                document.getElementById('pingStatus').textContent = 'Ping Result: ';
+                document.getElementById('pingLogDropdown').textContent = text;
+            })
+            .catch(error => {
+                console.error('Ping request failed:', error);
+                document.getElementById('pingStatus').textContent = 'Ping Request Failed';
+                document.getElementById('pingLogDropdown').textContent = 'Error: ' + error.message;
+            });
+    });
+}
+
 document.getElementById('onboard').onclick = function() {
     sendRequest('/onboard', 'onboardLog', 'onboardStatus', 'Onboarded', 'offboardLog', 'offboardStatus', '../onboarding_log_file.txt');
 };
@@ -72,6 +109,10 @@ document.getElementById('onboard').onclick = function() {
 document.getElementById('offboard').onclick = function() {
     sendRequest('/offboard', 'offboardLog', 'offboardStatus', 'Offboarded', 'onboardLog', 'onboardStatus', '../offboarding_log_file.txt');
 };
+
+document.getElementById('ping').addEventListener('click', function() {
+    sendPingRequest();
+});
 
 // Update every 10 seconds
 setInterval(updateWlanStatus, 10000);
