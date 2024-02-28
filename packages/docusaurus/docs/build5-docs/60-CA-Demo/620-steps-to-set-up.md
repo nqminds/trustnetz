@@ -106,6 +106,9 @@ Export the volt config for that user to a json file, like volt-config.json, an e
 }
 ```
 
+You can retrieve it using:
+`./volt config -i @yourVoltAlias`
+
 ### Run the VC schemas through the VC toolchain
 Open the `nist-brski/packages/schemas` directory in your clone of the github repository and follow the instructions in the README.md file.
 
