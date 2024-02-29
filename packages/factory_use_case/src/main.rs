@@ -14,7 +14,7 @@ async fn main() {
         .map(|csr: Bytes| {
             std::fs::write("v3.ext", "basicConstraints=CA:FALSE").unwrap();
             let command = std::process::Command::new("openssl")
-                .args(["x509", "-req", "-CA", "mcr.crt", "-CAkey", "mcr.key", "-days", "365", "-sha256", "-extfile", "v3.ext"])
+                .args(["x509", "-req", "-CA", "mpr.crt", "-CAkey", "mpr.key", "-days", "365", "-sha256", "-extfile", "v3.ext"])
                 .stdin(Stdio::piped())
                 .stdout(Stdio::piped())
                 .spawn()
@@ -28,7 +28,7 @@ async fn main() {
 
     warp::serve(route)
         .tls()
-        .cert_path(format!("{}/mcr.crt", path))
-        .key_path(format!("{}/mcr.key", path))
+        .cert_path(format!("{}/mpr.crt", path))
+        .key_path(format!("{}/mpr.key", path))
         .run(([192, 168, 1, 114], 7000)).await;
 }
