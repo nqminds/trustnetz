@@ -26,6 +26,6 @@ async fn main() {
         .tls()
         .cert_path(format!("{}/app.crt", path))
         .key_path(format!("{}/app.key", path))
-        .client_auth_required_path(format!("{}/mcr.crt", path))
+        .client_auth_required_path(format!("{}/mpr.crt", path))
         .run(([192, 168, 1, 114], 7001)).await;
 }
