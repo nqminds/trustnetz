@@ -13,14 +13,50 @@
 #define DEFAULT_PORT 8082
 
 int write_port_to_conf_file(int port) {
-    FILE *file = fopen(CONFIG_FILE_PATH, "w");
+    char tempFileName[] = TEMP_PORT_FILE_PATH;
+    FILE *file = fopen(CONFIG_FILE_PATH, "r");
     if (file == NULL) {
-        perror("Failed to open config file");
+        perror("Failed to open config file for reading");
+        return -1;
+    }
+    
+    int tempFileDescriptor = mkstemp(tempFileName);
+    if (tempFileDescriptor == -1) {
+        perror("Failed to create temporary file");
+        fclose(file);
+        return -1;
+    }
+    FILE *tempFile = fdopen(tempFileDescriptor, "w");
+    if (tempFile == NULL) {
+        perror("Failed to open temporary file for writing");
+        close(tempFileDescriptor);
+        fclose(file);
         return -1;
     }
 
-    fprintf(file, "port=%d\n", port);
+    char line[1024];
+    int portFound = 0;
+    while (fgets(line, 1024, file) != NULL) {
+        if (strncmp(line, "port=", 5) == 0) {
+            fprintf(tempFile, "port=%d\n", port);
+            portFound = 1;
+        } else {
+            fputs(line, tempFile);
+        }
+    }
+    
+    if (!portFound) {
+        fprintf(tempFile, "port=%d\n", port);
+    }
+
     fclose(file);
+    fclose(tempFile);
+    
+    if (rename(tempFileName, CONFIG_FILE_PATH) != 0) {
+        perror("Failed to update config file");
+        return -1;
+    }
+
     return 0;
 }
 
@@ -144,6 +180,46 @@ static int handle_wlan0_status(struct MHD_Connection *connection) {
     return ret;
 }
 
+static int execute_ping(const char *ip_address, char **output) {
+    char command[256];
+    snprintf(command, sizeof(command), "ping -c 3 -i 1 %s", ip_address);
+
+    FILE *fp = popen(command, "r");
+    if (fp == NULL) {
+        fprintf(stderr, "Failed to run ping command\n");
+        return -1;
+    }
+
+    size_t capacity = 1024;
+    *output = malloc(capacity);
+    if (*output == NULL) {
+        perror("Memory allocation failed");
+        pclose(fp);
+        return -1;
+    }
+
+    size_t size = 0;
+    while (!feof(fp)) {
+        if (size >= capacity) {
+            capacity *= 2;
+            char *new_output = realloc(*output, capacity);
+            if (new_output == NULL) {
+                perror("Memory reallocation failed");
+                free(*output);
+                pclose(fp);
+                return -1;
+            }
+            *output = new_output;
+        }
+
+        size += fread(*output + size, 1, capacity - size, fp);
+    }
+    (*output)[size] = '\0';
+
+    pclose(fp);
+    return 0;
+}
+
 
 static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *connection,
                                             const char *url, const char *method,
@@ -151,6 +227,34 @@ static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *co
                                             size_t *upload_data_size, void **con_cls) {
     static int dummy;
     enum MHD_Result ret;
+
+    if (strcmp(url, "/ping") == 0 && strcmp(method, "GET") == 0) {
+        const char *ip = MHD_lookup_connection_value(connection, MHD_GET_ARGUMENT_KIND, "ip");
+        if (ip == NULL) {
+            const char *error_message = "IP address is required";
+            struct MHD_Response *response = MHD_create_response_from_buffer(strlen(error_message),
+                                                                            (void *)error_message, MHD_RESPMEM_PERSISTENT);
+            ret = MHD_queue_response(connection, MHD_HTTP_BAD_REQUEST, response);
+            MHD_destroy_response(response);
+            return ret;
+        }
+
+        char *ping_output = NULL;
+        if (execute_ping(ip, &ping_output) != 0 || ping_output == NULL) {
+            const char *error_message = "Failed to execute ping";
+            struct MHD_Response *response = MHD_create_response_from_buffer(strlen(error_message),
+                                                                            (void *)error_message, MHD_RESPMEM_PERSISTENT);
+            ret = MHD_queue_response(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, response);
+            MHD_destroy_response(response);
+            return ret;
+        }
+
+        struct MHD_Response *response = MHD_create_response_from_buffer(strlen(ping_output),
+                                                                    ping_output, MHD_RESPMEM_MUST_FREE);
+        ret = MHD_queue_response(connection, MHD_HTTP_OK, response);
+        MHD_destroy_response(response);
+        return ret;
+    }
 
     if (strcmp(url, "/wlan0-status") == 0) {
         return handle_wlan0_status(connection);
