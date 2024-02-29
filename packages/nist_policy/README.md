@@ -19,4 +19,18 @@ If the device doesn't exist in the device table, it will add an entry for the de
 
 ## check_device_vulnerable
 
-`check_device_vulnerable` finds the device type which has been set as the type of the device and checks whether that device type has any `High` or `Critical` severity vulnerabilities. It returns a boolean which states if the device (`subject_name` in the idevid) is vulnerable. 
+`check_device_vulnerable` finds the device type which has been set as the type of the device and checks whether that device type has an SBOM bound to it, if not it is considered vulnerable, if it does, then it checks the vulnerability score of that SBOM to see if it's lower than the set threshold value. It returns a boolean which states if the device (`subject_name` in the idevid) is vulnerable. 
+
+## check_device_mud
+
+Checks if the device has a mud file, and outputs the `name` field of the mud file bound to the device type of the device, if the device type has an associated mud file.
+
+## check_for_blacklisted_requests
+
+This function uses a tcpdump log file created with `stdbuf -o0 tcpdump --interface wlan0 | while IFS= read -r line; do echo "$(date +'%Y-%m-%dT%H:%M:%S') $line"; done >> log.txt` where `wan1` is the network interface running the brski secure wifi, it checks in the file if any requests to blacklisted IP addresses have been made in the last X minutes.
+
+It takes as arguments:
+- file path to log file
+- ip address of device
+- list of blacklisted ip addresses to search for 
+- number of minutes in the past to check for blacklisted requests

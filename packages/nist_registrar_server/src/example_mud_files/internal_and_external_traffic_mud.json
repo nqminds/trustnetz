@@ -1,0 +1,167 @@
+{
+  "ietf-mud:mud": {
+    "mud-version": 1,
+    "mud-url": "https://youriotdevice.com/mudfile",
+    "last-update": "2024-02-15T00:00:00Z",
+    "cache-validity": 48,
+    "is-supported": true,
+    "systeminfo": "This device is intended for communication with both internal devices and external internet services.",
+    "mfg-name": "Your IoT Company",
+    "documentation": "https://youriotdevice.com/docs",
+    "model-name": "HybridCommunicator",
+    "from-device-policy": {
+      "access-lists": {
+        "access-list": [
+          {
+            "name": "internal-traffic-v4",
+            "type": "ipv4-acl-type",
+            "aces": {
+              "ace": [
+                {
+                  "name": "allow-internal-v4",
+                  "matches": {
+                    "ipv4": {
+                      "ietf-acldns:src-dnsname": "192.168.0.0/24"
+                    }
+                  },
+                  "actions": {
+                    "forwarding": "accept"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "internal-traffic-v6",
+            "type": "ipv6-acl-type",
+            "aces": {
+              "ace": [
+                {
+                  "name": "allow-internal-v6",
+                  "matches": {
+                    "ipv6": {
+                      "ietf-acldns:src-dnsname": "fe80::/64"
+                    }
+                  },
+                  "actions": {
+                    "forwarding": "accept"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "external-traffic-v4",
+            "type": "ipv4-acl-type",
+            "aces": {
+              "ace": [
+                {
+                  "name": "allow-external-v4",
+                  "matches": {
+                    "ipv4": {
+                      "ietf-acldns:dst-dnsname": "0.0.0.0/0"
+                    }
+                  },
+                  "actions": {
+                    "forwarding": "accept"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "external-traffic-v6",
+            "type": "ipv6-acl-type",
+            "aces": {
+              "ace": [
+                {
+                  "name": "allow-external-v6",
+                  "matches": {
+                    "ipv6": {
+                      "ietf-acldns:dst-dnsname": "::/0"
+                    }
+                  },
+                  "actions": {
+                    "forwarding": "accept"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "to-device-policy": {
+      "access-lists": {
+        "access-list": [
+          {
+            "name": "internal-traffic-v4",
+            "type": "ipv4-acl-type",
+            "aces": {
+              "ace": [
+                {
+                  "name": "allow-internal-v4",
+                  "matches": {
+                    "ipv4": {
+                      "ietf-acldns:dst-dnsname": "192.168.0.0/24"
+                    }
+                  },
+                  "actions": {
+                    "forwarding": "accept"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "internal-traffic-v6",
+            "type": "ipv6-acl-type",
+            "aces": {
+              "ace": [
+                {
+                  "name": "allow-internal-v6",
+                  "matches": {
+                    "ipv6": {
+                      "ietf-acldns:dst-dnsname": "fe80::/64"
+                    }
+                  },
+                  "actions": {
+                    "forwarding": "accept"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "block-all-traffic",
+            "type": "ipv4-acl-type",
+            "aces": {
+              "ace": [
+                {
+                  "name": "block-all-ipv4",
+                  "actions": {
+                    "forwarding": "drop"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "block-all-traffic",
+            "type": "ipv6-acl-type",
+            "aces": {
+              "ace": [
+                {
+                  "name": "block-all-ipv6",
+                  "actions": {
+                    "forwarding": "drop"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "cSpell.words": [
+    "BRSKI",
+    "hostapd",
+    "MASA",
+    "nquiringminds",
+    "offboard",
+    "offboarding",
+    "onboarded",
+    "tdxvolt",
+    "webserver",
+    "WIFI",
+    "wisekey",
+    "wolfssl"
+  ],
+  "rust-analyzer.linkedProjects": [
+    "./packages/nist_policy/Cargo.toml"
+]
+}

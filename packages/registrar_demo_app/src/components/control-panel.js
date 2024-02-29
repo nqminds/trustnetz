@@ -6,12 +6,13 @@ import '@/app-css.css';
 import { VCRestAPIAddress, RegistrarAPIAddress, user } from '@/config';
 
 const ControlPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType,
-  setSelectedDevice, setSelectedManufacturer, setSelectedDeviceType,
+  setSelectedDevice, setSelectedManufacturer, setSelectedDeviceType, selectedMud, setSelectedMud
 }) => {
   const [vcLog, setVcLog] = useState([]);
   const [deviceList, setDeviceList] = useState([]);
   const [deviceTypeList, setDeviceTypeList] = useState([]);
   const [manufacturerList, setManufacturerList] = useState([]);
+  const [mudList, setMudList] = useState([]);
 
   useEffect(() => {
     // Fetch initial inputValue from an API route when the component mounts
@@ -30,6 +31,11 @@ const ControlPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType,
       setDeviceTypeList(deviceTypes);
       if (deviceTypes.length > 0) {
         setSelectedDeviceType(deviceTypes[0].name);
+      }
+      const muds = await fetchJson(`${RegistrarAPIAddress}/muds`);
+      setMudList(muds);
+      if (muds.length > 0) {
+        setSelectedMud(muds[0].name);
       }
     };
 
@@ -103,7 +109,6 @@ const ControlPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType,
       const claim = {
         "device": selectedDevice,
         "deviceType": selectedDeviceType,
-        "trust": false,
       };
       await signAndSubmitClaim(claim, "device_type_binding");
 		} catch (err) {
@@ -119,6 +124,14 @@ const ControlPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType,
     await signAndSubmitClaim(claim, "device_type_vulnerable");
   }
 
+  const changeMudBinding = async (trust) => {
+    const claim = {
+      "deviceType": selectedDeviceType,
+      "mud": selectedMud,
+    };
+    await signAndSubmitClaim(claim, "device_type_mud_binding");
+	};
+
   const setDeviceTypeVulnerable = async () => {
     await changeDeviceTypeVulnerable(true);
   }
@@ -129,9 +142,10 @@ const ControlPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType,
 
   return (
     <div className="button-container">
-      <label>
+      <label style={{ fontSize: '20px', padding: '20px' }}>
         Select Manufacturer:
         <select
+          style={{ fontSize: '20px', padding: '2px' }}
           value={selectedManufacturer}
           onChange={(e) => {
             setSelectedManufacturer(e.target.value);
@@ -147,9 +161,10 @@ const ControlPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType,
       </label>
       <button onClick={trustManufacturer}>Trust Manufacturer</button>
       <button onClick={distrustManufacturer}>Distrust Manufacturer</button>
-      <label>
+      <label style={{ fontSize: '20px', padding: '20px' }}>
         Select Device:
         <select
+          style={{ fontSize: '20px', padding: '2px' }}
           value={selectedDevice}
           onChange={(e) => {
             setSelectedDevice(e.target.value);
@@ -165,9 +180,10 @@ const ControlPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType,
       </label>
       <button onClick={trustDevice}>Trust Device</button>
       <button onClick={distrustDevice}>Distrust Device</button>
-      <label>
+      <label style={{ fontSize: '20px', padding: '20px' }}>
         Select Device Type:
         <select
+          style={{ fontSize: '20px', padding: '2px' }}
           value={selectedDeviceType}
           onChange={(e) => {
             setSelectedDeviceType(e.target.value);
@@ -184,6 +200,24 @@ const ControlPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType,
       <button onClick={setDeviceType}>Set Device Type</button>
       <button onClick={setDeviceTypeVulnerable}>Set Device Type Vulnerable</button>
       <button onClick={setDeviceTypeNotVulnerable}>Set Device Type Not Vulnerable</button>
+      <label style={{ fontSize: '20px', padding: '20px' }}>
+        Select MUD for Device Type:
+        <select
+          style={{ fontSize: '20px', padding: '2px' }}
+          value={selectedMud}
+          onChange={(e) => {
+            setSelectedMud(e.target.value);
+          }}
+        >
+          <option value="">Select a MUD</option>
+          {mudList.map((option, index) => (
+            <option key={index} value={option.name}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <button onClick={changeMudBinding}>Set {selectedDeviceType} to use selected MUD</button>
     </div>
   );
 };
