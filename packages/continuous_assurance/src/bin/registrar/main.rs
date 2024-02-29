@@ -14,14 +14,21 @@ use tokio_rustls::rustls::{RootCertStore, ServerConfig};
 use tokio_rustls::rustls::server::WebPkiClientVerifier;
 use tokio_rustls::TlsAcceptor;
 
-const TRUST_DB_PATH: &str = "/home/registrar/Documents/nist-brski/packages/nist_registrar_server/MyLocalDatabase.sqlite";
-const KEY_PATH: &str = "/etc/brski/continuous_assurance/";
-
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn Error>> {
+    let args: Vec<String> = std::env::args().collect();
+    let default_key_path = String::from(".");
+    let key_path = args.get(1).unwrap_or(&default_key_path);
+    let default_trust_db_path = String::from("/home/registrarOffice/nist-brski/packages/nist_registrar_server/testWithMudDb.sqlite");
+    let trust_db_path = args.get(2).unwrap_or(&default_trust_db_path);
+    let connected_idevids_default_log_path = String::from("/var/log/brski-registrar.log");
+    let connected_idevids_log_path = args.get(3).unwrap_or(&connected_idevids_default_log_path);
+    let tcpdump_default_log_path = String::from("/home/registrarOffice/log.txt");
+    let tcpdump_log_path = args.get(4).unwrap_or(&tcpdump_default_log_path);
+
     let mut root_store = RootCertStore::empty();
     root_store.add(CertificateDer::from(
-        X509::from_pem(read(format!("{}/ca.crt", KEY_PATH))?.as_slice())?.to_der()?
+        X509::from_pem(read(format!("{}/router.crt", key_path))?.as_slice())?.to_der()?
     ))?;
 
     let config = ServerConfig::builder()
@@ -30,24 +37,24 @@ async fn main() -> Result<(), Box<dyn Error>> {
         )
         .with_single_cert(
             vec![CertificateDer::from(
-                X509::from_pem(read(format!("{}/registrar.crt", KEY_PATH))?.as_slice())?.to_der()?
+                X509::from_pem(read(format!("{}/registrar.crt", key_path))?.as_slice())?.to_der()?
             )],
             PrivateKeyDer::from(PrivatePkcs8KeyDer::from(
-                PKey::private_key_from_pem(read(format!("{}/registrar.key", KEY_PATH))?.as_slice())?.private_key_to_pkcs8()?
+                PKey::private_key_from_pem(read(format!("{}/registrar.key", key_path))?.as_slice())?.private_key_to_pkcs8()?
             ))
         )?;
 
     let acceptor = TlsAcceptor::from(Arc::new(config));
-    let listener = TcpListener::bind("0.0.0.0:3030").await?;
+    let listener = TcpListener::bind("0.0.0.0:8000").await?;
 
     std::process::Command::new("avahi-publish")
-        .args(["-s", "brski-registrar-CA-monitor", "_brski._tcp", "3030"]).stdout(Stdio::null()).spawn()?;
+        .args(["-s", "brski-registrar-CA-monitor", "_brski._tcp", "8000"]).stdout(Stdio::null()).spawn()?;
 
     let (stream, _peer_addr) = listener.accept().await?;
     let mut stream = acceptor.accept(stream).await?;
 
     loop {
-        let logs = read_to_string("/var/log/brski-registrar.log").expect("Cannot read brski-registrar.log");
+        let logs = read_to_string(connected_idevids_log_path).expect("Cannot read brski-registrar.log");
         let mut lines: Vec<&str> = logs.split("\n").collect();
         if !lines.is_empty() && lines.last().unwrap().is_empty() {
             lines.pop();
@@ -57,11 +64,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
             let parts: Vec<&str> = line.split(" ").collect();
             let idevid = nist_policy::generate_x509_certificate(parts[1], "manufacturer")
                 .expect("Error generating certificate from serial number");
-            if !nist_policy::check_device_trusted(&idevid, TRUST_DB_PATH).expect("Error checking device trust") ||
-                !nist_policy::check_manufacturer_trusted(&idevid, TRUST_DB_PATH).expect("Error checking manufacturer trust") ||
-                nist_policy::check_device_vulnerable(&idevid, TRUST_DB_PATH).expect("Error checking device vulnerability") {
-                revoke.push(parts[3]);
-                revoke.push(parts[4]);
+            if !nist_policy::check_device_trusted(&idevid, trust_db_path).expect("Error checking device trust") ||
+                !nist_policy::check_manufacturer_trusted(&idevid, trust_db_path).expect("Error checking manufacturer trust") ||
+                nist_policy::check_device_vulnerable(&idevid, trust_db_path).expect("Error checking device vulnerability") ||
+                nist_policy::demo_get_ips_to_kick(tcpdump_log_path, &[String::from("1.1.1.1")], 5).len() > 0 {
+                    revoke.push(parts[3]);
+                    revoke.push(parts[4]);
             }
         }
         if !revoke.is_empty() {
@@ -71,10 +79,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
             loop {
                 let mut buf = [0u8; 64];
                 let length = stream.read(&mut buf).await.expect("Error receiving message from router");
-                received.append(&mut buf[..length].to_vec());
                 if buf[length-1] == 0u8 {
-                    received.pop();
+                    received.append(&mut buf[..length-1].to_vec());
                     break;
+                } else {
+                    received.append(&mut buf[..length].to_vec());
                 }
             }
             let json = from_str::<Value>(String::from_utf8(received)?.as_str())?;

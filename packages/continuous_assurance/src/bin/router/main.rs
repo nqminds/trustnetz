@@ -12,23 +12,27 @@ use tokio_rustls::rustls::pki_types::{CertificateDer, DnsName, PrivateKeyDer, Pr
 use tokio_rustls::rustls::{ClientConfig, RootCertStore};
 use tokio_rustls::TlsConnector;
 
-const KEY_PATH: &str = "/etc/brski/continuous_assurance/";
-
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn Error>> {
+    let args: Vec<String> = std::env::args().collect();
+    let default_key_path = String::from(".");
+    let key_path = args.get(1).unwrap_or(&default_key_path);
+    let default_script_path = String::from("/etc/hostapd/CA/local_revoke_serial_multiple_args.sh");
+    let script_path = args.get(2).unwrap_or(&default_script_path);
+
     let mut root_store = RootCertStore::empty();
     root_store.add(CertificateDer::from(
-        X509::from_pem(read(format!("{}/ca.crt", KEY_PATH))?.as_slice())?.to_der()?
+        X509::from_pem(read(format!("{}/registrar.crt", key_path))?.as_slice())?.to_der()?
     ))?;
 
     let config = ClientConfig::builder()
         .with_root_certificates(root_store)
         .with_client_auth_cert(
             vec![CertificateDer::from(
-                X509::from_pem(read(format!("{}/router.crt", KEY_PATH))?.as_slice())?.to_der()?
+                X509::from_pem(read(format!("{}/router.crt", key_path))?.as_slice())?.to_der()?
             )],
             PrivateKeyDer::from(PrivatePkcs8KeyDer::from(
-                PKey::private_key_from_pem(read(format!("{}/router.key", KEY_PATH))?.as_slice())?.private_key_to_pkcs8()?
+                PKey::private_key_from_pem(read(format!("{}/router.key", key_path))?.as_slice())?.private_key_to_pkcs8()?
             ))
         )?;
 
@@ -60,10 +64,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
         loop {
             let mut buf = [0u8; 64];
             let length = stream.read(&mut buf).await.expect("Error receiving message from router");
-            received.append(&mut buf[..length].to_vec());
             if buf[length-1] == 0u8 {
-                received.pop();
+                received.append(&mut buf[..length-1].to_vec());
                 break;
+            } else {
+                received.append(&mut buf[..length].to_vec());
             }
         }
         let json = from_str::<Value>(String::from_utf8(received)?.as_str())?;
@@ -74,7 +79,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 args.push(str);
             }
         }
-        let output = std::process::Command::new("/etc/hostapd/CA/local_revoke_serial_multiple_args.sh")
+        let output = std::process::Command::new(script_path)
             .args(args).output().expect("Error calling LocalRevoke");
         let message = [json!({
                 "Stdout": String::from_utf8(output.stdout).expect("Error parsing local revoke output"),
