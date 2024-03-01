@@ -72,6 +72,7 @@ WorkingDirectory=/home/registrar/volt-0.14
 Environment="TDXVOLT_LOG_LEVEL=DEBUG"
 Environment="TDXVOLT_LOG_DEBUG=all,-database,-policy"
 Restart=on-failure
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
@@ -142,6 +143,7 @@ After=tdxvolt.service
 ExecStart=/home/registrar/.nvm/versions/node/v18.19.0/bin/node /home/registrar/Documents/nist-brski/packages/nist_vc_rest_server/bin/vc-server.js
 WorkingDirectory=/home/registrar/Documents/nist-brski/packages/nist_vc_rest_server
 Restart=on-failure
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
@@ -186,6 +188,7 @@ WorkingDirectory=/home/registrar/Documents/nist-brski/packages/handle_IP_addr_ch
 Restart=on-failure
 User=registrar
 Group=registrar
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
@@ -219,6 +222,7 @@ After=vc-server.service
 ExecStart=/home/registrar/.nvm/versions/node/v18.19.0/bin/node /home/registrar/Documents/nist-brski/packages/nist_registrar_server/bin/run-server.js
 WorkingDirectory=/home/registrar/Documents/nist-brski/packages/nist_registrar_server
 Restart=on-failure
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
@@ -260,6 +264,7 @@ After=registrar-rest-server.service
 ExecStart=/home/registrar/.nvm/versions/node/v18.19.0/bin/node server.js
 WorkingDirectory=/home/registrar/Documents/nist-brski/packages/registrar_demo_app
 Restart=on-failure
+RestartSec=30
 User=registrar
 Group=registrar
 Environment=PATH=/home/registrar/.nvm/versions/node/v18.19.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
