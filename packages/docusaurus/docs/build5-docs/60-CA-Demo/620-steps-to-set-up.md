@@ -281,9 +281,37 @@ The web app should now be running on your selected port on the machine.
 
 ### Set up TCP Dump to log network traffic on BRSKI Secure WIFI
 
-First you must identify which network interface has been setup to host the BRSKI Secure WiFi. In our case it was wlan1.
+You must identify which network interface has been setup to host the BRSKI Secure WiFi. In our case it was wlan1.
+
+Then open the nist-brski/packages/tcpdump/tcpdump_script.sh file which should look like this:
+
+```bash
+#!/bin/bash
+stdbuf -o0 tcpdump --interface wlan1 | while IFS= read -r line; do echo "$(date +'%Y-%m-%dT%H:%M:%S') $line"; done >> log.txt
+```
+
+Make sure that wlan1 is replaced with the network interface of your secure wifi network.
+
+Now add a `tcpdump.service` to the `/etc/systemd/system` directory with the following contents:
 
 
+```bash
+# tcpdump.service
+[Unit]
+Description=TCP Dump
+After=registrar-rest-server.service
+
+[Service]
+ExecStart=/home/registrar/nist-brski/packages/tcpdump/tcpdump_script.sh
+WorkingDirectory=/home/registrar/
+RestartSec=30
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+This will run this script in the background on boot, and log all traffic through the secure network to a `log.txt` file in the `/home/registrar/` directory. This is used to monitor the network traffic for requests to blacklisted IP addresses.
 
 ### Share port with openport
 You can now [use openport service to open share the port with the openport application](https://openport.readthedocs.io/en/latest/usage.html) like so:
