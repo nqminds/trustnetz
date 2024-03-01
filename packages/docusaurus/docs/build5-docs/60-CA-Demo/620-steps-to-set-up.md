@@ -80,6 +80,8 @@ WantedBy=multi-user.target
 
 Where `/home/registrar/volt-0.14` is the directory where the volt is installed, `@registrar14` is the alias of your volt, and `/home/registrar/volt-0.14/battery` is the location of your [volt battery](https://docs.tdxvolt.com/en/reference/battery) on disk. This service will start your volt running.
 
+Enable the service with `systemctl enable tdxvolt.service`.
+
 Run the service you've just created with `systemctl start tdxvolt.service` you can check it has run correctly with `systemctl status tdxvolt.service`.
 
 ### Create user on volt
@@ -151,6 +153,8 @@ WantedBy=multi-user.target
 
 Where `/home/registrar/.nvm/versions/node/v18.19.0/bin/node` is the path to the node binary on your PC, `/home/registrar/Documents/nist-brski/packages/nist_vc_rest_server/bin/vc-server.js` is the full path to the `nist-brski/packages/nist_vc_rest_server/bin/vc-server.js` file on the registrar machine. This service will start the VC REST API server running on the machine on port `3000`. `After=tdxvolt.service` makes sure it runs after the volt has been started.
 
+Enable the service with `systemctl enable vc-server.service`.
+
 Run the service you've just created with `systemctl start vc-server.service` you can check it has run correctly with `systemctl status vc-server.service`.
 
 ### Set up script to restart services if the IP address changes
@@ -196,6 +200,8 @@ WantedBy=multi-user.target
 
 Where `/home/registrar/Documents/nist-brski/packages/handle_IP_addr_changes/restart_on_IP_changes.sh` is the path to the script in the cloned github repo, `eth0` is the network interface we are using to connect to the internet from the registrar machine, this can be found using `ifconfig` on linux, and `/home/registrar/Documents/nist-brski/packages/nist_vc_rest_server/volt-config.json` is the path to the `volt-config.json` file being used for the VC REST API server we exported earlier.
 
+Enable the service with `systemctl enable restart-on-ip-change.service`.
+
 Run the service you've just created with `systemctl start restart-on-ip-change.service` you can check it is running correctly with `systemctl status restart-on-ip-change.service`.
 
 ### Setup service to run Registrar REST API
@@ -228,7 +234,7 @@ RestartSec=30
 WantedBy=multi-user.target
 ```
 
-This sets up the service to run the registrar REST API after the vc-server service has started.
+This sets up the service to run the registrar REST API after the vc-server service has started. Enable the service with `systemctl enable registrar-rest-server.service`.
 
 Run the service you've just created with `systemctl start registrar-rest-server.service` you can check it has run correctly with `systemctl status registrar-rest-server.service`.
 
@@ -273,7 +279,7 @@ Environment=PATH=/home/registrar/.nvm/versions/node/v18.19.0/bin:/usr/local/sbin
 WantedBy=multi-user.target
 ```
 
-This sets up a service to run the app after the registrar rest server service has run.
+This sets up a service to run the app after the registrar rest server service has run. Enable the service with `systemctl enable registrar-app.service`.
 
 Run the service you've just created with `systemctl start registrar-app.service` you can check it has run correctly with `systemctl status registrar-app.service`.
 
@@ -312,6 +318,9 @@ WantedBy=multi-user.target
 ```
 
 This will run this script in the background on boot, and log all traffic through the secure network to a `log.txt` file in the `/home/registrar/` directory. This is used to monitor the network traffic for requests to blacklisted IP addresses.
+
+Enable the service with `systemctl enable tcpdump.service` and then run the service with `systemctl start tcpdump.service` you can check it has run correctly with `systemctl status tcpdump.service`.
+
 
 ### Share port with openport
 You can now [use openport service to open share the port with the openport application](https://openport.readthedocs.io/en/latest/usage.html) like so:
