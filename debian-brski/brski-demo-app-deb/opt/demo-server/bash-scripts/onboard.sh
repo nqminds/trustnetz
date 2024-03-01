@@ -48,8 +48,8 @@ sleep 2
 
 echo "Running brski preq command..."
 # Uncoment bellow for using brski command
-# brski -c /etc/brski/config.ini preq -p $PORT -a $IP -o "$CERTS_PATH/pinned-domain-ca" -d
-bash /opt/demo-server/bash-scripts/preq-openssl.sh "$IP" "$PORT" "$CERTS_PATH"
+brski -c /etc/brski/config.ini preq -p $PORT -a $IP -o "$CERTS_PATH/pinned-domain-ca" -d
+# bash /opt/demo-server/bash-scripts/preq-openssl.sh "$IP" "$PORT" "$CERTS_PATH"
 if [ $? -ne 0 ]; then
     exit 1
 fi
