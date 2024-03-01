@@ -1,0 +1,1 @@
+Script used to perform tcp dump to log all traffic on a network interface, prepending each entry with the time.
