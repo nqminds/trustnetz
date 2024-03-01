@@ -279,6 +279,12 @@ Run the service you've just created with `systemctl start registrar-app.service`
 
 The web app should now be running on your selected port on the machine.
 
+### Set up TCP Dump to log network traffic on BRSKI Secure WIFI
+
+First you must identify which network interface has been setup to host the BRSKI Secure WiFi. In our case it was wlan1.
+
+
+
 ### Share port with openport
 You can now [use openport service to open share the port with the openport application](https://openport.readthedocs.io/en/latest/usage.html) like so:
 
