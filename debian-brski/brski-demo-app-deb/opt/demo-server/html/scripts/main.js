@@ -14,6 +14,22 @@ function getServerPort(callback) {
         });
 }
 
+function getPingInterface(callback) {
+    fetch('server.conf')
+        .then(response => response.text())
+        .then(text => {
+            const match = text.match(/ping_interface=([^\n]+)/);
+            if (match && match[1]) {
+                callback(match[1]);
+            } else {
+                throw new Error('Ping interface not found in server configuration.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching server config:', error);
+        });
+}
+
 function getPingIP(callback) {
     fetch('server.conf')
         .then(response => response.text())
@@ -82,8 +98,8 @@ function updateWlanStatus() {
 }
 
 function sendPingRequest() {
-    getPingIP(function(ip) {
-        fetch(`/ping?ip=${ip}`)
+    Promise.all([new Promise(getPingIP), new Promise(getPingInterface)]).then(([ip, interface]) => {
+        fetch(`/ping?ip=${ip}&interface=${interface}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -99,6 +115,8 @@ function sendPingRequest() {
                 document.getElementById('pingStatus').textContent = 'Ping Request Failed';
                 document.getElementById('pingLogDropdown').textContent = 'Error: ' + error.message;
             });
+    }).catch(error => {
+        console.error('Error fetching configuration:', error);
     });
 }
 
