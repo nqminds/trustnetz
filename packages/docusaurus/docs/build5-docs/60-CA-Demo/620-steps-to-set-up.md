@@ -9,14 +9,41 @@ Install V0.14.* of [the volt](https://docs.tdxvolt.com/en/clients/web).
 
 
 ### Create a volt to host the VC toolchain
-[Follow the instructions to create a volt with an alias](https://docs.tdxvolt.com/en/how-to/create-volt) in this demo I have used the alias `@registrar14`. 
+[Follow the instructions to create a volt with an alias](https://docs.tdxvolt.com/en/how-to/create-volt) in this demo I have used the alias `@registrar14`.
+
+For example I have used:
+
+```
+/home/registrar/volt-0.14/bin/volt create -n "Your Volt Name" -a yourVoltAlias -k /path/to/keyfile
+```
+
+Your keyfile will then be populated with the private key generated for the volt, you can then securely copy this to your local machine to connect to the volt with the fusebox. The config will be logged to the terminal on creation, you can also use `/home/registrar/volt-0.14/bin/volt config` to list all the volts on your machine, which should produce something like:
+```
+----------------------------------------
+uuid: 89e124fb-1e5e-46f4-aae8-f0fa8035e180
+alias: yourVoltAlias
+name: Your Volt Name
+location: /home/registrar/Public/tdxVolt/battery/volt/89e124fb-1e5e-46f4-aae8-f0fa8035e180
+
+----------------------------------------
+```
+
+And you can use this command with either the alias (prepended with an `@` symbol) or uuid get the config details for the volt you have created with:
+
+`./volt config -i @yourVoltAlias`
+
+You can then paste this config into your fusebox running on your local machine, along with loading the keyfile to remotely connect to your newly created volt.
 
 ### Clone the nist-brski github repo
 Clone the [nist-brski github repo](https://github.com/nqminds/nist-brski)
 
 
 ### Install npm
-Install node v18 & npm, I'd suggest installed nvm with `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash` and then using `nvm install 18` followed by `nvm use 18`.
+Install node v18 & npm, I'd suggest installed nvm with `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash` followed by running `source ~/.bashrc` to load nvm into your current shell. You can then use `nvm install 18` followed by `nvm use 18` to install node version 18 and set it as the active node version.
+
+### Install verfiable credential schemas toolchain
+Run `npm i -g @nqminds/verifiable-schemas-toolchain` to install the verifiable credentail schema toolchain globally.
+
 
 ### npm install packages
 Navigate to the following 4 directories and run `npm install` in each of them:
@@ -40,17 +67,20 @@ In this directory create a file titled `tdxvolt.service` with the following cont
 Description=tdxVolt
 
 [Service]
-ExecStart=/home/registrar/volt-0.14/bin/volt run -i @registrar14 -l /home/registrar/volt-0.14/battery
+ExecStart=/home/registrar/volt-0.14/bin/volt run -i @registrar14
 WorkingDirectory=/home/registrar/volt-0.14
 Environment="TDXVOLT_LOG_LEVEL=DEBUG"
 Environment="TDXVOLT_LOG_DEBUG=all,-database,-policy"
 Restart=on-failure
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
 ```
 
 Where `/home/registrar/volt-0.14` is the directory where the volt is installed, `@registrar14` is the alias of your volt, and `/home/registrar/volt-0.14/battery` is the location of your [volt battery](https://docs.tdxvolt.com/en/reference/battery) on disk. This service will start your volt running.
+
+Enable the service with `systemctl enable tdxvolt.service`.
 
 Run the service you've just created with `systemctl start tdxvolt.service` you can check it has run correctly with `systemctl status tdxvolt.service`.
 
@@ -78,6 +108,9 @@ Export the volt config for that user to a json file, like volt-config.json, an e
   }
 }
 ```
+
+You can perform this using:
+`./volt config -i @yourVoltAlias > /path/to/volt-config.json`
 
 ### Run the VC schemas through the VC toolchain
 Open the `nist-brski/packages/schemas` directory in your clone of the github repository and follow the instructions in the README.md file.
@@ -112,12 +145,15 @@ After=tdxvolt.service
 ExecStart=/home/registrar/.nvm/versions/node/v18.19.0/bin/node /home/registrar/Documents/nist-brski/packages/nist_vc_rest_server/bin/vc-server.js
 WorkingDirectory=/home/registrar/Documents/nist-brski/packages/nist_vc_rest_server
 Restart=on-failure
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
 ```
 
 Where `/home/registrar/.nvm/versions/node/v18.19.0/bin/node` is the path to the node binary on your PC, `/home/registrar/Documents/nist-brski/packages/nist_vc_rest_server/bin/vc-server.js` is the full path to the `nist-brski/packages/nist_vc_rest_server/bin/vc-server.js` file on the registrar machine. This service will start the VC REST API server running on the machine on port `3000`. `After=tdxvolt.service` makes sure it runs after the volt has been started.
+
+Enable the service with `systemctl enable vc-server.service`.
 
 Run the service you've just created with `systemctl start vc-server.service` you can check it has run correctly with `systemctl status vc-server.service`.
 
@@ -156,12 +192,15 @@ WorkingDirectory=/home/registrar/Documents/nist-brski/packages/handle_IP_addr_ch
 Restart=on-failure
 User=registrar
 Group=registrar
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
 ```
 
 Where `/home/registrar/Documents/nist-brski/packages/handle_IP_addr_changes/restart_on_IP_changes.sh` is the path to the script in the cloned github repo, `eth0` is the network interface we are using to connect to the internet from the registrar machine, this can be found using `ifconfig` on linux, and `/home/registrar/Documents/nist-brski/packages/nist_vc_rest_server/volt-config.json` is the path to the `volt-config.json` file being used for the VC REST API server we exported earlier.
+
+Enable the service with `systemctl enable restart-on-ip-change.service`.
 
 Run the service you've just created with `systemctl start restart-on-ip-change.service` you can check it is running correctly with `systemctl status restart-on-ip-change.service`.
 
@@ -189,12 +228,13 @@ After=vc-server.service
 ExecStart=/home/registrar/.nvm/versions/node/v18.19.0/bin/node /home/registrar/Documents/nist-brski/packages/nist_registrar_server/bin/run-server.js
 WorkingDirectory=/home/registrar/Documents/nist-brski/packages/nist_registrar_server
 Restart=on-failure
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-This sets up the service to run the registrar REST API after the vc-server service has started.
+This sets up the service to run the registrar REST API after the vc-server service has started. Enable the service with `systemctl enable registrar-rest-server.service`.
 
 Run the service you've just created with `systemctl start registrar-rest-server.service` you can check it has run correctly with `systemctl status registrar-rest-server.service`.
 
@@ -230,6 +270,7 @@ After=registrar-rest-server.service
 ExecStart=/home/registrar/.nvm/versions/node/v18.19.0/bin/node server.js
 WorkingDirectory=/home/registrar/Documents/nist-brski/packages/registrar_demo_app
 Restart=on-failure
+RestartSec=30
 User=registrar
 Group=registrar
 Environment=PATH=/home/registrar/.nvm/versions/node/v18.19.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -238,11 +279,48 @@ Environment=PATH=/home/registrar/.nvm/versions/node/v18.19.0/bin:/usr/local/sbin
 WantedBy=multi-user.target
 ```
 
-This sets up a service to run the app after the registrar rest server service has run.
+This sets up a service to run the app after the registrar rest server service has run. Enable the service with `systemctl enable registrar-app.service`.
 
 Run the service you've just created with `systemctl start registrar-app.service` you can check it has run correctly with `systemctl status registrar-app.service`.
 
 The web app should now be running on your selected port on the machine.
+
+### Set up TCP Dump to log network traffic on BRSKI Secure WIFI
+
+You must identify which network interface has been setup to host the BRSKI Secure WiFi. In our case it was wlan1.
+
+Then open the nist-brski/packages/tcpdump/tcpdump_script.sh file which should look like this:
+
+```bash
+#!/bin/bash
+stdbuf -o0 tcpdump --interface wlan1 | while IFS= read -r line; do echo "$(date +'%Y-%m-%dT%H:%M:%S') $line"; done >> log.txt
+```
+
+Make sure that wlan1 is replaced with the network interface of your secure wifi network.
+
+Now add a `tcpdump.service` to the `/etc/systemd/system` directory with the following contents:
+
+
+```bash
+# tcpdump.service
+[Unit]
+Description=TCP Dump
+After=registrar-rest-server.service
+
+[Service]
+ExecStart=/home/registrar/nist-brski/packages/tcpdump/tcpdump_script.sh
+WorkingDirectory=/home/registrar/
+RestartSec=30
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+This will run this script in the background on boot, and log all traffic through the secure network to a `log.txt` file in the `/home/registrar/` directory. This is used to monitor the network traffic for requests to blacklisted IP addresses.
+
+Enable the service with `systemctl enable tcpdump.service` and then run the service with `systemctl start tcpdump.service` you can check it has run correctly with `systemctl status tcpdump.service`.
+
 
 ### Share port with openport
 You can now [use openport service to open share the port with the openport application](https://openport.readthedocs.io/en/latest/usage.html) like so:
