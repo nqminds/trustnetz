@@ -19,11 +19,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = std::env::args().collect();
     let default_key_path = String::from(".");
     let key_path = args.get(1).unwrap_or(&default_key_path);
-    let default_trust_db_path = String::from("/home/registrarOffice/nist-brski/packages/nist_registrar_server/testWithMudDb.sqlite");
+    let default_trust_db_path = String::from("/home/registrar/Documents/nist-brski/packages/nist_registrar_server/testWithMudDb.sqlite");
     let trust_db_path = args.get(2).unwrap_or(&default_trust_db_path);
     let connected_idevids_default_log_path = String::from("/var/log/brski-registrar.log");
     let connected_idevids_log_path = args.get(3).unwrap_or(&connected_idevids_default_log_path);
-    let tcpdump_default_log_path = String::from("/home/registrarOffice/log.txt");
+    let tcpdump_default_log_path = String::from("/home/registrar/log.txt");
     let tcpdump_log_path = args.get(4).unwrap_or(&tcpdump_default_log_path);
 
     let mut root_store = RootCertStore::empty();
@@ -67,7 +67,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             if !nist_policy::check_device_trusted(&idevid, trust_db_path).expect("Error checking device trust") ||
                 !nist_policy::check_manufacturer_trusted(&idevid, trust_db_path).expect("Error checking manufacturer trust") ||
                 nist_policy::check_device_vulnerable(&idevid, trust_db_path).expect("Error checking device vulnerability") ||
-                nist_policy::demo_get_ips_to_kick(tcpdump_log_path, &[String::from("1.1.1.1")], 5).len() > 0 {
+                nist_policy::demo_get_ips_to_kick(tcpdump_log_path, &[String::from("203.0.113.0")], 2).len() > 0 {
                     revoke.push(parts[3]);
                     revoke.push(parts[4]);
             }
@@ -90,6 +90,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
             println!("Stdout:\n{}", json["Stdout"].as_str().expect("Error parsing message"));
             println!("Stderr:\n{}", json["Stderr"].as_str().expect("Error parsing message"));
         }
-        sleep(Duration::from_secs(60)).await;
+        sleep(Duration::from_secs(30)).await;
     }
 }
