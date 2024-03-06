@@ -22,4 +22,14 @@ cp -r /opt/demo-server/certs/* /etc/brski
 # Clean up
 rm /tmp/brski_0.2.6_arm64.deb
 
+# Get idevid
+bash /opt/demo-server/bash-scripts/gen_idevid.sh
+
+if [ $? -ne 0 ]; then
+    echo "Failed to generate idevid"
+    exit 1
+fi
+
+cp /etc/brski.idevid.crt /opt/demo-server/certs/
+
 echo "brski installation completed."
