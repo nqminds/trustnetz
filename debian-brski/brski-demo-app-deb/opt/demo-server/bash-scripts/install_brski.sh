@@ -30,6 +30,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-cp /etc/brski.idevid.crt /opt/demo-server/certs/
+cp /etc/brski/idevid.crt /opt/demo-server/certs/
 
 echo "brski installation completed."
