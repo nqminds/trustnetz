@@ -576,8 +576,7 @@ fn parse_datetime_to_timestamp(datetime_str: &str) -> Option<u64> {
     // match DateTime::parse_from_str(datetime_str, "%Y-%m-%dT%H:%M:%S") {
     match chrono::NaiveDateTime::parse_from_str(&datetime_str, "%Y-%m-%dT%H:%M:%S") {
         Ok(datetime) => Some(datetime.timestamp() as u64),
-        Err(err) => {
-            println!("Failed to parse datetime string: {}", err);
+        Err(_err) => {
             None
         },
     }
@@ -1097,7 +1096,7 @@ mod tests {
     }
 
     #[test]
-    fn check_() {
+    fn check_finds_blacklisted_ips() {
         let log_file_path = "./tests/log.txt";
         let blacklisted_ips = vec!["151.101.1.140".to_string()];
         let minutes = 10000000; // ~20 years
@@ -1106,6 +1105,17 @@ mod tests {
         assert_eq!(bad_ips.len(), 2);
         assert_eq!(bad_ips.contains(&"192.168.17.101".parse::<Ipv4Addr>().unwrap()), true);
         assert_eq!(bad_ips.contains(&"192.168.16.123".parse::<Ipv4Addr>().unwrap()), true);
+    }
+
+    #[test]
+    fn check_on_long_log_file() {
+        let log_file_path = "./tests/long_demo_log.txt";
+        let blacklisted_ips = vec!["203.0.113.0".to_string()];
+        let minutes = 10000000; // ~20 years
+
+        let bad_ips = demo_get_ips_to_kick(&log_file_path, &blacklisted_ips, minutes);
+        assert_eq!(bad_ips.len(), 1);
+        assert_eq!(bad_ips.contains(&"192.168.17.101".parse::<Ipv4Addr>().unwrap()), true);
     }
 
 }
