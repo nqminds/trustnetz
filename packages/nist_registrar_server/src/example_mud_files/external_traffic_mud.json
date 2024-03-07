@@ -1,0 +1,91 @@
+{
+  "ietf-mud:mud": {
+    "mud-version": 1,
+    "mud-url": "https://youriotdevice.com/mudfile",
+    "last-update": "2024-02-15T00:00:00Z",
+    "cache-validity": 48,
+    "is-supported": true,
+    "systeminfo": "This device is intended for external internet communication only.",
+    "mfg-name": "Your IoT Company",
+    "documentation": "https://youriotdevice.com/docs",
+    "model-name": "ExternalCommunicator",
+    "from-device-policy": {
+      "access-lists": {
+        "access-list": [
+          {
+            "name": "external-traffic-v4",
+            "type": "ipv4-acl-type",
+            "aces": {
+              "ace": [
+                {
+                  "name": "allow-external-v4",
+                  "matches": {
+                    "ipv4": {
+                      "ietf-acldns:dst-dnsname": "0.0.0.0/0"
+                    }
+                  },
+                  "actions": {
+                    "forwarding": "accept"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "external-traffic-v6",
+            "type": "ipv6-acl-type",
+            "aces": {
+              "ace": [
+                {
+                  "name": "allow-external-v6",
+                  "matches": {
+                    "ipv6": {
+                      "ietf-acldns:dst-dnsname": "::/0"
+                    }
+                  },
+                  "actions": {
+                    "forwarding": "accept"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "to-device-policy": {
+      "access-lists": {
+        "access-list": [
+          {
+            "name": "block-all-traffic",
+            "type": "ipv4-acl-type",
+            "aces": {
+              "ace": [
+                {
+                  "name": "block-all",
+                  "actions": {
+                    "forwarding": "drop"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "block-all-traffic",
+            "type": "ipv6-acl-type",
+            "aces": {
+              "ace": [
+                {
+                  "name": "block-all",
+                  "actions": {
+                    "forwarding": "drop"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

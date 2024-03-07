@@ -1,4 +1,6 @@
 {
-  "sqliteDBPath": "../MyLocalDatabase.sqlite",
-  "nistVcRestServerAddress": "http://localhost:3000"
+  "sqliteDBPath": "../testWithMudDb.sqlite",
+  "nistVcRestServerAddress": "http://localhost:3000",
+  "sbomToolAddress": "http://ckcov.u.openport.io",
+  "secondsVulnerabilityScoreValid": 86400
 }

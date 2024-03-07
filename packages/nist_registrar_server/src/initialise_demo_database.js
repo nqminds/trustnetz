@@ -2,6 +2,24 @@ import {v4 as uuidv4} from "uuid";
 import sqlite3 from "sqlite3";
 import fs from "fs";
 
+function loadFile(filepath) {
+  try {
+    // Read the JSON file synchronously
+    const data = fs.readFileSync(filepath, 'utf8');
+    // Parse the JSON data
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading or parsing JSON:', error);
+    return null;
+  }
+}
+
+const internalTrafficMud = loadFile('./src/example_mud_files/internal_traffic_mud.json');
+const externalTrafficMud = loadFile('./src/example_mud_files/external_traffic_mud.json');
+const internalAndExternalTrafficMud = loadFile('./src/example_mud_files/internal_and_external_traffic_mud.json');
+
+console.log(internalTrafficMud, externalTrafficMud, internalAndExternalTrafficMud)
+
 const demoVulnerabilityId = '9dce9345-e306-4786-b7f0-536827351d21';
 
 // Read the schema from the file
@@ -53,7 +71,11 @@ export default function intitialiseDemoDatabase(sqliteDBPath) {
 
       db.run("INSERT INTO device_type (id, name, created_at) VALUES (?, ?, ?)", ['465df82c-d250-49c1-be27-95c8e4759fc2', 'Smart Speaker', '2024-01-16 14:13:55.849129']);
 
-      db.run("INSERT INTO vulnerability (id, name, severity, url, created_at) VALUES (?, ?, ?, ?, ?)", [demoVulnerabilityId, 'Security Flaw',	'Critical',	'https://example.com', '2024-01-16 14:13:55.849160']);
+      db.run("INSERT INTO mud (id, name, mud) VALUES (?, ?, ?)", [uuidv4(), 'internal traffic only', JSON.stringify(internalTrafficMud)]);
+
+      db.run("INSERT INTO mud (id, name, mud) VALUES (?, ?, ?)", [uuidv4(), 'external traffic only', JSON.stringify(externalTrafficMud)]);
+
+      db.run("INSERT INTO mud (id, name, mud) VALUES (?, ?, ?)", [uuidv4(), 'internal and external traffic', JSON.stringify(internalAndExternalTrafficMud)]);
     });
     return db;
   } catch (err) {

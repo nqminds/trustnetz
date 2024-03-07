@@ -5,10 +5,11 @@ import '@/app-css.css';
 import fetchJson from '@/utilities/fetch-json';
 import { RegistrarAPIAddress } from '@/config';
 
-const InfoPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType}) => {
+const InfoPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType, selectedMud}) => {
   const [selectedDeviceInfo, setSelectedDeviceInfo] = useState({});
   const [selectedManufacturerInfo, setSelectedManufacturerInfo] = useState({});
   const [selectedDeviceTypeInfo, setSelectedDeviceTypeInfo] = useState({});
+  const [selectedMudInfo, setSelectedMudInfo] = useState({});
 
   const fetchDeviceData = async (deviceToGetInfoFor) => {
     if (deviceToGetInfoFor) {
@@ -34,6 +35,15 @@ const InfoPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType}) =
     }
   }
 
+  const fetchMudData = async (mudToGetInfoFor) => {
+    if (mudToGetInfoFor) {
+      const selectedMudUrlEncoded = encodeURIComponent(mudToGetInfoFor);
+      const mudInfo = await fetchJson(`${RegistrarAPIAddress}/info/mud/${selectedMudUrlEncoded}`);
+      mudInfo.mud = JSON.stringify(JSON.parse(mudInfo.mud), null, 2);
+      setSelectedMudInfo(mudInfo);
+    }
+  }
+
   useEffect(() => {
     // Function to be executed
     const fetchData = async () => {
@@ -42,6 +52,7 @@ const InfoPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType}) =
         await fetchDeviceData(selectedDevice);
         await fetchDeviceTypeData(selectedDeviceType);
         await fetchManufacturerData(selectedManufacturer);
+        await fetchMudData(selectedMud);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -55,7 +66,7 @@ const InfoPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType}) =
 
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
-  }, [selectedDevice, selectedDeviceType, selectedManufacturer]); // Empty dependency array ensures the effect runs only once on mount
+  }, [selectedDevice, selectedDeviceType, selectedManufacturer, selectedMud]); // Empty dependency array ensures the effect runs only once on mount
 
   return (
     <div className="info-container">
@@ -63,6 +74,7 @@ const InfoPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType}) =
         {name: "Manufacturer", data: selectedManufacturerInfo},
         {name: "Device", data: selectedDeviceInfo},
         {name: "Device Type", data: selectedDeviceTypeInfo},
+        {name: "Mud", data: selectedMudInfo}
       ].map(({name, data}) => 
         <div key={name} className="table-section">
           <h2>{name}</h2>
