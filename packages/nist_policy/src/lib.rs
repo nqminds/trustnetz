@@ -585,6 +585,7 @@ fn parse_datetime_to_timestamp(datetime_str: &str) -> Option<u64> {
 pub fn search_log_for_ips_since(log_file_path: &str, device_ip: Ipv4Addr, ips: &[String], minutes: u64) -> Vec<String> {
     let current_time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
     let start_time = current_time - (minutes * 60);
+    println!("{:?}, {:?}, {:?}", minutes, current_time, start_time);
     
     let mut matching_entries = Vec::new();
     
@@ -603,18 +604,17 @@ pub fn search_log_for_ips_since(log_file_path: &str, device_ip: Ipv4Addr, ips: &
                         if timestamp < start_time {
                             continue; // Skip entries before the start time
                         }
-                    }
-                
-                    if parts.len() >= 5 && parts[2] == "IP" && parts[4] == ">" {
-                        if let Ok(source_ip) = parts[3].parse::<Ipv4Addr>() {
-                            if source_ip != device_ip {
-                                continue; // Skip entries where source ip is not the device ip address
+                        if parts.len() >= 5 && parts[2] == "IP" && parts[4] == ">" {
+                            if let Ok(source_ip) = parts[3].parse::<Ipv4Addr>() {
+                                if source_ip != device_ip {
+                                    continue; // Skip entries where source ip is not the device ip address
+                                }
                             }
-                        }
-
-                        if let Ok(target_ip) = parts[5].replace(":", "").parse::<Ipv4Addr>() {
-                            if ips.iter().any(|ip| target_ip.to_string() == *ip) {
-                                matching_entries.push(entry);
+    
+                            if let Ok(target_ip) = parts[5].replace(":", "").parse::<Ipv4Addr>() {
+                                if ips.iter().any(|ip| target_ip.to_string() == *ip) {
+                                    matching_entries.push(entry);
+                                }
                             }
                         }
                     }
@@ -654,6 +654,7 @@ pub fn demo_get_ips_to_kick(log_file_path: &str, blacklisted_ips: &[String], min
 
     for ip in source_ips.iter() {
         let matching_entries = search_log_for_ips_since(log_file_path, ip.to_owned(), blacklisted_ips, minutes);
+        println!("{:?}", matching_entries);
         if !matching_entries.is_empty() {
             matched_ips.insert(ip.clone());
         }
@@ -1115,7 +1116,16 @@ mod tests {
 
         let bad_ips = demo_get_ips_to_kick(&log_file_path, &blacklisted_ips, minutes);
         assert_eq!(bad_ips.len(), 1);
-        assert_eq!(bad_ips.contains(&"192.168.17.101".parse::<Ipv4Addr>().unwrap()), true);
+        assert_eq!(bad_ips.contains(&"192.168.16.121".parse::<Ipv4Addr>().unwrap()), true);
     }
 
+    #[test]
+    fn check_on_long_log_file_short_time() {
+        let log_file_path = "./tests/long_demo_log.txt";
+        let blacklisted_ips = vec!["203.0.113.0".to_string()];
+        let minutes = 2;
+
+        let bad_ips = demo_get_ips_to_kick(&log_file_path, &blacklisted_ips, minutes);
+        assert_eq!(bad_ips.len(), 0);
+    }
 }
