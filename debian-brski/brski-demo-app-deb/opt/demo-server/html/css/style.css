@@ -61,7 +61,6 @@ button:hover {
 }
 
 .log-dropdown {
-    /* display: none; Hidden by default */
     background-color: #eee;
     padding: 10px;
     margin-top: 10px;
@@ -94,7 +93,7 @@ button:hover {
 }
 
 .wlan-status-container {
-    background-color: #000; /* Black background to mimic terminal */
+    background-color: #000;
     color: #0f0; 
     font-family: 'Courier New', Courier, monospace;
     padding: 1em; 
@@ -114,4 +113,18 @@ button:hover {
     white-space: pre-wrap;
     word-break: break-all;
     overflow-wrap: break-word;
+}
+
+input#pingIP {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+button, input#pingIP {
+    cursor: pointer;
+    font-family: Arial, sans-serif;
 }

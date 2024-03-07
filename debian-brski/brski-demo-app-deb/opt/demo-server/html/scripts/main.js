@@ -14,38 +14,6 @@ function getServerPort(callback) {
         });
 }
 
-function getPingInterface(callback) {
-    fetch('server.conf')
-        .then(response => response.text())
-        .then(text => {
-            const match = text.match(/ping_interface=([^\n]+)/);
-            if (match && match[1]) {
-                callback(match[1]);
-            } else {
-                throw new Error('Ping interface not found in server configuration.');
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching server config:', error);
-        });
-}
-
-function getPingIP(callback) {
-    fetch('server.conf')
-        .then(response => response.text())
-        .then(text => {
-            const match = text.match(/ping_ip=([0-9.]+)/);
-            if (match && match[1]) {
-                callback(match[1]);
-            } else {
-                throw new Error('Ping IP not found in server configuration.');
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching server config:', error);
-        });
-}
-
 function getLogFile(logFile, logElementId) {
     fetch(logFile)
         .then(response => response.text())
@@ -98,26 +66,30 @@ function updateWlanStatus() {
 }
 
 function sendPingRequest() {
-    Promise.all([new Promise(getPingIP), new Promise(getPingInterface)]).then(([ip, interface]) => {
-        fetch(`/ping?ip=${ip}&interface=${interface}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(text => {
-                document.getElementById('pingStatus').textContent = 'Ping Result: ';
-                document.getElementById('pingLogDropdown').textContent = text;
-            })
-            .catch(error => {
-                console.error('Ping request failed:', error);
-                document.getElementById('pingStatus').textContent = 'Ping Request Failed';
-                document.getElementById('pingLogDropdown').textContent = 'Error: ' + error.message;
-            });
-    }).catch(error => {
-        console.error('Error fetching configuration:', error);
-    });
+    const interface = "wlan0";
+    const ip = document.getElementById('pingIP').value;
+    if (!ip) {
+        console.error('No IP address provided');
+        document.getElementById('pingStatus').textContent = 'Ping Request Failed: No IP address provided';
+        return;
+    }
+
+    fetch(`/ping?ip=${ip}&interface=${interface}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(text => {
+            document.getElementById('pingStatus').textContent = 'Ping Result: ';
+            document.getElementById('pingLogDropdown').textContent = text;
+        })
+        .catch(error => {
+            console.error('Ping request failed:', error);
+            document.getElementById('pingStatus').textContent = 'Ping Request Failed';
+            document.getElementById('pingLogDropdown').textContent = 'Error: ' + error.message;
+        });
 }
 
 document.getElementById('onboard').onclick = function() {
