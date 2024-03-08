@@ -3,6 +3,10 @@
 IF0="wlan0"
 IF1="wlan1"
 
+CA_DIR="/etc/hostapd/CA"
+CA_CONF="$CA_DIR/ca.conf"
+COMBINED_CA_CRL="$CA_DIR/registrar-tls-ca-and-crl.crt"
+
 ip a show dev $IF0
 
 if [ $? -ne 0 ]; then
@@ -18,9 +22,9 @@ if [ $? -ne 0 ]; then
 fi
 
 # Configure BRSK tool
-wget -O /tmp/brski_0.2.3_arm64.deb https://github.com/nqminds/brski/releases/download/0.2.3/brski_0.2.3_arm64.deb
-dpkg -i /tmp/brski_0.2.3_arm64.deb
-rm /tmp/brski_0.2.3_arm64.deb
+wget -O /tmp/brski_0.2.6_arm64.deb https://github.com/nqminds/brski/releases/download/0.2.6/brski_0.2.6_arm64.deb
+dpkg -i /tmp/brski_0.2.6_arm64.deb
+rm /tmp/brski_0.2.6_arm64.deb
 
 cp certs/* /etc/brski
 
@@ -70,6 +74,24 @@ sed -i s/@wlan@/$IF0/g /etc/default/dnsmasq.$IF0
 
 cp dnsmasq-secure.conf /etc/default/dnsmasq.$IF1
 sed -i s/@wlan@/$IF1/g /etc/default/dnsmasq.$IF1
+
+sudo mkdir -p "$CA_DIR/"
+if [ $? -ne 0 ]; then
+    echo "Failed to create directory: $CA_DIR/"
+    exit 1
+fi
+
+cp ca.conf "$CA_DIR/"
+touch "$CA_DIR/index.txt"
+echo '1000' > "$CA_DIR/serial"
+touch "$CA_DIR/crlnumber"
+echo '01' > "$CA_DIR/crlnumber"
+
+openssl ca -gencrl -out "$CA_DIR/crl.crt" -config "$CA_CONF"
+sudo sh -c "cat $CA_CERT $CA_DIR/crl.crt > $COMBINED_CA_CRL"
+
+cp local_revoke_serial_multiple_args.sh "$CA_DIR/"
+cp local_revoke.sh "$CA_DIR/"
 
 sudo systemctl disable dnsmasq@$IF0.service
 sudo systemctl disable dnsmasq@$IF1.service
