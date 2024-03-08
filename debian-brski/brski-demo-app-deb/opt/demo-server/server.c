@@ -180,9 +180,9 @@ static int handle_wlan0_status(struct MHD_Connection *connection) {
     return ret;
 }
 
-static int execute_ping(const char *ip_address, char **output) {
+static int execute_ping(const char *interface, const char *ip_address, char **output) {
     char command[256];
-    snprintf(command, sizeof(command), "ping -c 3 -i 1 %s", ip_address);
+    snprintf(command, sizeof(command), "ping -c 3 -I %s %s", interface, ip_address);
 
     FILE *fp = popen(command, "r");
     if (fp == NULL) {
@@ -230,8 +230,10 @@ static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *co
 
     if (strcmp(url, "/ping") == 0 && strcmp(method, "GET") == 0) {
         const char *ip = MHD_lookup_connection_value(connection, MHD_GET_ARGUMENT_KIND, "ip");
-        if (ip == NULL) {
-            const char *error_message = "IP address is required";
+        const char *interface = MHD_lookup_connection_value(connection, MHD_GET_ARGUMENT_KIND, "interface");
+    
+        if (ip == NULL || interface == NULL) {
+            const char *error_message = "Both IP address and interface are required.";
             struct MHD_Response *response = MHD_create_response_from_buffer(strlen(error_message),
                                                                             (void *)error_message, MHD_RESPMEM_PERSISTENT);
             ret = MHD_queue_response(connection, MHD_HTTP_BAD_REQUEST, response);
@@ -240,7 +242,7 @@ static enum MHD_Result answer_to_connection(void *cls, struct MHD_Connection *co
         }
 
         char *ping_output = NULL;
-        if (execute_ping(ip, &ping_output) != 0 || ping_output == NULL) {
+        if (execute_ping(interface, ip, &ping_output) != 0 || ping_output == NULL) {
             const char *error_message = "Failed to execute ping";
             struct MHD_Response *response = MHD_create_response_from_buffer(strlen(error_message),
                                                                             (void *)error_message, MHD_RESPMEM_PERSISTENT);

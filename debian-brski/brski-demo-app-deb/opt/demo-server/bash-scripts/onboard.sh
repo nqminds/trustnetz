@@ -58,8 +58,9 @@ file $CERTS_PATH/pinned-domain-ca.crt
 
 
 echo "Running brski sign command..."
-brski -c /etc/brski/config.ini sign -p $PORT -a $IP -o "$CERTS_PATH/eap-tls-client" -d
-
+# Uncoment bellow for using brski command
+# brski -c /etc/brski/config.ini sign -p $PORT -a $IP -o "$CERTS_PATH/eap-tls-client" -d
+bash /opt/demo-server/bash-scripts/sign_request.sh "$IP" "$PORT" "$CERTS_PATH"
 if [ $? -ne 0 ]; then
     exit 1
 fi
