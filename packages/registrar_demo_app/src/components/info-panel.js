@@ -68,6 +68,8 @@ const InfoPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType, se
     return () => clearInterval(intervalId);
   }, [selectedDevice, selectedDeviceType, selectedManufacturer, selectedMud]); // Empty dependency array ensures the effect runs only once on mount
 
+  console.log("INFO PANEL!!!!")
+
   return (
     <div className="info-container">
       {[
@@ -78,12 +80,49 @@ const InfoPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType, se
       ].map(({name, data}) => 
         <div key={name} className="table-section">
           <h2>{name}</h2>
-          <Table data={data} />
+          <FieldRenderer name={name} data={data} />
         </div>
       )}
     </div>
   );
 };
+
+const FieldRenderer = ({name, data}) => {
+  console.log(name, data)
+  let tableData = {};
+  switch (name)
+  {
+    case "Manufacturer":
+      tableData = {name: data.name, trusted: <div className={data.trusted ? "green-text" : "red-text"}> {data.trusted ? "✔" : "X"} </div>}
+      return (
+        <Table data={tableData} />
+      )
+    case "Device":
+      tableData = {
+        name: data.name,
+        trusted: <div className={data.trusted ? "green-text" : "red-text"}> {data.trusted ? "✔" : "X"} </div>,
+        manufacturer: data.manufacturer,
+        "manufacturer trusted": <div className={data.manufacturerTrusted ? "green-text" : "red-text"}> {data.manufacturerTrusted ? "✔" : "X"} </div>,
+        "device type": data.deviceType,
+        "device type vulnerable": <div className={data.vulnerable ? "red-text" : "green-text"}> {data.vulnerable ? "✔" : "X"} </div>,
+      }
+      return (
+        <Table data={tableData} />
+      )
+    case "Device Type":
+      tableData = {
+        name: data.name,
+        "SBOM ID": data.sbomId,
+        vulnerable: <div className={data.vulnerable ? "red-text" : "green-text"}> {data.vulnerable ? "✔" : "X"} </div>,
+        "MUD Name": data.mudName,
+      }
+      return (
+        <Table data={tableData} />
+      )
+    default:
+      return <Table data={data} />
+  }
+}
 
 export default InfoPanel;
 
