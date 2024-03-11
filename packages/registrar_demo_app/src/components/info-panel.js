@@ -68,8 +68,6 @@ const InfoPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType, se
     return () => clearInterval(intervalId);
   }, [selectedDevice, selectedDeviceType, selectedManufacturer, selectedMud]); // Empty dependency array ensures the effect runs only once on mount
 
-  console.log("INFO PANEL!!!!")
-
   return (
     <div className="info-container">
       {[
@@ -88,7 +86,6 @@ const InfoPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType, se
 };
 
 const FieldRenderer = ({name, data}) => {
-  console.log(name, data)
   let tableData = {};
   switch (name)
   {
