@@ -93,18 +93,18 @@ const FieldRenderer = ({name, data}) => {
   switch (name)
   {
     case "Manufacturer":
-      tableData = {name: data.name, trusted: <div className={data.trusted ? "green-text" : "red-text"}> {data.trusted ? "✔" : "X"} </div>}
+      tableData = {name: data.name, trusted: <div className={data.trusted ? "green-text" : "red-text"}> {data.trusted ? "✔ true" : "X false"} </div>}
       return (
         <Table data={tableData} />
       )
     case "Device":
       tableData = {
         name: data.name,
-        trusted: <div className={data.trusted ? "green-text" : "red-text"}> {data.trusted ? "✔" : "X"} </div>,
+        trusted: <div className={data.trusted ? "green-text" : "red-text"}> {data.trusted ? "✔ true" : "X false"} </div>,
         manufacturer: data.manufacturer,
-        "manufacturer trusted": <div className={data.manufacturerTrusted ? "green-text" : "red-text"}> {data.manufacturerTrusted ? "✔" : "X"} </div>,
+        "manufacturer trusted": <div className={data.manufacturerTrusted ? "green-text" : "red-text"}> {data.manufacturerTrusted ? "✔ true" : "X false"} </div>,
         "device type": data.deviceType,
-        "device type vulnerable": <div className={data.vulnerable ? "red-text" : "green-text"}> {data.vulnerable ? "✔" : "X"} </div>,
+        "device type vulnerable": <div className={data.vulnerable ? "red-text" : "green-text"}> {data.vulnerable ? "✔ true" : "X false"} </div>,
       }
       return (
         <Table data={tableData} />
@@ -113,7 +113,7 @@ const FieldRenderer = ({name, data}) => {
       tableData = {
         name: data.name,
         "SBOM ID": data.sbomId,
-        vulnerable: <div className={data.vulnerable ? "red-text" : "green-text"}> {data.vulnerable ? "✔" : "X"} </div>,
+        vulnerable: <div className={data.vulnerable ? "red-text" : "green-text"}> {data.vulnerable ? "✔ true" : "X false"} </div>,
         "MUD Name": data.mudName,
       }
       return (
