@@ -1,0 +1,18 @@
+# /etc/freeradius/3.0/mods-enabled/eap
+eap {
+    default_eap_type = tls
+
+    tls {
+
+        private_key_password = s3cr3t
+
+        private_key_file = /etc/brski/registrar-tls.key
+        certificate_file = /etc/brski/registrar-tls.key 
+.
+        ca_file = /etc/hostapd/CA/registrar-tls-ca_and_crl.crt
+
+        dh_file = /etc/freeradius/3.0/certs/dh
+        check_crl = yes
+    }
+}
+

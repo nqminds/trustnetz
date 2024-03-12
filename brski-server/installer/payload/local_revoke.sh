@@ -11,7 +11,7 @@ CLIENT_CERT="$1"
 CA_CONFIG="/etc/hostapd/CA/ca.conf"
 CA_CERT="/etc/brski/registrar-tls-ca.crt"
 CRL="/etc/hostapd/CA/crl.crt"
-COMBINED_CA_CRL="/etc/hostapd/CA/registrar-tls-ca-and-crl.crt"
+COMBINED_CA_CRL="/etc/hostapd/CA/registrar-tls-ca_and_crl.crt"
 
 # Revoke the client certificate
 sudo openssl ca -revoke "$CLIENT_CERT" -config "$CA_CONFIG"
@@ -29,4 +29,5 @@ else
     echo "Certificate has been revoked. Restarting hostapd..."
     # Restart hostapd
     sudo systemctl restart hostapd@wlan1.service
+    sudo systemctl restart freeradius.service
 fi

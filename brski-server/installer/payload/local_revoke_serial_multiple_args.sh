@@ -11,7 +11,7 @@ CA_DIR="/etc/hostapd/CA"
 CA_CONFIG="$CA_DIR/ca.conf"
 CRL="$CA_DIR/crl.crt"
 CA_CERT="/etc/brski/registrar-tls-ca.crt"
-COMBINED_CA_CRL="$CA_DIR/registrar-tls-ca-and-crl.crt"
+COMBINED_CA_CRL="$CA_DIR/registrar-tls-ca_and_crl.crt"
 INDEX_FILE="$CA_DIR/index.txt"
 REVOCATION_DATE=$(date +"%y%m%d%H%M%SZ")
 update_crl=false
@@ -52,4 +52,5 @@ if [ "$update_crl" = true ]; then
     echo "Certificates have been revoked. Restarting hostapd..."
     # Restart hostapd
     sudo systemctl restart hostapd@wlan1.service
+    sudo systemctl restart freeradius.service
 fi

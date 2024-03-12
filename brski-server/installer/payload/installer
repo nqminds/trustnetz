@@ -1,11 +1,11 @@
-#!/bin/bash
+# #!/bin/bash
 
 IF0="wlan0"
 IF1="wlan1"
 
 CA_DIR="/etc/hostapd/CA"
 CA_CONF="$CA_DIR/ca.conf"
-COMBINED_CA_CRL="$CA_DIR/registrar-tls-ca-and-crl.crt"
+COMBINED_CA_CRL="$CA_DIR/registrar-tls-ca_and_crl.crt"
 
 ip a show dev $IF0
 
@@ -37,7 +37,8 @@ systemctl daemon-reload
 systemctl enable nist-demo.service
 
 # Insatll all packages
-apt install hostapd dnsmasq iptables avahi-daemon -y
+apt install hostapd dnsmasq iptables avahi-daemon vlan freeradius freeradius-utils -y
+echo "8021q" | sudo tee -a /etc/modules
 
 # Configure avahi
 # Always enable
@@ -53,6 +54,13 @@ systemctl disable wpa_supplicant
 
 systemctl disable hostapd@$IF0.service 
 systemctl disable hostapd@$IF1.service 
+
+cp vlan-dhcp.conf /etc/dnsmasq.d/
+cp vlans /etc/dnsmasq.d/
+cp vlan-secure.vlan /etc/hostapd/
+cp clients.conf /etc/freeradius/3.0/
+cp eap /etc/freeradius/3.0/mods-enabled/
+cp dh /etc/freeradius/3.0/certs/
 
 # secure hostapd
 cp wlan-secure.conf /etc/hostapd/$IF1.conf
