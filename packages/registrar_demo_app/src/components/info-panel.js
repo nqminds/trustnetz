@@ -78,12 +78,48 @@ const InfoPanel = ({selectedDevice, selectedManufacturer, selectedDeviceType, se
       ].map(({name, data}) => 
         <div key={name} className="table-section">
           <h2>{name}</h2>
-          <Table data={data} />
+          <FieldRenderer name={name} data={data} />
         </div>
       )}
     </div>
   );
 };
+
+const FieldRenderer = ({name, data}) => {
+  let tableData = {};
+  switch (name)
+  {
+    case "Manufacturer":
+      tableData = {name: data.name, trusted: <div className={data.trusted ? "green-text" : "red-text"}> {data.trusted ? "✔ true" : "X false"} </div>}
+      return (
+        <Table data={tableData} />
+      )
+    case "Device":
+      tableData = {
+        name: data.name,
+        trusted: <div className={data.trusted ? "green-text" : "red-text"}> {data.trusted ? "✔ true" : "X false"} </div>,
+        manufacturer: data.manufacturer,
+        "manufacturer trusted": <div className={data.manufacturerTrusted ? "green-text" : "red-text"}> {data.manufacturerTrusted ? "✔ true" : "X false"} </div>,
+        "device type": data.deviceType,
+        "device type vulnerable": <div className={data.vulnerable ? "red-text" : "green-text"}> {data.vulnerable ? "✔ true" : "X false"} </div>,
+      }
+      return (
+        <Table data={tableData} />
+      )
+    case "Device Type":
+      tableData = {
+        name: data.name,
+        "SBOM ID": data.sbomId,
+        vulnerable: <div className={data.vulnerable ? "red-text" : "green-text"}> {data.vulnerable ? "✔ true" : "X false"} </div>,
+        "MUD Name": data.mudName,
+      }
+      return (
+        <Table data={tableData} />
+      )
+    default:
+      return <Table data={data} />
+  }
+}
 
 export default InfoPanel;
 
