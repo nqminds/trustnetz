@@ -50,7 +50,9 @@ done
 if [ "$update_crl" = true ]; then
 
     echo "Certificates have been revoked. Restarting hostapd..."
+    sudo chown freerad:freerad $COMBINED_CA_CRL
     # Restart hostapd
     sudo systemctl restart hostapd@wlan1.service
+    sudo systemctl restart configure-vlans.service
     sudo systemctl restart freeradius.service
 fi
