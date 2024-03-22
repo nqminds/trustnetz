@@ -6,6 +6,7 @@ IF1="wlan1"
 CA_DIR="/etc/hostapd/CA"
 CA_CONF="$CA_DIR/ca.conf"
 COMBINED_CA_CRL="$CA_DIR/registrar-tls-ca_and_crl.crt"
+CA_CERT="/etc/brski/registrar-tls-ca.crt"
 
 ip a show dev $IF0
 
@@ -27,17 +28,29 @@ dpkg -i /tmp/brski_0.2.6_arm64.deb
 rm /tmp/brski_0.2.6_arm64.deb
 
 cp certs/* /etc/brski
+chown freerad:freerad /etc/brski/registrar-tls.crt
+chown freerad:freerad /etc/brski/registrar-tls.crt
 
 mkdir -p /opt/demo-server
 cp run.sh /opt/demo-server
+cp link_bridges.sh /opt/demo-server/
+cp assign_client_to_vlan.sh /opt/demo-server/
+
+chmod +x /opt/demo-server/link_bridges.sh
+chmod +x /opt/demo-server/assign_client_to_vlan.sh
 
 cp nist-demo.service /etc/systemd/system/
 chmod 644 /etc/systemd/system/nist-demo.service
+cp configure-vlans.service /etc/systemd/system/
+chmod 644 /etc/systemd/system/configure-vlans.service
+
 systemctl daemon-reload
+
 systemctl enable nist-demo.service
+systemctl enable configure-vlans.service
 
 # Insatll all packages
-apt install hostapd dnsmasq iptables avahi-daemon vlan freeradius freeradius-utils -y
+apt install hostapd dnsmasq iptables avahi-daemon vlan freeradius freeradius-mysql freeradius-utils
 echo "8021q" | sudo tee -a /etc/modules
 
 # Configure avahi
@@ -55,12 +68,15 @@ systemctl disable wpa_supplicant
 systemctl disable hostapd@$IF0.service 
 systemctl disable hostapd@$IF1.service 
 
-cp vlan-dhcp.conf /etc/dnsmasq.d/
-cp vlans /etc/dnsmasq.d/
 cp vlan-secure.vlan /etc/hostapd/
 cp clients.conf /etc/freeradius/3.0/
-cp eap /etc/freeradius/3.0/mods-enabled/
-cp dh /etc/freeradius/3.0/certs/
+cp eap /etc/freeradius/3.0/mods-available/
+
+chown freerad:freerad /etc/freeradius/3.0/mods-available/eap
+chmod 640 /etc/freeradius/3.0/mods-enabled/eap
+
+chown freerad:freerad /etc/freeradius/3.0/clients.conf
+chmod 640 /etc/freeradius/3.0/clients.conf
 
 # secure hostapd
 cp wlan-secure.conf /etc/hostapd/$IF1.conf
@@ -97,6 +113,7 @@ echo '01' > "$CA_DIR/crlnumber"
 
 openssl ca -gencrl -out "$CA_DIR/crl.crt" -config "$CA_CONF"
 sudo sh -c "cat $CA_CERT $CA_DIR/crl.crt > $COMBINED_CA_CRL"
+chown freerad:freerad "$COMBINED_CA_CRL"
 
 cp local_revoke_serial_multiple_args.sh "$CA_DIR/"
 cp local_revoke.sh "$CA_DIR/"
@@ -109,4 +126,3 @@ systemctl restart avahi-daemon.service
 
 # Start the runner
 systemctl restart nist-demo.service
-
