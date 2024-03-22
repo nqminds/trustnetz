@@ -8,8 +8,14 @@ on:
     tags:
       - 'v0.0.1'
     branches: [ main ]
+    paths:
+      - 'debian-brski/**'
+      - 'brski-server/**'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'debian-brski/**'
+      - 'brski-server/**'
 
 jobs:
   
