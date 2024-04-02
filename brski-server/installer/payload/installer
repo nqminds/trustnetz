@@ -28,8 +28,8 @@ dpkg -i /tmp/brski_0.2.6_arm64.deb
 rm /tmp/brski_0.2.6_arm64.deb
 
 cp certs/* /etc/brski
-chown freerad:freerad /etc/brski/registrar-tls.crt
-chown freerad:freerad /etc/brski/registrar-tls.crt
+sudo chown freerad:freerad /etc/brski/registrar-tls.crt
+sudo chown freerad:freerad /etc/brski/registrar-tls.key
 
 mkdir -p /opt/demo-server
 cp run.sh /opt/demo-server
