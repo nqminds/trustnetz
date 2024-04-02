@@ -55,19 +55,19 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     loop {
         let logs = read_to_string(connected_idevids_log_path).expect("Cannot read brski-registrar.log");
-        let mut lines: Vec<&str> = logs.split("\n").collect();
+        let mut lines: Vec<&str> = logs.split('\n').collect();
         if !lines.is_empty() && lines.last().unwrap().is_empty() {
             lines.pop();
         }
         let mut revoke = Vec::new();
         for line in lines {
-            let parts: Vec<&str> = line.split(" ").collect();
+            let parts: Vec<&str> = line.split(' ').collect();
             let idevid = nist_policy::generate_x509_certificate(parts[1], "manufacturer")
                 .expect("Error generating certificate from serial number");
             if !nist_policy::check_device_trusted(&idevid, trust_db_path).expect("Error checking device trust") ||
                 !nist_policy::check_manufacturer_trusted(&idevid, trust_db_path).expect("Error checking manufacturer trust") ||
                 nist_policy::check_device_vulnerable(&idevid, trust_db_path).expect("Error checking device vulnerability") ||
-                nist_policy::demo_get_ips_to_kick(tcpdump_log_path, &[String::from("203.0.113.0")], 2).len() > 0 {
+                !nist_policy::demo_get_ips_to_kick(&idevid, trust_db_path, tcpdump_log_path, 90).is_empty() {
                     revoke.push(parts[3]);
                     revoke.push(parts[4]);
             }

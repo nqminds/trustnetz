@@ -41,8 +41,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     'outer: loop {
         let output = std::process::Command::new("avahi-browse").args(["-r", "_brski._tcp", "-t", "-p"]).output()?;
         let output = String::from_utf8(output.stdout)?;
-        for line in output.split("\n") {
-            let service: Vec<&str> = line.split(";").collect();
+        for line in output.split('\n') {
+            let service: Vec<&str> = line.split(';').collect();
             if service[0] == "=" && service[2] == "IPv4" && service[3] == "brski-registrar-CA-monitor" {
                 address = String::from(service[7]);
                 port = String::from(service[8]);
