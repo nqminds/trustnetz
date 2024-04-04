@@ -601,7 +601,7 @@ pub fn demo_get_ips_to_kick(idevid: &X509, log_file_path: &str, tcpdump_log_path
                         }
                     }
                     "internal traffic only" => {
-                        if !destination.is_private() {
+                        if !destination.is_private() && !destination.is_multicast() && !destination.is_broadcast() {
                             matched_ips.insert(source);
                             break;
                         }
