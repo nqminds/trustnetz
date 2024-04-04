@@ -6,10 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-openssl = "0.10.63"
-tokio = {version = "1.35.1", features = ["rt", "macros", "time", "net", "io-util"]}
-tokio-rustls = "0.25.0"
-serde_json = "1.0.111"
+openssl = "0.10.64"
+tokio = {version = "1.37.0", features = ["rt", "macros", "time", "net", "io-util"]}
+tokio-rustls = "0.26.0"
+serde_json = "1.0.115"
 nist_policy = {path = "../nist_policy"}
 
 [[bin]]
