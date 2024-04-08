@@ -428,7 +428,7 @@ pub fn check_device_vulnerable(idevid: &X509, path_to_sql_db: &str) -> Result<bo
     }
 }
 
-pub fn check_device_mud<'a>(idevid: &'a X509, path_to_sql_db: &'a str) -> Result<Option<String>, rusqlite::Error> {
+pub fn check_device_mud(idevid: &X509, path_to_sql_db: &str) -> Result<Option<String>, rusqlite::Error> {
     // Create OpenFlags without SQLITE_OPEN_CREATE flag
     let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_FULL_MUTEX;
     
@@ -557,10 +557,11 @@ pub fn search_log_for_ips_since(log_file_path: &str, seconds: i64) -> HashMap<Ip
             if let Ok(line) = line {
                 let parts: Vec<&str> = line.split_whitespace().collect();
                 if parts.len() > 4 && parts[1] == "IP" && parts[3] == ">" {
-                    if let (Ok(timestamp), Ok(source_ip), Ok(destination_ip)) =
-                        (parts[0].parse::<f64>(),
-                         parts[2].parse::<Ipv4Addr>(),
-                         parts[4].replace(':', "").parse::<Ipv4Addr>())
+                    if let (Ok(timestamp), Ok(source_ip), Ok(destination_ip)) = (
+                        parts[0].parse::<f64>(),
+                        parts[2].split(|x| x == '.' || x == ':').collect::<Vec<_>>()[0..4].join(".").parse::<Ipv4Addr>(),
+                        parts[4].split(|x| x == '.' || x == ':').collect::<Vec<_>>()[0..4].join(".").parse::<Ipv4Addr>()
+                    )
                     {
                         if (timestamp as i64) < start_time {
                             break;
