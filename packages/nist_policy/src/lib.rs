@@ -585,11 +585,11 @@ pub fn search_log_for_ips_since(log_file_path: &str, seconds: i64) -> HashMap<Ip
     visited_ips
 }
 
-pub fn demo_get_ips_to_kick(idevid: &X509, log_file_path: &str, tcpdump_log_path: &str, seconds: i64) -> HashSet<Ipv4Addr> {
+pub fn demo_get_ips_to_kick(idevid: &X509, path_to_sql_db: &str, tcpdump_log_path: &str, seconds: i64) -> HashSet<Ipv4Addr> {
     let visited_ips = search_log_for_ips_since(tcpdump_log_path, seconds);
     println!("visited_ips: {:?}", visited_ips);
     let mut matched_ips = HashSet::new();
-    if let Ok(Some(rule)) = check_device_mud(idevid, log_file_path) {
+    if let Ok(Some(rule)) = check_device_mud(idevid, path_to_sql_db) {
         // for source in visited_ips.keys() { // TODO handle all IPs
         let source = Ipv4Addr::new(192, 168, 16, 186);
         if let Some(destinations) = visited_ips.get(&source) {
