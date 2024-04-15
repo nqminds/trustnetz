@@ -1,166 +1,446 @@
-2024-02-20T15:37:13 15:37:12.623879 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 13, length 64
-2024-02-20T15:37:14 15:37:13.647373 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 14, length 64
-2024-02-20T15:37:15 15:37:14.671324 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 15, length 64
-2024-02-20T15:37:16 15:37:15.695342 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 16, length 64
-2024-02-20T15:37:17 15:37:16.719571 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 17, length 64
-2024-02-20T15:37:18 15:37:17.743470 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 18, length 64
-2024-02-20T15:37:19 15:37:18.767384 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 19, length 64
-2024-02-20T15:37:20 15:37:19.791391 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 20, length 64
-2024-02-20T15:37:21 15:37:20.815349 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 21, length 64
-2024-02-20T15:37:22 15:37:21.844480 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 22, length 64
-2024-02-20T15:37:23 15:37:22.863347 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 23, length 64
-2024-02-20T15:37:24 15:37:23.887390 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 24, length 64
-2024-02-20T15:37:25 15:37:24.911407 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 25, length 64
-2024-02-20T15:37:26 15:37:25.935351 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 26, length 64
-2024-02-20T15:37:27 15:37:26.959838 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 27, length 64
-2024-02-20T15:37:28 15:37:27.983354 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 28, length 64
-2024-02-20T15:37:29 15:37:29.007337 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 29, length 64
-2024-02-20T15:37:30 15:37:30.031332 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 30, length 64
-2024-02-20T15:37:31 15:37:31.055400 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 31, length 64
-2024-02-20T15:37:32 15:37:32.079345 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 32, length 64
-2024-02-20T15:37:33 15:37:33.103374 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 33, length 64
-2024-02-20T15:37:34 15:37:34.127349 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 34, length 64
-2024-02-20T15:37:35 15:37:35.151333 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 35, length 64
-2024-02-20T15:37:36 15:37:36.176739 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 36, length 64
-2024-02-20T15:37:37 15:37:37.199392 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 37, length 64
-2024-02-20T15:37:38 15:37:38.223427 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 38, length 64
-2024-02-20T15:37:38 15:37:38.319066 ARP, Request who-has 192.168.17.1 tell 192.168.17.101, length 28
-2024-02-20T15:37:38 15:37:38.319119 ARP, Reply 192.168.17.1 is-at d8:3a:dd:7d:e0:b5 (oui Unknown), length 28
-2024-02-20T15:37:39 15:37:39.247345 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 39, length 64
-2024-02-20T15:37:40 15:37:40.271349 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 40, length 64
-2024-02-20T15:37:41 15:37:41.295364 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 41, length 64
-2024-02-20T15:37:42 15:37:42.337353 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 42, length 64
-2024-02-20T15:37:43 15:37:43.343361 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 43, length 64
-2024-02-20T15:37:44 15:37:44.367361 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 44, length 64
-2024-02-20T15:37:45 15:37:45.391351 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 45, length 64
-2024-02-20T15:37:46 15:37:46.415351 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 46, length 64
-2024-02-20T15:37:47 15:37:47.440377 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 47, length 64
-2024-02-20T15:37:48 15:37:48.463414 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 48, length 64
-2024-02-20T15:37:49 15:37:49.487340 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 49, length 64
-2024-02-20T15:37:50 15:37:50.511326 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 50, length 64
-2024-02-20T15:37:51 15:37:51.535339 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 51, length 64
-2024-02-20T15:37:53 15:37:52.559332 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 52, length 64
-2024-02-20T15:37:54 15:37:53.583358 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 53, length 64
-2024-02-20T15:37:55 15:37:54.607351 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 54, length 64
-2024-02-20T15:37:56 15:37:55.631348 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 55, length 64
-2024-02-20T15:37:57 15:37:56.666742 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 56, length 64
-2024-02-20T15:37:58 15:37:57.679337 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 57, length 64
-2024-02-20T15:37:59 15:37:58.703361 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 58, length 64
-2024-02-20T15:38:00 15:37:59.727352 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 59, length 64
-2024-02-20T15:38:01 15:38:00.751356 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 60, length 64
-2024-02-20T15:38:02 15:38:01.775376 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 61, length 64
-2024-02-20T15:38:03 15:38:02.799353 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 62, length 64
-2024-02-20T15:38:04 15:38:03.823355 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 63, length 64
-2024-02-20T15:38:05 15:38:04.847345 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 64, length 64
-2024-02-20T15:38:06 15:38:05.871357 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 65, length 64
-2024-02-20T15:38:07 15:38:06.894499 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 66, length 64
-2024-02-20T15:38:08 15:38:07.919865 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 67, length 64
-2024-02-20T15:38:09 15:38:08.943334 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 68, length 64
-2024-02-20T15:38:10 15:38:09.967341 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 69, length 64
-2024-02-20T15:38:11 15:38:10.991690 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 70, length 64
-2024-02-20T15:38:11 15:38:11.087114 ARP, Request who-has 192.168.17.1 tell 192.168.17.101, length 28
-2024-02-20T15:38:11 15:38:11.087154 ARP, Reply 192.168.17.1 is-at d8:3a:dd:7d:e0:b5 (oui Unknown), length 28
-2024-02-20T15:38:12 15:38:12.015348 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 71, length 64
-2024-02-20T15:38:13 15:38:13.039357 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 72, length 64
-2024-02-20T15:38:14 15:38:14.063352 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 73, length 64
-2024-02-20T15:38:15 15:38:15.087364 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 74, length 64
-2024-02-20T15:38:16 15:38:16.111347 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 75, length 64
-2024-02-20T15:38:17 15:38:17.135321 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 76, length 64
-2024-02-20T15:38:18 15:38:18.159340 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 77, length 64
-2024-02-20T15:38:19 15:38:19.183428 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 78, length 64
-2024-02-20T15:38:20 15:38:20.207342 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 79, length 64
-2024-02-20T15:38:21 15:38:21.231405 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 80, length 64
-2024-02-20T15:38:22 15:38:22.255340 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 81, length 64
-2024-02-20T15:38:23 15:38:23.279336 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 82, length 64
-2024-02-20T15:38:24 15:38:24.304698 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 83, length 64
-2024-02-20T15:38:25 15:38:25.327241 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 84, length 64
-2024-02-20T15:38:26 15:38:26.351360 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 85, length 64
-2024-02-20T15:38:27 15:38:27.375364 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 86, length 64
-2024-02-20T15:38:28 15:38:28.399704 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 87, length 64
-2024-02-20T15:38:29 15:38:29.423342 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 88, length 64
-2024-02-20T15:38:30 15:38:30.447342 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 89, length 64
-2024-02-20T15:38:31 15:38:31.471344 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 90, length 64
-2024-02-20T15:38:32 15:38:32.495311 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 91, length 64
-2024-02-20T15:38:33 15:38:33.519358 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 92, length 64
-2024-02-20T15:38:34 15:38:34.543346 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 93, length 64
-2024-02-20T15:38:36 15:38:35.567341 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 94, length 64
-2024-02-20T15:38:37 15:38:36.591335 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 95, length 64
-2024-02-20T15:38:38 15:38:37.615369 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 96, length 64
-2024-02-20T15:38:39 15:38:38.639354 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 97, length 64
-2024-02-20T15:38:40 15:38:39.663339 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 98, length 64
-2024-02-20T15:38:41 15:38:40.687356 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 99, length 64
-2024-02-20T15:38:42 15:38:41.711351 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 100, length 64
-2024-02-20T15:38:43 15:38:42.735351 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 101, length 64
-2024-02-20T15:38:44 15:38:43.759365 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 102, length 64
-2024-02-20T15:38:45 15:38:44.783360 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 103, length 64
-2024-02-20T15:38:46 15:38:45.807342 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 104, length 64
-2024-02-20T15:38:47 15:38:46.856834 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 105, length 64
-2024-02-20T15:38:48 15:38:47.865057 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 106, length 64
-2024-02-20T15:38:49 15:38:48.919796 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 107, length 64
-2024-02-20T15:38:50 15:38:49.942191 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 108, length 64
-2024-02-20T15:38:51 15:38:50.941825 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 109, length 64
-2024-02-20T15:38:52 15:38:51.988744 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 110, length 64
-2024-02-20T15:38:53 15:38:52.975358 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 111, length 64
-2024-02-20T15:38:54 15:38:53.999343 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 112, length 64
-2024-02-20T15:38:54 15:38:54.095038 ARP, Request who-has 192.168.17.1 tell 192.168.17.101, length 28
-2024-02-20T15:38:54 15:38:54.095080 ARP, Reply 192.168.17.1 is-at d8:3a:dd:7d:e0:b5 (oui Unknown), length 28
-2024-02-20T15:38:55 15:38:55.023344 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 113, length 64
-2024-02-20T15:38:56 15:38:56.047342 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 114, length 64
-2024-02-20T15:38:57 15:38:57.071339 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 115, length 64
-2024-02-20T15:38:58 15:38:58.095359 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 116, length 64
-2024-02-20T15:38:59 15:38:59.119351 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 117, length 64
-2024-02-20T15:39:00 15:39:00.143332 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 118, length 64
-2024-02-20T15:39:01 15:39:01.167405 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 119, length 64
-2024-02-20T15:39:02 15:39:02.191301 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 120, length 64
-2024-02-20T15:39:03 15:39:03.215341 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 121, length 64
-2024-02-20T15:39:04 15:39:04.239339 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 122, length 64
-2024-02-20T15:39:05 15:39:05.263339 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 123, length 64
-2024-02-20T15:39:06 15:39:06.288189 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 124, length 64
-2024-02-20T15:39:07 15:39:07.311359 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 125, length 64
-2024-02-20T15:39:08 15:39:08.335350 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 126, length 64
-2024-02-20T15:39:09 15:39:09.359336 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 127, length 64
-2024-02-20T15:39:10 15:39:10.383436 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 128, length 64
-2024-02-20T15:39:11 15:39:11.407334 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 129, length 64
-2024-02-20T15:39:12 15:39:12.431321 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 130, length 64
-2024-02-20T15:39:13 15:39:13.455366 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 131, length 64
-2024-02-20T15:39:14 15:39:14.479328 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 132, length 64
-2024-02-20T15:39:15 15:39:15.503354 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 133, length 64
-2024-02-20T15:39:16 15:39:16.527361 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 134, length 64
-2024-02-20T15:39:18 15:39:17.551903 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 135, length 64
-2024-02-20T15:39:19 15:39:18.575359 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 136, length 64
-2024-02-20T15:39:20 15:39:19.599342 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 137, length 64
-2024-02-20T15:39:21 15:39:20.623343 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 138, length 64
-2024-02-20T15:39:22 15:39:21.647358 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 139, length 64
-2024-02-20T15:39:23 15:39:22.671352 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 140, length 64
-2024-02-20T15:39:24 15:39:23.696279 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 141, length 64
-2024-02-20T15:39:25 15:39:24.719352 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 142, length 64
-2024-02-20T15:39:26 15:39:25.743430 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 143, length 64
-2024-02-20T15:39:27 15:39:26.767370 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 144, length 64
-2024-02-20T15:39:28 15:39:27.791346 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 145, length 64
-2024-02-20T15:39:29 15:39:28.815338 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 146, length 64
-2024-02-20T15:39:30 15:39:29.839342 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 147, length 64
-2024-02-20T15:39:31 15:39:30.863345 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 148, length 64
-2024-02-20T15:39:32 15:39:31.887344 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 149, length 64
-2024-02-20T15:39:33 15:39:32.911352 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 150, length 64
-2024-02-20T15:39:34 15:39:33.935350 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 151, length 64
-2024-02-20T15:39:35 15:39:34.959350 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 152, length 64
-2024-02-20T15:39:36 15:39:35.983333 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 153, length 64
-2024-02-20T15:39:37 15:39:37.007328 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 154, length 64
-2024-02-20T15:39:37 15:39:37.103064 ARP, Request who-has 192.168.17.1 tell 192.168.17.101, length 28
-2024-02-20T15:39:37 15:39:37.103123 ARP, Reply 192.168.17.1 is-at d8:3a:dd:7d:e0:b5 (oui Unknown), length 28
-2024-02-20T15:39:38 15:39:38.031365 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 155, length 64
-2024-02-20T15:39:39 15:39:39.055362 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 156, length 64
-2024-02-20T15:39:40 15:39:40.079348 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 157, length 64
-2024-02-20T15:39:41 15:39:41.103331 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 158, length 64
-2024-02-20T15:39:42 15:39:42.127335 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 159, length 64
-2024-02-20T15:39:43 15:39:43.151336 IP 192.168.17.101 > 151.101.1.140: ICMP echo request, id 40, seq 160, length 64
-2024-02-20T15:39:44 15:39:44.175336 IP 192.168.16.123 > 151.101.1.140: ICMP echo request, id 40, seq 161, length 64
-2024-02-20T15:39:45 15:39:45.199387 IP 192.168.16.123 > 151.101.1.140: ICMP echo request, id 40, seq 162, length 64
-2024-02-20T15:39:46 15:39:46.223347 IP 192.168.16.123 > 151.101.1.140: ICMP echo request, id 40, seq 163, length 64
-2024-02-20T15:39:47 15:39:47.247347 IP 192.168.16.123 > 151.101.1.140: ICMP echo request, id 40, seq 164, length 64
-2024-02-20T15:39:48 15:39:48.271391 IP 192.168.16.123 > 151.101.1.140: ICMP echo request, id 40, seq 165, length 64
-2024-02-20T15:39:49 15:39:49.304090 IP 192.168.16.123 > 151.101.1.140: ICMP echo request, id 40, seq 166, length 64
-2024-02-20T15:39:50 15:39:50.319998 IP 192.168.16.123 > 151.101.1.140: ICMP echo request, id 40, seq 167, length 64
-2024-02-20T15:39:51 15:39:51.343369 IP 192.168.16.123 > 151.101.1.140: ICMP echo request, id 40, seq 168, length 64
-2024-02-20T15:39:52 15:39:52.367345 IP 192.168.16.123 > 151.101.1.140: ICMP echo request, id 40, seq 169, length 64
-2024-02-20T15:39:52 15:39:52.367345 IP 192.168.16.121 > 151.101.1.149: ICMP echo request, id 40, seq 169, length 64
+1712241829.244795 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241829.244851 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241838.163738 IP6 fe80::2d75:9dc9:f656:e0f > ff02::2: ICMP6, router solicitation, length 8
+1712241838.163781 IP6 fe80::2d75:9dc9:f656:e0f > ff02::2: ICMP6, router solicitation, length 8
+1712241842.428044 IP6 fe80::2d75:9dc9:f656:e0f.5353 > ff02::fb.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241842.428151 IP6 fe80::2d75:9dc9:f656:e0f.5353 > ff02::fb.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241845.250920 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241845.251012 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241856.794210 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2n] ANY (QM)? brski-registrar-CA-monitor._brski._tcp.local. (105)
+1712241856.795193 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 3/0/0 (Cache flush) SRV registrar.local.:8000 0 0, (Cache flush) A 192.168.16.1, (Cache flush) TXT "" (115)
+1712241857.044303 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2n] ANY (QM)? brski-registrar-CA-monitor._brski._tcp.local. (105)
+1712241857.295315 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2n] ANY (QM)? brski-registrar-CA-monitor._brski._tcp.local. (105)
+1712241857.296545 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 3/0/0 (Cache flush) SRV registrar.local.:8000 0 0, (Cache flush) A 192.168.16.1, (Cache flush) TXT "" (115)
+1712241857.552832 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 2/0/0 PTR _brski._tcp.local., PTR brski-registrar-CA-monitor._brski._tcp.local. (107)
+1712241858.589612 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 5/0/0 (Cache flush) TXT "", PTR brski-registrar-CA-monitor._brski._tcp.local., (Cache flush) SRV registrar.local.:8000 0 0, (Cache flush) A 192.168.16.1, PTR _brski._tcp.local. (166)
+1712241860.563240 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [1a] PTR (QM)? _brski._tcp.local. (76)
+1712241860.680788 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 4/0/0 (Cache flush) TXT "", (Cache flush) SRV registrar.local.:8000 0 0, (Cache flush) A 192.168.16.1, PTR _brski._tcp.local. (152)
+1712241860.738293 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 1/0/0 PTR brski-registrar-CA-monitor._brski._tcp.local. (70)
+1712241866.383243 IP6 fe80::2d75:9dc9:f656:e0f > ff02::2: ICMP6, router solicitation, length 8
+1712241866.383288 IP6 fe80::2d75:9dc9:f656:e0f > ff02::2: ICMP6, router solicitation, length 8
+1712241874.441791 IP6 fe80::2d75:9dc9:f656:e0f.5353 > ff02::fb.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241874.441835 IP6 fe80::2d75:9dc9:f656:e0f.5353 > ff02::fb.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241877.249609 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241877.249653 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241892.594287 IP 192.168.16.186 > 192.168.1.1: ICMP echo request, id 39, seq 1, length 64
+1712241893.617966 IP 192.168.16.186 > 192.168.1.1: ICMP echo request, id 39, seq 2, length 64
+1712241894.644184 IP 192.168.16.186 > 192.168.1.1: ICMP echo request, id 39, seq 3, length 64
+1712241897.838885 ARP, Request who-has 192.168.16.1 tell 192.168.16.186, length 28
+1712241897.838930 ARP, Reply 192.168.16.1 is-at 1c:bf:ce:6b:a8:42, length 28
+1712241911.069286 IP 192.168.16.186 > 172.253.122.100: ICMP echo request, id 40, seq 1, length 64
+1712241912.568305 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 4/0/0 PTR _brski._tcp.local., PTR registrar-registrar._registrar._tcp.local., PTR _registrar._tcp.local., PTR brski-registrar-CA-monitor._brski._tcp.local. (166)
+1712241912.586748 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] [4n] ANY (QM)? brski-registrar-CA-monitor._brski._tcp.local. ANY (QM)? registrar-registrar._registrar._tcp.local. (175)
+1712241912.605108 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241912.836175 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] [4n] ANY (QM)? brski-registrar-CA-monitor._brski._tcp.local. ANY (QM)? registrar-registrar._registrar._tcp.local. (175)
+1712241912.993599 IP 192.168.16.1 > 224.0.0.22: igmp v3 report, 1 group record(s)
+1712241913.087399 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] [4n] ANY (QM)? brski-registrar-CA-monitor._brski._tcp.local. ANY (QM)? registrar-registrar._registrar._tcp.local. (175)
+1712241913.189105 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] [2n] ANY (QM)? 1.16.168.192.in-addr.arpa. ANY (QM)? registrar.local. (94)
+1712241913.287942 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 4/0/0 (Cache flush) TXT "", (Cache flush) SRV registrar.local.:12345 0 0, (Cache flush) TXT "", (Cache flush) SRV registrar.local.:8000 0 0 (163)
+1712241913.439620 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] [2n] ANY (QM)? 1.16.168.192.in-addr.arpa. ANY (QM)? registrar.local. (94)
+1712241913.600394 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 4/0/0 PTR _brski._tcp.local., PTR registrar-registrar._registrar._tcp.local., PTR _registrar._tcp.local., PTR brski-registrar-CA-monitor._brski._tcp.local. (166)
+1712241913.606058 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241913.690852 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] [2n] ANY (QM)? 1.16.168.192.in-addr.arpa. ANY (QM)? registrar.local. (94)
+1712241913.891920 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 2/0/0 (Cache flush) PTR registrar.local., (Cache flush) A 192.168.16.1 (82)
+1712241914.320429 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 4/0/0 (Cache flush) TXT "", (Cache flush) SRV registrar.local.:12345 0 0, (Cache flush) TXT "", (Cache flush) SRV registrar.local.:8000 0 0 (163)
+1712241914.923659 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 2/0/0 (Cache flush) PTR registrar.local., (Cache flush) A 192.168.16.1 (82)
+1712241915.606461 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241915.633385 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 9/0/0 PTR _brski._tcp.local., PTR registrar-registrar._registrar._tcp.local., (Cache flush) TXT "", (Cache flush) SRV registrar.local.:12345 0 0, (Cache flush) A 192.168.16.1, PTR _registrar._tcp.local., PTR brski-registrar-CA-monitor._brski._tcp.local., (Cache flush) TXT "", (Cache flush) SRV registrar.local.:8000 0 0 (258)
+1712241916.353042 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 5/0/0 (Cache flush) TXT "", (Cache flush) SRV registrar.local.:12345 0 0, (Cache flush) A 192.168.16.1, (Cache flush) TXT "", (Cache flush) SRV registrar.local.:8000 0 0 (179)
+1712241916.956016 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 2/0/0 (Cache flush) PTR registrar.local., (Cache flush) A 192.168.16.1 (82)
+1712241919.608942 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241927.611122 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241943.614443 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712241975.616151 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242019.742143 e4:5f:01:ed:7a:dd > ff:ff:ff:ff:ff:ff Null Unnumbered, xid, Flags [Response], length 6: 01 00
+1712242019.745021 IP 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from e4:5f:01:ed:7a:dd, length 284
+1712242019.745059 IP 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from e4:5f:01:ed:7a:dd, length 284
+1712242019.745456 IP 192.168.16.1.67 > 192.168.16.186.68: BOOTP/DHCP, Reply, length 300
+1712242019.757569 IP6 :: > ff02::16: HBH ICMP6, multicast listener report v2, 2 group record(s), length 48
+1712242019.757612 IP6 :: > ff02::16: HBH ICMP6, multicast listener report v2, 2 group record(s), length 48
+1712242019.758308 IP 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from e4:5f:01:ed:7a:dd, length 296
+1712242019.758328 IP 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from e4:5f:01:ed:7a:dd, length 296
+1712242019.763800 IP 192.168.16.1.67 > 192.168.16.186.68: BOOTP/DHCP, Reply, length 300
+1712242019.798558 ARP, Request who-has 192.168.16.186 tell 192.168.16.186, length 28
+1712242019.798589 ARP, Request who-has 192.168.16.186 tell 192.168.16.186, length 28
+1712242019.799069 IP 192.168.16.186 > 224.0.0.22: igmp v3 report, 1 group record(s)
+1712242019.799084 IP 192.168.16.186 > 224.0.0.22: igmp v3 report, 1 group record(s)
+1712242019.885718 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242019.885763 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242019.954795 IP6 :: > ff02::1:ffaa:fd78: ICMP6, neighbor solicitation, who has fe80::934c:665f:25aa:fd78, length 32
+1712242019.954835 IP6 :: > ff02::1:ffaa:fd78: ICMP6, neighbor solicitation, who has fe80::934c:665f:25aa:fd78, length 32
+1712242019.978186 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [4q] [6n] ANY (QM)? 8.7.d.f.a.a.5.2.f.5.6.6.c.4.3.9.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. ANY (QM)? pledge.local. ANY (QM)? 186.16.168.192.in-addr.arpa. ANY (QM)? pledge Demo Server._demo-server._tcp.local. (285)
+1712242019.978209 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [4q] [6n] ANY (QM)? 8.7.d.f.a.a.5.2.f.5.6.6.c.4.3.9.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. ANY (QM)? pledge.local. ANY (QM)? 186.16.168.192.in-addr.arpa. ANY (QM)? pledge Demo Server._demo-server._tcp.local. (285)
+1712242020.004465 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0*- [0q] 2/0/0 PTR _demo-server._tcp.local., PTR pledge Demo Server._demo-server._tcp.local. (105)
+1712242020.004499 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0*- [0q] 2/0/0 PTR _demo-server._tcp.local., PTR pledge Demo Server._demo-server._tcp.local. (105)
+1712242020.228630 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [4q] [6n] ANY (QM)? 8.7.d.f.a.a.5.2.f.5.6.6.c.4.3.9.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. ANY (QM)? pledge.local. ANY (QM)? 186.16.168.192.in-addr.arpa. ANY (QM)? pledge Demo Server._demo-server._tcp.local. (285)
+1712242020.228681 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [4q] [6n] ANY (QM)? 8.7.d.f.a.a.5.2.f.5.6.6.c.4.3.9.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. ANY (QM)? pledge.local. ANY (QM)? 186.16.168.192.in-addr.arpa. ANY (QM)? pledge Demo Server._demo-server._tcp.local. (285)
+1712242020.480495 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [4q] [6n] ANY (QM)? 8.7.d.f.a.a.5.2.f.5.6.6.c.4.3.9.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. ANY (QM)? pledge.local. ANY (QM)? 186.16.168.192.in-addr.arpa. ANY (QM)? pledge Demo Server._demo-server._tcp.local. (285)
+1712242020.480535 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [4q] [6n] ANY (QM)? 8.7.d.f.a.a.5.2.f.5.6.6.c.4.3.9.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa. ANY (QM)? pledge.local. ANY (QM)? 186.16.168.192.in-addr.arpa. ANY (QM)? pledge Demo Server._demo-server._tcp.local. (285)
+1712242020.495224 IP 192.168.16.186 > 224.0.0.22: igmp v3 report, 1 group record(s)
+1712242020.495247 IP 192.168.16.186 > 224.0.0.22: igmp v3 report, 1 group record(s)
+1712242020.593113 IP6 :: > ff02::16: HBH ICMP6, multicast listener report v2, 2 group record(s), length 48
+1712242020.593150 IP6 :: > ff02::16: HBH ICMP6, multicast listener report v2, 2 group record(s), length 48
+1712242020.680066 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0*- [0q] 6/0/0 (Cache flush) PTR pledge.local., (Cache flush) A 192.168.16.186, (Cache flush) PTR pledge.local., (Cache flush) SRV pledge.local.:8082 0 0, (Cache flush) TXT "", (Cache flush) AAAA fe80::934c:665f:25aa:fd78 (261)
+1712242020.680126 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0*- [0q] 6/0/0 (Cache flush) PTR pledge.local., (Cache flush) A 192.168.16.186, (Cache flush) PTR pledge.local., (Cache flush) SRV pledge.local.:8082 0 0, (Cache flush) TXT "", (Cache flush) AAAA fe80::934c:665f:25aa:fd78 (261)
+1712242020.887536 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242020.887589 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242020.974890 IP6 fe80::934c:665f:25aa:fd78 > ff02::16: HBH ICMP6, multicast listener report v2, 2 group record(s), length 48
+1712242020.974950 IP6 fe80::934c:665f:25aa:fd78 > ff02::16: HBH ICMP6, multicast listener report v2, 2 group record(s), length 48
+1712242021.097618 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0*- [0q] 2/0/0 PTR _demo-server._tcp.local., PTR pledge Demo Server._demo-server._tcp.local. (105)
+1712242021.097678 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0*- [0q] 2/0/0 PTR _demo-server._tcp.local., PTR pledge Demo Server._demo-server._tcp.local. (105)
+1712242021.145841 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0*- [0q] 2/0/0 PTR _demo-server._tcp.local., PTR pledge Demo Server._demo-server._tcp.local. (105)
+1712242021.145890 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0*- [0q] 2/0/0 PTR _demo-server._tcp.local., PTR pledge Demo Server._demo-server._tcp.local. (105)
+1712242021.197515 IP6 fe80::934c:665f:25aa:fd78 > ff02::2: ICMP6, router solicitation, length 8
+1712242021.197558 IP6 fe80::934c:665f:25aa:fd78 > ff02::2: ICMP6, router solicitation, length 8
+1712242021.772035 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0*- [0q] 3/0/0 (Cache flush) TXT "", (Cache flush) SRV pledge.local.:8082 0 0, (Cache flush) AAAA fe80::934c:665f:25aa:fd78 (122)
+1712242021.772080 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0*- [0q] 3/0/0 (Cache flush) TXT "", (Cache flush) SRV pledge.local.:8082 0 0, (Cache flush) AAAA fe80::934c:665f:25aa:fd78 (122)
+1712242021.792555 ARP, Request who-has 192.168.16.186 tell 192.168.16.186, length 28
+1712242021.792578 ARP, Request who-has 192.168.16.186 tell 192.168.16.186, length 28
+1712242021.822326 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0*- [0q] 6/0/0 (Cache flush) PTR pledge.local., (Cache flush) A 192.168.16.186, (Cache flush) PTR pledge.local., (Cache flush) SRV pledge.local.:8082 0 0, (Cache flush) TXT "", (Cache flush) AAAA fe80::934c:665f:25aa:fd78 (261)
+1712242021.822351 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0*- [0q] 6/0/0 (Cache flush) PTR pledge.local., (Cache flush) A 192.168.16.186, (Cache flush) PTR pledge.local., (Cache flush) SRV pledge.local.:8082 0 0, (Cache flush) TXT "", (Cache flush) AAAA fe80::934c:665f:25aa:fd78 (261)
+1712242021.826561 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0*- [0q] 1/0/0 (Cache flush) PTR pledge.local. (110)
+1712242021.826581 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0*- [0q] 1/0/0 (Cache flush) PTR pledge.local. (110)
+1712242021.934753 IP6 fe80::934c:665f:25aa:fd78 > ff02::16: HBH ICMP6, multicast listener report v2, 2 group record(s), length 48
+1712242021.934793 IP6 fe80::934c:665f:25aa:fd78 > ff02::16: HBH ICMP6, multicast listener report v2, 2 group record(s), length 48
+1712242022.843279 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242022.843308 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242022.916047 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242022.916087 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242023.240142 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0*- [0q] 5/0/0 PTR _demo-server._tcp.local., PTR pledge Demo Server._demo-server._tcp.local., (Cache flush) TXT "", (Cache flush) SRV pledge.local.:8082 0 0, (Cache flush) AAAA fe80::934c:665f:25aa:fd78 (173)
+1712242023.240188 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0*- [0q] 5/0/0 PTR _demo-server._tcp.local., PTR pledge Demo Server._demo-server._tcp.local., (Cache flush) TXT "", (Cache flush) SRV pledge.local.:8082 0 0, (Cache flush) AAAA fe80::934c:665f:25aa:fd78 (173)
+1712242023.287894 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0*- [0q] 6/0/0 PTR _demo-server._tcp.local., PTR pledge Demo Server._demo-server._tcp.local., (Cache flush) TXT "", (Cache flush) SRV pledge.local.:8082 0 0, (Cache flush) AAAA fe80::934c:665f:25aa:fd78, (Cache flush) A 192.168.16.186 (189)
+1712242023.287911 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0*- [0q] 6/0/0 PTR _demo-server._tcp.local., PTR pledge Demo Server._demo-server._tcp.local., (Cache flush) TXT "", (Cache flush) SRV pledge.local.:8082 0 0, (Cache flush) AAAA fe80::934c:665f:25aa:fd78, (Cache flush) A 192.168.16.186 (189)
+1712242023.794788 ARP, Request who-has 192.168.16.186 tell 192.168.16.186, length 28
+1712242023.794865 ARP, Request who-has 192.168.16.186 tell 192.168.16.186, length 28
+1712242023.917271 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0*- [0q] 3/0/0 (Cache flush) TXT "", (Cache flush) SRV pledge.local.:8082 0 0, (Cache flush) AAAA fe80::934c:665f:25aa:fd78 (122)
+1712242023.917322 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0*- [0q] 3/0/0 (Cache flush) TXT "", (Cache flush) SRV pledge.local.:8082 0 0, (Cache flush) AAAA fe80::934c:665f:25aa:fd78 (122)
+1712242023.963382 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0*- [0q] 6/0/0 (Cache flush) PTR pledge.local., (Cache flush) A 192.168.16.186, (Cache flush) PTR pledge.local., (Cache flush) SRV pledge.local.:8082 0 0, (Cache flush) TXT "", (Cache flush) AAAA fe80::934c:665f:25aa:fd78 (261)
+1712242023.963425 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0*- [0q] 6/0/0 (Cache flush) PTR pledge.local., (Cache flush) A 192.168.16.186, (Cache flush) PTR pledge.local., (Cache flush) SRV pledge.local.:8082 0 0, (Cache flush) TXT "", (Cache flush) AAAA fe80::934c:665f:25aa:fd78 (261)
+1712242023.964011 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0*- [0q] 1/0/0 (Cache flush) PTR pledge.local. (110)
+1712242023.964042 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0*- [0q] 1/0/0 (Cache flush) PTR pledge.local. (110)
+1712242024.929585 ARP, Request who-has 192.168.16.186 tell 192.168.16.1, length 28
+1712242024.931443 ARP, Reply 192.168.16.186 is-at e4:5f:01:ed:7a:dd, length 28
+1712242025.137876 IP6 fe80::934c:665f:25aa:fd78 > ff02::2: ICMP6, router solicitation, length 8
+1712242025.137924 IP6 fe80::934c:665f:25aa:fd78 > ff02::2: ICMP6, router solicitation, length 8
+1712242026.842366 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242026.842409 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242026.887751 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242026.887767 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242033.275701 IP6 fe80::934c:665f:25aa:fd78 > ff02::2: ICMP6, router solicitation, length 8
+1712242033.275749 IP6 fe80::934c:665f:25aa:fd78 > ff02::2: ICMP6, router solicitation, length 8
+1712242034.848131 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242034.848188 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242034.905981 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242034.906023 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242039.616524 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242049.858296 IP6 fe80::934c:665f:25aa:fd78 > ff02::2: ICMP6, router solicitation, length 8
+1712242049.858338 IP6 fe80::934c:665f:25aa:fd78 > ff02::2: ICMP6, router solicitation, length 8
+1712242050.908412 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242050.908458 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242050.908963 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242050.908980 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242082.892172 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242082.892210 IP6 fe80::934c:665f:25aa:fd78.5353 > ff02::fb.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242082.892726 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242082.892741 IP 192.168.16.186.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242084.029653 IP6 fe80::934c:665f:25aa:fd78 > ff02::2: ICMP6, router solicitation, length 8
+1712242084.029698 IP6 fe80::934c:665f:25aa:fd78 > ff02::2: ICMP6, router solicitation, length 8
+1712242096.111489 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 4/0/0 PTR _brski._tcp.local., PTR registrar-registrar._registrar._tcp.local., PTR _registrar._tcp.local., PTR brski-registrar-CA-monitor._brski._tcp.local. (166)
+1712242096.127854 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] [4n] ANY (QM)? brski-registrar-CA-monitor._brski._tcp.local. ANY (QM)? registrar-registrar._registrar._tcp.local. (175)
+1712242096.145163 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242096.378334 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] [4n] ANY (QM)? brski-registrar-CA-monitor._brski._tcp.local. ANY (QM)? registrar-registrar._registrar._tcp.local. (175)
+1712242096.629530 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] [4n] ANY (QM)? brski-registrar-CA-monitor._brski._tcp.local. ANY (QM)? registrar-registrar._registrar._tcp.local. (175)
+1712242096.807463 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] [2n] ANY (QM)? 1.16.168.192.in-addr.arpa. ANY (QM)? registrar.local. (94)
+1712242096.830120 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 4/0/0 (Cache flush) TXT "", (Cache flush) SRV registrar.local.:12345 0 0, (Cache flush) TXT "", (Cache flush) SRV registrar.local.:8000 0 0 (163)
+1712242096.961592 IP 192.168.16.1 > 224.0.0.22: igmp v3 report, 1 group record(s)
+1712242097.057954 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] [2n] ANY (QM)? 1.16.168.192.in-addr.arpa. ANY (QM)? registrar.local. (94)
+1712242097.144955 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 4/0/0 PTR _brski._tcp.local., PTR registrar-registrar._registrar._tcp.local., PTR _registrar._tcp.local., PTR brski-registrar-CA-monitor._brski._tcp.local. (166)
+1712242097.145074 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242097.308531 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] [2n] ANY (QM)? 1.16.168.192.in-addr.arpa. ANY (QM)? registrar.local. (94)
+1712242097.509202 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 2/0/0 (Cache flush) PTR registrar.local., (Cache flush) A 192.168.16.1 (82)
+1712242097.864344 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 4/0/0 (Cache flush) TXT "", (Cache flush) SRV registrar.local.:12345 0 0, (Cache flush) TXT "", (Cache flush) SRV registrar.local.:8000 0 0 (163)
+1712242098.542560 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 2/0/0 (Cache flush) PTR registrar.local., (Cache flush) A 192.168.16.1 (82)
+1712242099.146242 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242099.178056 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 9/0/0 PTR _brski._tcp.local., PTR registrar-registrar._registrar._tcp.local., (Cache flush) TXT "", (Cache flush) SRV registrar.local.:12345 0 0, (Cache flush) A 192.168.16.1, PTR _registrar._tcp.local., PTR brski-registrar-CA-monitor._brski._tcp.local., (Cache flush) TXT "", (Cache flush) SRV registrar.local.:8000 0 0 (258)
+1712242099.898441 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 5/0/0 (Cache flush) TXT "", (Cache flush) SRV registrar.local.:12345 0 0, (Cache flush) A 192.168.16.1, (Cache flush) TXT "", (Cache flush) SRV registrar.local.:8000 0 0 (179)
+1712242100.575827 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 2/0/0 (Cache flush) PTR registrar.local., (Cache flush) A 192.168.16.1 (82)
+1712242103.146404 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242111.149538 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242127.163131 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242159.177490 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242223.178215 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242351.208074 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712242607.217458 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712243119.251641 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712244143.286795 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712246191.307356 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712249791.319051 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712253391.329368 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712256991.420259 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712260591.456793 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712264191.498419 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712267791.571726 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712271391.632176 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712274991.644801 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712278591.651566 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712282191.658133 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712285791.700323 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712289391.731718 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712292991.742387 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712296591.812306 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712300191.814380 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712303791.830750 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712307391.860421 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712310991.875749 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712314591.879264 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712318191.880364 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712321791.953815 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712325391.974509 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712328992.010372 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712332592.015524 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712336192.032983 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712339792.038959 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712343392.056359 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712346992.094360 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712350592.134352 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712354192.140439 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712357792.196628 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712361392.198439 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712364992.226380 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712368592.243184 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712372192.245941 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712375792.326433 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712379392.378343 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712382992.429117 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712386592.486400 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712390192.545981 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712393792.592518 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712397392.628151 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712400992.646659 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712404592.662417 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712408192.719537 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712411792.782285 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712415392.787980 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712418992.802388 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712422592.816832 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712426192.854276 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712429792.874710 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712433392.880434 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712436992.930317 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712440592.974333 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712444192.998395 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712447793.071421 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712451393.102470 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712454993.164799 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712458593.216821 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712462193.257856 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712465793.279991 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712469393.295643 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712472993.357332 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712476593.382369 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712480193.403767 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712483793.442376 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712487393.478874 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712490993.536542 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712494593.579956 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712498193.608337 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712501793.612479 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712505393.616652 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712508993.715323 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712512593.736091 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712516193.805077 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712519793.849591 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712523393.875670 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712526993.901844 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712530593.926960 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712534193.931664 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712537793.934857 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712541393.940542 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712544994.013488 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712548594.060134 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712552194.108549 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712555794.154914 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712559394.158521 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712562994.173732 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712566594.177098 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712570194.218333 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712573794.274333 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712577394.342407 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712580994.389140 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712584594.405383 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712588194.427802 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712591794.439121 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712595394.496359 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712598994.530444 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712602594.559549 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712606194.615873 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712609794.671209 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712613394.686341 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712616994.721906 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712620594.739556 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712624194.744208 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712627794.770532 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712631394.798363 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712634994.851784 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712638594.885544 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712642194.930354 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712645794.962955 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712649394.981272 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712652994.987863 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712656595.050068 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712660195.113219 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712663795.184937 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712667395.254354 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712670995.308349 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712674595.342336 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712678195.360581 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712681795.367679 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712685395.390962 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712688995.458352 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712692595.538879 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712696195.572600 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712699795.606279 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712703395.625817 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712706995.719286 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712710595.817015 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712714195.898373 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712717795.931121 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712721395.982360 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712724996.036120 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712728596.073471 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712732196.088398 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712735796.089293 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712739396.138333 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712742996.219716 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712746596.289086 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712750196.326446 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712753796.331284 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712757396.351392 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712760996.358493 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712764596.438348 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712768196.521229 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712771796.560552 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712775396.582391 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712778996.586328 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712782596.629362 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712786196.645142 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712789796.667615 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712793396.676681 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712796996.731278 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712800596.806483 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712804196.846083 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712807796.910390 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712811396.979446 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712814997.021542 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712818597.066258 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712822197.099051 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712825797.120297 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712829397.127051 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712832997.202323 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712836597.234771 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712840197.297385 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712843797.352223 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712847397.396010 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712850997.425388 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712854597.438460 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712858197.446520 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712861797.458970 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712865397.526808 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712868997.561522 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712872597.603882 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712876197.646765 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712879797.650363 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712883397.662919 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712886997.668448 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712890597.766324 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712894197.815503 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712897797.862335 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712901397.896152 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712904997.952259 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712908597.995637 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712912198.027206 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712915798.044526 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712918132.203666 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 PTR (QM)? _services._dns-sd._udp.local. (46)
+1712918132.225648 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 2/0/0 PTR _registrar._tcp.local., PTR _brski._tcp.local. (91)
+1712918132.344422 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [3q] PTR (QM)? _registrar._tcp.local. PTR (QM)? _demo-server._tcp.local. PTR (QM)? _brski._tcp.local. (71)
+1712918132.367699 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 7/0/0 PTR brski-registrar-CA-monitor._brski._tcp.local., (Cache flush) TXT "", (Cache flush) SRV registrar.local.:8000 0 0, (Cache flush) A 192.168.16.1, PTR registrar-registrar._registrar._tcp.local., (Cache flush) TXT "", (Cache flush) SRV registrar.local.:12345 0 0 (207)
+1712918133.205168 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2a] PTR (QM)? _services._dns-sd._udp.local. (97)
+1712918133.345703 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2a] [3q] PTR (QM)? _registrar._tcp.local. PTR (QM)? _demo-server._tcp.local. PTR (QM)? _brski._tcp.local. (146)
+1712918225.918773 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 A (QM)? pledge-demo-server.local. (42)
+1712918226.920684 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 A (QM)? pledge-demo-server.local. (42)
+1712918228.921539 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 A (QM)? pledge-demo-server.local. (42)
+1712918516.113200 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2a] [3q] PTR (QM)? _registrar._tcp.local. TXT (QM)? registrar-registrar._registrar._tcp.local. SRV (QM)? registrar-registrar._registrar._tcp.local. (98)
+1712918516.145262 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0*- [0q] 2/0/0 (Cache flush) SRV registrar.local.:12345 0 0, (Cache flush) A 192.168.16.1 (99)
+1712919007.644713 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 PTR (QM)? _demo-server._tcp.local. (41)
+1712919398.053007 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712922998.062440 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712926598.131499 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712930198.178207 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712933798.194429 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712937398.247450 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712940998.290005 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712944598.320132 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712948198.322433 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712951798.324567 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712955398.402319 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712958998.424614 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712962598.470461 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712966198.498367 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712969798.542263 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712973398.567838 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712976998.583578 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712980598.586369 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712984198.649044 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712987798.676711 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712991398.714184 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712994998.777642 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1712998598.786354 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713002198.803595 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713005798.816895 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713009398.825113 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713012998.875719 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713016598.954140 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713020198.982348 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713023798.994305 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713027399.045659 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713030999.083002 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713034599.098997 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713038199.106010 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713041799.133420 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713045399.226352 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713048999.242357 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713052599.308420 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713056199.366036 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713059799.406721 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713063399.430736 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713066999.438279 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713070599.497736 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713074199.559683 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713077799.629530 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713081399.654344 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713084999.670349 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713088599.686350 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713092199.714331 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713095799.734341 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713099399.737962 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713102999.782413 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713106599.829252 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713110199.892290 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713113799.938354 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713117399.993198 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713121000.043617 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713124600.079867 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713128200.097225 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713131800.111999 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713135400.210225 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713139000.294341 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713142600.335385 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713146200.374678 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713149800.392012 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713153400.428706 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713157000.437948 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713160600.441942 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713164200.455011 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713167800.514749 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713171400.588361 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)
+1713175000.628573 IP 192.168.16.1.5353 > 224.0.0.251.5353: 0 [2q] PTR (QM)? _ipps._tcp.local. PTR (QM)? _ipp._tcp.local. (45)

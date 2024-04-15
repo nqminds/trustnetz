@@ -41,8 +41,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     'outer: loop {
         let output = std::process::Command::new("avahi-browse").args(["-r", "_brski._tcp", "-t", "-p"]).output()?;
         let output = String::from_utf8(output.stdout)?;
-        for line in output.split("\n") {
-            let service: Vec<&str> = line.split(";").collect();
+        for line in output.split('\n') {
+            let service: Vec<&str> = line.split(';').collect();
             if service[0] == "=" && service[2] == "IPv4" && service[3] == "brski-registrar-CA-monitor" {
                 address = String::from(service[7]);
                 port = String::from(service[8]);
@@ -63,7 +63,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let mut received = Vec::new();
         loop {
             let mut buf = [0u8; 64];
-            let length = stream.read(&mut buf).await.expect("Error receiving message from router");
+            let length = stream.read(&mut buf).await?;
             if buf[length-1] == 0u8 {
                 received.append(&mut buf[..length-1].to_vec());
                 break;
@@ -74,18 +74,18 @@ async fn main() -> Result<(), Box<dyn Error>> {
         let json = from_str::<Value>(String::from_utf8(received)?.as_str())?;
         println!("Command received: {}", json);
         let mut args = Vec::new();
-        for item in json["Revoke"].as_array().expect("Error parsing arguments") {
+        for item in json["Revoke"].as_array().unwrap() {
             if let Some(str) = item.as_str() {
                 args.push(str);
             }
         }
         let output = std::process::Command::new(script_path)
-            .args(args).output().expect("Error calling LocalRevoke");
+            .args(args).output()?;
         let message = [json!({
-                "Stdout": String::from_utf8(output.stdout).expect("Error parsing local revoke output"),
-                "Stderr": String::from_utf8(output.stderr).expect("Error parsing local revoke output")
+                "Stdout": String::from_utf8(output.stdout)?,
+                "Stderr": String::from_utf8(output.stderr)?
             }).to_string().as_bytes(),
             [b'\0'].as_slice()].concat();
-        stream.write_all(message.as_slice()).await.expect("Error sending message to registrar");
+        stream.write_all(message.as_slice()).await?;
     }
 }

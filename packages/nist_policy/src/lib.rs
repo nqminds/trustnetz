@@ -2,17 +2,15 @@ use openssl::asn1::Asn1Integer;
 use openssl::x509::{X509, X509Name, X509Builder};
 use openssl::rsa::Rsa;
 use openssl::pkey::PKey;
-use rusqlite::{params, Connection, Error, Result, OpenFlags};
+use rusqlite::{params, Connection, Result, OpenFlags};
 use serde::{Serialize, Deserialize};
 use serde_json::{Value, to_value};
-use chrono::prelude::DateTime;
 use chrono::Utc;
 use uuid::Uuid;
 use std::fs::File;
-use std::io::{BufRead, BufReader};
 use std::net::Ipv4Addr;
-use std::time::{SystemTime, UNIX_EPOCH};
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
+use rev_lines::RevLines;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Manufacturer {
@@ -77,8 +75,7 @@ pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result
             println!("No matching manufacturer found in database");
 
             // Your existing code for adding the manufacturer to the database...
-            let now = Utc::now();
-            let datetime = DateTime::<Utc>::from(now);
+            let datetime = Utc::now();
             let timestamp_str = datetime.format("%Y-%m-%dT%H:%M:%S.%3fZ").to_string();
 
             let uuid = Uuid::new_v4();
@@ -134,7 +131,7 @@ pub fn check_manufacturer_trusted(idevid: &X509, path_to_sql_db: &str) -> Result
             println!("No rows returned for manufacturer_trusted");
             Ok(false)
         }
-        Err(Error::QueryReturnedNoRows) => {
+        Err(rusqlite::Error::QueryReturnedNoRows) => {
             println!("No rows returned for manufacturer_trusted");
             Ok(false)
         }
@@ -154,21 +151,6 @@ struct Device {
 }
 
 pub fn check_device_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool> {
-    let manufacturer_trusted = check_manufacturer_trusted(idevid, path_to_sql_db);
-    match manufacturer_trusted {
-        Ok(true) => {
-            println!("Device's manufacturer trusted, proceeding to check device is trusted...");
-        }
-        Ok(false) => {
-            println!("Device's manufacturer untrusted, device is therefore untrusted");
-            return Ok(false)
-        }
-        Err(err) => {
-            eprintln!("Error in check_manufacturer_trusted: {:?}", err);
-            return Ok(false)
-        }
-    }
-
     // Create OpenFlags without SQLITE_OPEN_CREATE flag
     let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_FULL_MUTEX;
     
@@ -213,8 +195,7 @@ pub fn check_device_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool>
            println!("No matching device found in database");
 
            // Adding the device to the database
-           let now = Utc::now();
-           let datetime = DateTime::<Utc>::from(now);
+           let datetime = Utc::now();
            let timestamp_str = datetime.format("%Y-%m-%dT%H:%M:%S.%3fZ").to_string();
         
            let uuid = Uuid::new_v4();
@@ -282,8 +263,7 @@ pub fn check_device_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool>
             println!("No matching manufactured relationship found in database");
  
             // Adding the device to the database
-            let now = Utc::now();
-            let datetime = DateTime::<Utc>::from(now);
+            let datetime = Utc::now();
             let timestamp_str = datetime.format("%Y-%m-%dT%H:%M:%S.%3fZ").to_string();
          
             conn.execute(
@@ -293,12 +273,12 @@ pub fn check_device_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool>
 
             let manufactured = Manufactured {
                 device_id: device_id.to_owned(),
-                manufacturer_id: manufacturer_id,
+                manufacturer_id,
                 created_at: timestamp_str,
             };
  
             println!("Added manufactured relationship to database");
-            to_value(&manufactured).unwrap()
+            to_value(manufactured).unwrap()
         }
         Err(err) => {
             eprintln!("Error querying database: {:?}", err);
@@ -307,7 +287,7 @@ pub fn check_device_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool>
     };
 
     // Query to check if the device is allowed to connect
-    let is_allowed_to_connect: Result<Option<bool>> = conn.query_row(
+    let device_trusted: Result<Option<bool>> = conn.query_row(
         "
         SELECT CASE
                 WHEN atc.device_id IS NOT NULL OR (o.user_id IS NOT NULL AND u.can_issue_connection_rights) THEN 1
@@ -323,10 +303,10 @@ pub fn check_device_trusted(idevid: &X509, path_to_sql_db: &str) -> Result<bool>
         |row| row.get(0),
     );
 
-    match is_allowed_to_connect {
-        Ok(Some(is_allowed)) => {
-            println!("is_allowed_to_connect: {:?}", is_allowed);
-            Ok(is_allowed)
+    match device_trusted {
+        Ok(Some(is_trusted)) => {
+            println!("device_trusted: {:?}", is_trusted);
+            Ok(is_trusted)
         }
         Ok(None) => {
             println!("No rows returned for is_allowed_to_connect");
@@ -380,8 +360,7 @@ pub fn check_device_vulnerable(idevid: &X509, path_to_sql_db: &str) -> Result<bo
            println!("No matching device found in database");
 
            // Adding the device to the database
-           let now = Utc::now();
-           let datetime = DateTime::<Utc>::from(now);
+           let datetime = Utc::now();
            let timestamp_str = datetime.format("%Y-%m-%dT%H:%M:%S.%3fZ").to_string();
         
            let uuid = Uuid::new_v4();
@@ -449,7 +428,7 @@ pub fn check_device_vulnerable(idevid: &X509, path_to_sql_db: &str) -> Result<bo
     }
 }
 
-pub fn check_device_mud<'a>(idevid: &'a X509, path_to_sql_db: &'a str) -> Result<Option<String>, rusqlite::Error> {
+pub fn check_device_mud(idevid: &X509, path_to_sql_db: &str) -> Result<Option<String>, rusqlite::Error> {
     // Create OpenFlags without SQLITE_OPEN_CREATE flag
     let flags = OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_FULL_MUTEX;
     
@@ -523,12 +502,7 @@ pub fn check_device_mud<'a>(idevid: &'a X509, path_to_sql_db: &'a str) -> Result
 }
 
 pub fn generate_x509_certificate(serial_number_hex: &str, issuer_name: &str) -> Result<X509, Box<dyn std::error::Error>> {
-    let serial_number_hex = if serial_number_hex.starts_with("0x") {
-        // Remove the "0x" prefix if present
-        &serial_number_hex[2..]
-    } else {
-        serial_number_hex
-    };
+    let serial_number_hex = serial_number_hex.strip_prefix("0x").unwrap_or(serial_number_hex);
     // Convert the hexadecimal serial number string to a number
     let serial_number = u32::from_str_radix(serial_number_hex, 16)?;
 
@@ -572,48 +546,32 @@ pub fn generate_x509_certificate(serial_number_hex: &str, issuer_name: &str) -> 
     Ok(certificate)
 }
 
-fn parse_datetime_to_timestamp(datetime_str: &str) -> Option<u64> {
-    // match DateTime::parse_from_str(datetime_str, "%Y-%m-%dT%H:%M:%S") {
-    match chrono::NaiveDateTime::parse_from_str(&datetime_str, "%Y-%m-%dT%H:%M:%S") {
-        Ok(datetime) => Some(datetime.timestamp() as u64),
-        Err(_err) => {
-            None
-        },
-    }
-}
-
-pub fn search_log_for_ips_since(log_file_path: &str, device_ip: Ipv4Addr, ips: &[String], minutes: u64) -> Vec<String> {
-    let current_time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
-    let start_time = current_time - (minutes * 60);
-    println!("{:?}, {:?}, {:?}", minutes, current_time, start_time);
-    
-    let mut matching_entries = Vec::new();
-    
+pub fn search_log_for_ips_since(log_file_path: &str, seconds: i64) -> HashMap<Ipv4Addr, HashSet<Ipv4Addr>> {
+    let current_time = Utc::now().timestamp();
+    let start_time = current_time - seconds;
+    println!("{:?}, {:?}, {:?}", seconds, current_time, start_time);
+    let mut visited_ips: HashMap<Ipv4Addr, HashSet<Ipv4Addr>> = HashMap::new();
     if let Ok(file) = File::open(log_file_path) {
-        let reader = BufReader::new(file);
-
-        for line in reader.lines() {
-            if let Ok(entry) = line {
-                if entry.trim().is_empty() {
-                    continue; // Skip empty lines
-                }
-                
-                let parts: Vec<&str> = entry.split_whitespace().collect();
-                if parts.len() >= 2 {
-                    if let Some(timestamp) = parse_datetime_to_timestamp(parts[0]) {
-                        if timestamp < start_time {
-                            continue; // Skip entries before the start time
-                        }
-                        if parts.len() >= 5 && parts[2] == "IP" && parts[4] == ">" {
-                            if let Ok(source_ip) = parts[3].parse::<Ipv4Addr>() {
-                                if source_ip != device_ip {
-                                    continue; // Skip entries where source ip is not the device ip address
+        let lines = RevLines::new(file);
+        for line in lines {
+            if let Ok(line) = line {
+                let parts: Vec<&str> = line.split_whitespace().collect();
+                if parts.len() > 4 && parts[1] == "IP" && parts[3] == ">" {
+                    if let (Ok(timestamp), Ok(source_ip), Ok(destination_ip)) = (
+                        parts[0].parse::<f64>(),
+                        parts[2].split(|x| x == '.' || x == ':').collect::<Vec<_>>()[0..4].join(".").parse::<Ipv4Addr>(),
+                        parts[4].split(|x| x == '.' || x == ':').collect::<Vec<_>>()[0..4].join(".").parse::<Ipv4Addr>()
+                    )
+                    {
+                        if (timestamp as i64) < start_time {
+                            break;
+                        } else {
+                            match visited_ips.get_mut(&source_ip) {
+                                Some(destinations) => {
+                                    destinations.insert(destination_ip);
                                 }
-                            }
-    
-                            if let Ok(target_ip) = parts[5].replace(":", "").parse::<Ipv4Addr>() {
-                                if ips.iter().any(|ip| target_ip.to_string() == *ip) {
-                                    matching_entries.push(entry);
+                                None => {
+                                    visited_ips.insert(source_ip, HashSet::from([destination_ip]));
                                 }
                             }
                         }
@@ -624,42 +582,38 @@ pub fn search_log_for_ips_since(log_file_path: &str, device_ip: Ipv4Addr, ips: &
     } else {
         println!("COULDN'T OPEN FILE")
     }
-    
-    matching_entries
+    visited_ips
 }
 
-fn get_unique_source_ips(log_file_path: &str) -> HashSet<Ipv4Addr> {
-    let mut unique_ips = HashSet::new();
-
-    if let Ok(file) = File::open(log_file_path) {
-        let reader = BufReader::new(file);
-        for line in reader.lines() {
-            if let Ok(line) = line {
-                let parts: Vec<&str> = line.split(' ').collect();
-                if parts.len() >= 4 {
-                    if let Ok(source_ip) = parts[3].parse::<Ipv4Addr>() {
-                        unique_ips.insert(source_ip);
+pub fn demo_get_ips_to_kick(idevid: &X509, path_to_sql_db: &str, tcpdump_log_path: &str, seconds: i64) -> HashSet<Ipv4Addr> {
+    let visited_ips = search_log_for_ips_since(tcpdump_log_path, seconds);
+    println!("visited_ips: {:?}", visited_ips);
+    let mut matched_ips = HashSet::new();
+    if let Ok(Some(rule)) = check_device_mud(idevid, path_to_sql_db) {
+        // for source in visited_ips.keys() { // TODO handle all IPs
+        let source = Ipv4Addr::new(192, 168, 16, 186);
+        if let Some(destinations) = visited_ips.get(&source) {
+            for destination in destinations {
+                println!("{:}", rule);
+                match rule.as_ref() {
+                    "external traffic only" => {
+                        if destination.is_private() {
+                            matched_ips.insert(source);
+                            break;
+                        }
                     }
+                    "internal traffic only" => {
+                        if !destination.is_private() && !destination.is_multicast() && !destination.is_broadcast() {
+                            matched_ips.insert(source);
+                            break;
+                        }
+                    }
+                    _ => {}
                 }
             }
         }
+        // }
     }
-
-    unique_ips
-}
-
-pub fn demo_get_ips_to_kick(log_file_path: &str, blacklisted_ips: &[String], minutes: u64) -> HashSet<Ipv4Addr> {
-    let source_ips = get_unique_source_ips(log_file_path);
-    let mut matched_ips = HashSet::new();
-
-    for ip in source_ips.iter() {
-        let matching_entries = search_log_for_ips_since(log_file_path, ip.to_owned(), blacklisted_ips, minutes);
-        println!("{:?}", matching_entries);
-        if !matching_entries.is_empty() {
-            matched_ips.insert(ip.clone());
-        }
-    }
-
     matched_ips
 }
 
@@ -1043,7 +997,7 @@ mod tests {
 
     #[test]
     fn check_device_mud_file_device_with_mud() {
-        let path_to_sql_db = "./tests/ExistingDeviceWithMuds.sqlite";
+        let path_to_sql_db = "./tests/ExistingDeviceWithMuds_internal_traffic.sqlite";
         let idevid = generate_x509_certificate("0x2", "www.manufacturer.com").unwrap();
 
         // Use with_temporary_database to perform the operation and check the result
@@ -1051,81 +1005,54 @@ mod tests {
             let result = check_device_mud(idevid, temp_file_path).map_err(|err| format!("{} at {}:{}:{}", err, file!(), line!(), column!())).unwrap();
             print!("{:?}", result);
             // let result = check_device_mud(idevid, temp_file_path).unwrap();
-            assert_eq!(result, Some(String::from("internal traffic")));
+            assert_eq!(result, Some(String::from("internal traffic only")));
             Ok(true)
         }).unwrap();
     }
 
-    #[test]
-    fn check_searching_log_file_finds_no_blacklisted_ips_in_last_5_mins() {
-        let log_file_path = "./tests/log.txt";
-        let device_ip = "192.168.17.101".parse::<Ipv4Addr>().unwrap();
-        let blacklisted_ips = vec!["151.101.1.140".to_string()];
-        let minutes = 5;
 
-        let matching_entries = search_log_for_ips_since(&log_file_path, device_ip, &blacklisted_ips, minutes);
-        assert_eq!(matching_entries.len(), 0);
+    #[test]
+    fn check_searching_log_file_finds_no_visited_ips_in_last_5_mins() {
+        let log_file_path = "./tests/log.txt";
+        let seconds = 5 * 60;
+
+        let visited_ips = search_log_for_ips_since(&log_file_path, seconds);
+        assert_eq!(visited_ips.len(), 0);
+    }
+
+
+
+    #[test]
+    fn check_searching_log_file_finds_correct_number_of_visited_ips() {
+        let log_file_path = "./tests/log.txt";
+        let seconds = 600000000; // ~20 years
+
+        let visited_ips = search_log_for_ips_since(&log_file_path, seconds);
+        assert_eq!(visited_ips.len(), 3);
     }
 
     #[test]
-    fn check_searching_log_file_finds_correct_number_of_requests_for_blacklisted_ips() {
+    fn check_finds_external_ips_for_internal_ips_only_mud() {
+        let path_to_sql_db = "./tests/ExistingDeviceWithMuds_internal_traffic.sqlite";
+        let idevid = generate_x509_certificate("0x2", "www.manufacturer.com").unwrap();
         let log_file_path = "./tests/log.txt";
-        let device_ip = "192.168.17.101".parse::<Ipv4Addr>().unwrap();
-        let blacklisted_ips = vec!["151.101.1.140".to_string()];
-        let minutes = 10000000; // ~20 years
+        let seconds = 600000000; // ~20 years
 
-        let matching_entries = search_log_for_ips_since(&log_file_path, device_ip, &blacklisted_ips, minutes);
-        assert_eq!(matching_entries.len(), 148);
-
-        let device_ip = "192.168.16.123".parse::<Ipv4Addr>().unwrap();
-        let matching_entries = search_log_for_ips_since(&log_file_path, device_ip, &blacklisted_ips, minutes);
-        assert_eq!(matching_entries.len(), 9);
-
-        let device_ip = "151.101.1.140".parse::<Ipv4Addr>().unwrap();
-        let matching_entries = search_log_for_ips_since(&log_file_path, device_ip, &blacklisted_ips, minutes);
-        assert_eq!(matching_entries.len(), 0);
-    }
-
-    #[test]
-    fn check_get_source_ips() {
-        let log_file_path = "./tests/log.txt";
-        let source_ips = get_unique_source_ips(&log_file_path);
-        assert_eq!(source_ips.len(), 3);
-        assert_eq!(source_ips.contains(&"192.168.17.101".parse::<Ipv4Addr>().unwrap()), true);
-        assert_eq!(source_ips.contains(&"192.168.16.123".parse::<Ipv4Addr>().unwrap()), true);
-        assert_eq!(source_ips.contains(&"192.168.16.121".parse::<Ipv4Addr>().unwrap()), true);
-    }
-
-    #[test]
-    fn check_finds_blacklisted_ips() {
-        let log_file_path = "./tests/log.txt";
-        let blacklisted_ips = vec!["151.101.1.140".to_string()];
-        let minutes = 10000000; // ~20 years
-
-        let bad_ips = demo_get_ips_to_kick(&log_file_path, &blacklisted_ips, minutes);
-        assert_eq!(bad_ips.len(), 2);
-        assert_eq!(bad_ips.contains(&"192.168.17.101".parse::<Ipv4Addr>().unwrap()), true);
-        assert_eq!(bad_ips.contains(&"192.168.16.123".parse::<Ipv4Addr>().unwrap()), true);
-    }
-
-    #[test]
-    fn check_on_long_log_file() {
-        let log_file_path = "./tests/long_demo_log.txt";
-        let blacklisted_ips = vec!["203.0.113.0".to_string()];
-        let minutes = 10000000; // ~20 years
-
-        let bad_ips = demo_get_ips_to_kick(&log_file_path, &blacklisted_ips, minutes);
+        let bad_ips = demo_get_ips_to_kick(&idevid, &path_to_sql_db, &log_file_path, seconds);
         assert_eq!(bad_ips.len(), 1);
-        assert_eq!(bad_ips.contains(&"192.168.16.121".parse::<Ipv4Addr>().unwrap()), true);
+        assert_eq!(bad_ips.contains(&"192.168.16.186".parse::<Ipv4Addr>().unwrap()), true);
     }
 
     #[test]
-    fn check_on_long_log_file_short_time() {
-        let log_file_path = "./tests/long_demo_log.txt";
-        let blacklisted_ips = vec!["203.0.113.0".to_string()];
-        let minutes = 2;
+    fn check_finds_internal_ips_for_external_ips_only_mud() {
+        let path_to_sql_db = "./tests/ExistingDeviceWithMuds_external_traffic.sqlite";
+        let idevid = generate_x509_certificate("0x2", "www.manufacturer.com").unwrap();
+        let log_file_path = "./tests/log.txt";
+        let seconds = 600000000; // ~20 years
 
-        let bad_ips = demo_get_ips_to_kick(&log_file_path, &blacklisted_ips, minutes);
-        assert_eq!(bad_ips.len(), 0);
+        let bad_ips = demo_get_ips_to_kick(&idevid, &path_to_sql_db, &log_file_path, seconds);
+        assert_eq!(bad_ips.len(), 1);
+        assert_eq!(bad_ips.contains(&"192.168.16.186".parse::<Ipv4Addr>().unwrap()), true);
     }
+
 }

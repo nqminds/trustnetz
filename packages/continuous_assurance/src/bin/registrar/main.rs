@@ -53,32 +53,31 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let (stream, _peer_addr) = listener.accept().await?;
     let mut stream = acceptor.accept(stream).await?;
 
+    let mut revoked: Vec<String> = Vec::new();
     loop {
-        let logs = read_to_string(connected_idevids_log_path).expect("Cannot read brski-registrar.log");
-        let mut lines: Vec<&str> = logs.split("\n").collect();
-        if !lines.is_empty() && lines.last().unwrap().is_empty() {
-            lines.pop();
-        }
+        let logs = read_to_string(connected_idevids_log_path)?;
+        let logs: Vec<&str> = logs.split('\n').collect();
         let mut revoke = Vec::new();
-        for line in lines {
-            let parts: Vec<&str> = line.split(" ").collect();
-            let idevid = nist_policy::generate_x509_certificate(parts[1], "manufacturer")
-                .expect("Error generating certificate from serial number");
-            if !nist_policy::check_device_trusted(&idevid, trust_db_path).expect("Error checking device trust") ||
-                !nist_policy::check_manufacturer_trusted(&idevid, trust_db_path).expect("Error checking manufacturer trust") ||
-                nist_policy::check_device_vulnerable(&idevid, trust_db_path).expect("Error checking device vulnerability") ||
-                nist_policy::demo_get_ips_to_kick(tcpdump_log_path, &[String::from("203.0.113.0")], 2).len() > 0 {
-                    revoke.push(parts[3]);
-                    revoke.push(parts[4]);
+        for line in logs {
+            let parts: Vec<&str> = line.split_whitespace().collect();
+            if parts.len() > 4 && !revoked.contains(&parts[3].to_string()) {
+                let idevid = nist_policy::generate_x509_certificate(parts[1], "manufacturer")?;
+                if !nist_policy::check_device_trusted(&idevid, trust_db_path)? ||
+                    !nist_policy::check_manufacturer_trusted(&idevid, trust_db_path)? ||
+                    nist_policy::check_device_vulnerable(&idevid, trust_db_path)? ||
+                    !nist_policy::demo_get_ips_to_kick(&idevid, trust_db_path, tcpdump_log_path, 5).is_empty() {
+                        revoke.append(vec![parts[3], parts[4]].as_mut());
+                        revoked.push(parts[3].to_string());
+                }
             }
         }
         if !revoke.is_empty() {
             let message = [json!({"Revoke": revoke}).to_string().as_bytes(), [b'\0'].as_slice()].concat();
-            stream.write_all(message.as_slice()).await.expect("Error sending message to router");
+            stream.write_all(message.as_slice()).await?;
             let mut received = Vec::new();
             loop {
                 let mut buf = [0u8; 64];
-                let length = stream.read(&mut buf).await.expect("Error receiving message from router");
+                let length = stream.read(&mut buf).await?;
                 if buf[length-1] == 0u8 {
                     received.append(&mut buf[..length-1].to_vec());
                     break;
@@ -87,9 +86,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 }
             }
             let json = from_str::<Value>(String::from_utf8(received)?.as_str())?;
-            println!("Stdout:\n{}", json["Stdout"].as_str().expect("Error parsing message"));
-            println!("Stderr:\n{}", json["Stderr"].as_str().expect("Error parsing message"));
+            println!("Stdout:\n{}", json["Stdout"].as_str().unwrap());
+            println!("Stderr:\n{}", json["Stderr"].as_str().unwrap());
         }
-        sleep(Duration::from_secs(30)).await;
+        sleep(Duration::from_secs(1)).await;
     }
 }
