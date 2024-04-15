@@ -585,15 +585,16 @@ pub fn search_log_for_ips_since(log_file_path: &str, seconds: i64) -> HashMap<Ip
     visited_ips
 }
 
-pub fn demo_get_ips_to_kick(idevid: &X509, log_file_path: &str, tcpdump_log_path: &str, seconds: i64) -> HashSet<Ipv4Addr> {
+pub fn demo_get_ips_to_kick(idevid: &X509, path_to_sql_db: &str, tcpdump_log_path: &str, seconds: i64) -> HashSet<Ipv4Addr> {
     let visited_ips = search_log_for_ips_since(tcpdump_log_path, seconds);
     println!("visited_ips: {:?}", visited_ips);
     let mut matched_ips = HashSet::new();
-    if let Ok(Some(rule)) = check_device_mud(idevid, log_file_path) {
+    if let Ok(Some(rule)) = check_device_mud(idevid, path_to_sql_db) {
         // for source in visited_ips.keys() { // TODO handle all IPs
         let source = Ipv4Addr::new(192, 168, 16, 186);
         if let Some(destinations) = visited_ips.get(&source) {
             for destination in destinations {
+                println!("{:}", rule);
                 match rule.as_ref() {
                     "external traffic only" => {
                         if destination.is_private() {
@@ -996,7 +997,7 @@ mod tests {
 
     #[test]
     fn check_device_mud_file_device_with_mud() {
-        let path_to_sql_db = "./tests/ExistingDeviceWithMuds.sqlite";
+        let path_to_sql_db = "./tests/ExistingDeviceWithMuds_internal_traffic.sqlite";
         let idevid = generate_x509_certificate("0x2", "www.manufacturer.com").unwrap();
 
         // Use with_temporary_database to perform the operation and check the result
@@ -1004,8 +1005,54 @@ mod tests {
             let result = check_device_mud(idevid, temp_file_path).map_err(|err| format!("{} at {}:{}:{}", err, file!(), line!(), column!())).unwrap();
             print!("{:?}", result);
             // let result = check_device_mud(idevid, temp_file_path).unwrap();
-            assert_eq!(result, Some(String::from("internal traffic")));
+            assert_eq!(result, Some(String::from("internal traffic only")));
             Ok(true)
         }).unwrap();
     }
+
+
+    #[test]
+    fn check_searching_log_file_finds_no_visited_ips_in_last_5_mins() {
+        let log_file_path = "./tests/log.txt";
+        let seconds = 5 * 60;
+
+        let visited_ips = search_log_for_ips_since(&log_file_path, seconds);
+        assert_eq!(visited_ips.len(), 0);
+    }
+
+
+
+    #[test]
+    fn check_searching_log_file_finds_correct_number_of_visited_ips() {
+        let log_file_path = "./tests/log.txt";
+        let seconds = 600000000; // ~20 years
+
+        let visited_ips = search_log_for_ips_since(&log_file_path, seconds);
+        assert_eq!(visited_ips.len(), 3);
+    }
+
+    #[test]
+    fn check_finds_external_ips_for_internal_ips_only_mud() {
+        let path_to_sql_db = "./tests/ExistingDeviceWithMuds_internal_traffic.sqlite";
+        let idevid = generate_x509_certificate("0x2", "www.manufacturer.com").unwrap();
+        let log_file_path = "./tests/log.txt";
+        let seconds = 600000000; // ~20 years
+
+        let bad_ips = demo_get_ips_to_kick(&idevid, &path_to_sql_db, &log_file_path, seconds);
+        assert_eq!(bad_ips.len(), 1);
+        assert_eq!(bad_ips.contains(&"192.168.16.186".parse::<Ipv4Addr>().unwrap()), true);
+    }
+
+    #[test]
+    fn check_finds_internal_ips_for_external_ips_only_mud() {
+        let path_to_sql_db = "./tests/ExistingDeviceWithMuds_external_traffic.sqlite";
+        let idevid = generate_x509_certificate("0x2", "www.manufacturer.com").unwrap();
+        let log_file_path = "./tests/log.txt";
+        let seconds = 600000000; // ~20 years
+
+        let bad_ips = demo_get_ips_to_kick(&idevid, &path_to_sql_db, &log_file_path, seconds);
+        assert_eq!(bad_ips.len(), 1);
+        assert_eq!(bad_ips.contains(&"192.168.16.186".parse::<Ipv4Addr>().unwrap()), true);
+    }
+
 }
