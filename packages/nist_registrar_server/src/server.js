@@ -202,16 +202,21 @@ function httpsPost({url, body, ...options}) {
     
         const data = await response.text();
         const vulnerabilityScore = Number(data);
-
-        // Update the database record with retrieved data
-        const updateQuery = `
+        
+        if (!Number.isNaN(vulnerabilityScore)) {
+          console.log(`Updated VulnerabilityScore ${vulnerabilityScore} retrieved for sbom with id ${id}`);
+          // Update the database record with retrieved data
+          const updateQuery = `
           UPDATE sbom
           SET vulnerability_score = ?, vulnerability_score_updated = ?
           WHERE id = ?;
-        `;
-        const currentDate = new Date();
-        const params = [vulnerabilityScore, currentDate.toISOString(), id];
-        await dbRun(updateQuery, params);
+          `;
+          const currentDate = new Date();
+          const params = [vulnerabilityScore, currentDate.toISOString(), id];
+          await dbRun(updateQuery, params);
+        } else {
+          console.log(`Tried to retriev new VulnerabilityScore for sbom with id ${id}, but got ${data}`);
+        }
       }
     } catch (error) {
       console.error('Error fetching data:', error);
