@@ -1,1 +1,1 @@
-sudo openssl req -new -provider tpm2 -key handle:0x81000001 -subj "/C=IE/CN=Cient/serialNumber=idev-serial12345" | curl --cacert mpr.crt https://89.21.226.142:4000 --data-binary @- > idevid.crt
+sudo openssl req -new -provider tpm2 -key handle:0x81000001 -subj "/C=IE/CN=Cient/serialNumber=idev-serial12345" | curl --cacert mpr.crt https://192.168.50.112:4000 --data-binary @- > idevid.crt

@@ -32,5 +32,5 @@ async fn main() {
         .tls()
         .cert_path(format!("{}/mpr.crt", path))
         .key_path(format!("{}/mpr.key", path))
-        .run(([192, 168, 1, 114], 4000)).await;
+        .run(([192, 168, 50, 112], 4000)).await;
 }
