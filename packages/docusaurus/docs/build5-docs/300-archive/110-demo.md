@@ -118,12 +118,4 @@ The debug views should aggregate all events from
 
 * Registrar
 
-* MASA
-
-* Radius
-
-* Router
-
-  
-
-A view of logs should be enough. But we may decide to create more streamlined views later.
+* 
