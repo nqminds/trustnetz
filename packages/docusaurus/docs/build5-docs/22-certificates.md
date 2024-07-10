@@ -107,19 +107,19 @@ The `registrar` is signed by the `domain`
 
 Practically, for this build, the domain and registrar are co-located, so the creation process can be simplified. 
 
-1. [@ REGISTRAR] create a public private key pair
-2. [@ REGISTRAR] create CSR
-3. [@ DOMAIN] sign CSR with domain private key and create registrar X509
+1. [@ REGISTRAR] create a public private keIn a real deployment, where the registrar and domain are not in a 1:1 relationship, we need to consider how the registrars certificates are deployed. 
 
-In a real deployment, where the registrar and domain are not in a 1:1 relationship, we need to consider how the registrars certificates are deployed. 
+This could end up looking very like the BRSKI provisioning process
 
-This| X509 Attribute             | Description/use                |
+The process should be in infrequent setup process
+
+| X509 Attribute             | Description/use                |
 | -------------------------- | ------------------------------ |
-| `Subject`                  | C = IE, CN = registrar-tls-meta                             |
+| `Subject`                  | C = IE, CN = registrar-tls-meta |
 | `Subject Key Identifier`   | Public key of the `registrar+` |
-| `Issuer`                   | C = IE, CN = registrar-tls-ca                             |
+| `Issuer`                   | C = IE, CN = registrar-tls-ca |
 | `Authority Key Identifier` | Public key of the `domain+`    |
-| (signed by)                | Private key of the `domain-`   |Authority Key Identifier` | Public key of the `domain+`    |
+| (signed by)                | Private key of the `domain-`   |Key Identifier` | Public key of the `domain+`    |
 | (signed by)                | Private key of the `domain-`   |
 
 
@@ -129,20 +129,15 @@ The radius server is an implementation detail of the router.
 
 It is not needed or referenced in the  BRSKI definition; it is useful in a practical implementation.
 
-Many routers, use a RADIUS server to abstract the authentication process  
-
-Specially the implementation of EAP-TLS on HostAPD in the Raspberry Pi  (See implementation notes )
+Many routers, use a RADIUS server to abstract the authentication procThe creation process for the RADIUS certificate is identical to the creation process for the registrar. It just refers to a different subject (the radius public key)
 
 
-
- **Creation**
-
-The creation process for t| X509 Attribute             | Description/use              | the registrar. It just refers to a different subject (the rad
-| `Subject`                  | C = IE, CN = registrar-tls-ca                           |ion/use              |
+| X509 Attribute             | Description/use              |
 | -------------------------- | ---------------------------- |
-| `S C C = IE, CN = registrar-tls-caIE, CN = registrar-tls-ca                          |
+| `Subject`                  | C = IE, CN = registrar-tls-ca |
 | `Subject Key Identifier`   | Public key of the `radius+`  |
-| `Issuer`                   | ??                           |
+| `Issuer`                   | C = IE, CN = registrar-tls-ca |
+| `Authority Key Identifier` | Public key of the `domain+`  | | (signed by)                | Private key of the `domain-` |           |
 | `Authority Key Identifier` | Public key of the `domain+`  |
 | (signed by)                | Private key of the `domain-` |
 
@@ -232,9 +227,4 @@ Simplified
 | -------------------------- | ------------------------------------------------------------ |
 | `Subject`                  | Name of connection (optional)<br />CN="SSID of network"<br />OU="model name" |
 | `Subject Key Identifier`   | Public key of the `iDevID+`                                  |
-| `Issuer`                   | Name of the registrar??<br />                                |
-| `Authority Key Identifier` | Public key of the `registrar+`                               |
-| (signed by)                | Private key of the `registrar-`                              |
-
-
-### Use of LDevID certif
+| `Issuer`                   | Name of the registrar??<br />                     
