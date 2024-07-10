@@ -128,6 +128,8 @@ TBD: Outline the full list of methods for discovering the registrar.
 
     * Device is trusted or is owned by a user who is trusted to connect devices
 
+    * SBOM vulnerability score lower than set threshold
+
 
 ## C - Request Voucher Overview (Basic)
 
