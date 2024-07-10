@@ -119,10 +119,8 @@ The process should be in infrequent setup process
 
 
 
-| X509 Attribute             | Description/use                |
-| -------------------------- | ------------------------------ |
-| `Subject`                  | ??                             |
-| `Subject Key Identifier`   | Public key of the `registrar+` |
+| X509 Attribute             | DescripC = IE, CN = registrar-tls-meta------------------------ | ------------------------------ |
+| `Subject`                  | ??   C = IE, CN = registrar-tls-ca| `Subject Key Identifier`   | Public key of the `registrar+` |
 | `Issuer`                   | ??                             |
 | `Authority Key Identifier` | Public key of the `domain+`    |
 | (signed by)                | Private key of the `domain-`   |
@@ -146,9 +144,9 @@ The creation process for the RADIUS certificate is identical to the creation pro
 
 
 
-| X509 Attribute             | Description/use              |
+| X509 C = IE, CN = registrar-tls-caiption/use              |
 | -------------------------- | ---------------------------- |
-| `Subject`                  | ??                           |
+| `S C = IE, CN = registrar-tls-ca                          |
 | `Subject Key Identifier`   | Public key of the `radius+`  |
 | `Issuer`                   | ??                           |
 | `Authority Key Identifier` | Public key of the `domain+`  |
@@ -253,6 +251,4 @@ LDevID is signed by registrar
 
 LDeviD is presented by the device as its EAP-TLS certificate when attempting to connect to the operational network.
 
-LDevID is intercepted by the router, past to the RADIUS server and checked to see it has a common signing root as the RADIUS server, before allowing access. 
-
-LDevID is sent to the router from the registrar, across the continuous assurance line, if the device is deemed untrustworthy.
+LDevID is intercepted by the r
