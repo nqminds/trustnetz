@@ -231,7 +231,7 @@ Simplified
 | -------------------------- | ------------------------------------------------------------ |
 | `Subject`                  | Name of connection (optional)<br />CN="SSID of network"<br />OU="model name" |
 | `Subject Key Identifier`   | Public key of the `iDevID+`                                  |
-| `Issuer`                   | Name of the registrar??<br />                                |
+| `Issuer`                   | Name of the registrar<br />                                |
 | `Authority Key Identifier` | Public key of the `registrar+`                               |
 | (signed by)                | Private key of the `registrar-`                              |
 ### Use of LDevID certificate
