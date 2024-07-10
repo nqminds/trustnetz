@@ -116,15 +116,18 @@ TBD: Outline the full list of methods for discovering the registrar.
 
 * `device` is in possession of a valid `voucher`.
 
-:::danger TODO: Requires completion - post conditions voucher
-* where the voucher tests that need to pass are
+* where the tests that need to pass are
 
-  * x :::danger TODO
+  * voucher has not been revoked, which requires:
 
-  * y :::danger TODO
+    * behaviour of IoT device bound by MUD descriptor
 
-  * z :::danger TODO
-:::
+    * No requests to blacklisted domains / IP addresses
+
+    * Manufacturer is trusted
+
+    * Device is trusted or is owned by a user who is trusted to connect devices
+
 
 ## C - Request Voucher Overview (Basic)
 
