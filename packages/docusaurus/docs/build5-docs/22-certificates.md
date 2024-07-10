@@ -97,25 +97,24 @@ According to the specification, the registrar
 
 > is element of the network domain that it will belong to and that will perform its bootstrap
 
-It is best to conceive of it as the part of the network (domain) which provides a method  the device of logically joining the network (domain)
+It is best to conceive of it as the part of the network (domain) which provides a method   **Creation**
+Practically, for this build, the domain and registrar are co-located, so the creation process can be simplified.
+1. [@ REGISTRAR] create a public private key pair
+2. [@ REGISTRAR] create CSR
+3. [@ DOMAIN] sign CSR with domain private key and create registrar X509
+In a real deployment, where the registrar and domain are not in a 1:1 relationship, we need to consider how the registrars certificates are deployed.
 
-The `registrar` is signed by the `domain`
+This could end up looking very like the BRSKI provisioning process
 
+The process should be in infrequent setup process
 
-
- **Creation**
-
-Practically, for this build, the domain and registrar are co-located, so the creation process can be simplified. 
-
-1. [@ REGISTRAR] create a public private keIn a real deployment, where the registrar and domain are not in a 1:1 relationship, we need to consider how the registrars certificates are deployed. 
-
-This could| X509 Attribute             | Description/use                |
+| X509 Attribute             | Description/use                |
 | -------------------------- | ------------------------------ |
 | `Subject`                  | C = IE, CN = registrar-tls-meta |
 | `Subject Key Identifier`   | Public key of the `registrar+` |
 | `Issuer`                   | C = IE, CN = registrar-tls-ca |
 | `Authority Key Identifier` | Public key of the `domain+`    |
-| (signed by)                | Private key of the `domain-`   |entifier` | Public key of the `domain+`    |
+| (signed by)                | Private key of the `domain-`   |`   |entifier` | Public key of the `domain+`    |
 | (signed by)                | Private key of the `domain-`   |
 
 
@@ -206,14 +205,16 @@ Simplified
 
 4. [@ REGISTRAR] add the SSID identifier to the CSR
 
-5. [@ REGISTRAR] signs the LDevID with the registrar- private key (where in turn the registrar has been signed with the domain-)
+5. [@ REGISTRAR] si
+| X509 Attribute             | Description/use                                              |
+| -------------------------- | ------------------------------------------------------------ |
+| `Subject`                  | Name of connection (optional)<br />CN="SSID of network"<br />OU="model name" |
+| `Subject Key Identifier`   | Public key of the `iDevID+`                                  |
+| `Issuer`                   | Name of the registrar??<br />                                |
+| `Authority Key Identifier` | Public key of the `registrar+`                               |
+| (signed by)                | Private key of the `registrar-`                              |
+### Use of LDevID certificate
+LDevID is created in the EST enrol stage of the BRSKI flow
+LDevID is signed by registrar
 
-6. [-> DEVICE] send certificate back to device 
-
-7. [@ DEVICE] install LDevID
-
-   
-
-
-
-| X509 Attribute             | Description/use                
+LDeviD is presented by the device as its EAP-TLS certificate when attempting to connect to the operational network.
