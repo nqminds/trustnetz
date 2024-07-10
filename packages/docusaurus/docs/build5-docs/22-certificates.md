@@ -116,10 +116,8 @@ The process should be in infrequent setup process
 | X509 Attribute             | Description/use                |
 | -------------------------- | ------------------------------ |
 | `Subject`                  | C = IE, CN = registrar-tls-meta |
-| `Subject Key Identifier`   | Public key of the `registrar+` |
-| `Issuer`                   | C = IE, CN = registrar-tls-ca |
-| `Authority Key Identifier` | Public key of the `domain+`    |
-| (signed by)                | Private key of the `domain-`   |Key Identifier` | Public key of the `domain+`    |
+| `Subject Key Ide| `Authority Key Identifier` | Public key of the `domain+`    |
+| (signed by)                | Private key of the `domain-`   |dentifier` | Public key of the `domain+`    |
 | (signed by)                | Private key of the `domain-`   |
 
 
@@ -129,16 +127,14 @@ The radius server is an implementation detail of the router.
 
 It is not needed or referenced in the  BRSKI definition; it is useful in a practical implementation.
 
-Many routers, use a RADIUS server to abstract the authentication procThe creation process for the RADIUS certificate is identical to the creation process for the registrar. It just refers to a different subject (the radius public key)
-
-
-| X509 Attribute             | Description/use              |
+Many routers, use a RADIUS server to abstract the authentication procThe creation process for the RADIUS certificate i| X509 Attribute             | Description/use              |
 | -------------------------- | ---------------------------- |
 | `Subject`                  | C = IE, CN = registrar-tls-ca |
 | `Subject Key Identifier`   | Public key of the `radius+`  |
 | `Issuer`                   | C = IE, CN = registrar-tls-ca |
-| `Authority Key Identifier` | Public key of the `domain+`  | | (signed by)                | Private key of the `domain-` |           |
 | `Authority Key Identifier` | Public key of the `domain+`  |
+| (signed by)                | Private key of the `domain-` |
+Authority Key Identifier` | Public key of the `domain+`  |
 | (signed by)                | Private key of the `domain-` |
 
 
@@ -225,6 +221,4 @@ Simplified
 
 | X509 Attribute             | Description/use                                              |
 | -------------------------- | ------------------------------------------------------------ |
-| `Subject`                  | Name of connection (optional)<br />CN="SSID of network"<br />OU="model name" |
-| `Subject Key Identifier`   | Public key of the `iDevID+`                                  |
-| `Issuer`                   | Name of the registrar??<br />                     
+| `Subject`                  | Name of connection (optional)<br />CN="SSID of 
