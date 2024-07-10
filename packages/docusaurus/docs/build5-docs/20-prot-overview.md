@@ -200,11 +200,12 @@ sequenceDiagram
 
 Validation processes exist at stages:
 
-- C.1
-- C.3
-- C.5
-- C.8
-- C.10
+- C.1 - `device` constructs `voucher request` construct request and signs it with `iDevID` private key.
+- C.3 - `registrar` validates `voucher request`.
+- C.5 - `MASA` validates `voucher request`.
+- C.8 - `registrar` validates `voucher`.
+- C.10 - `device` validates `voucher`.
+
 
 At each of these stages, there is the option to evaluate and enforce a policy decision.
 
