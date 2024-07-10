@@ -113,16 +113,13 @@ Practically, for this build, the domain and registrar are co-located, so the cre
 
 In a real deployment, where the registrar and domain are not in a 1:1 relationship, we need to consider how the registrars certificates are deployed. 
 
-This could end up looking very like the BRSKI provisioning process
-
-The process should be in infrequent setup process
-
-
-
-| X509 Attribute             | DescripC = IE, CN = registrar-tls-meta------------------------ | ------------------------------ |
-| `Subject`                  | ??   C = IE, CN = registrar-tls-ca| `Subject Key Identifier`   | Public key of the `registrar+` |
-| `Issuer`                   | ??                             |
+This| X509 Attribute             | Description/use                |
+| -------------------------- | ------------------------------ |
+| `Subject`                  | C = IE, CN = registrar-tls-meta                             |
+| `Subject Key Identifier`   | Public key of the `registrar+` |
+| `Issuer`                   | C = IE, CN = registrar-tls-ca                             |
 | `Authority Key Identifier` | Public key of the `domain+`    |
+| (signed by)                | Private key of the `domain-`   |Authority Key Identifier` | Public key of the `domain+`    |
 | (signed by)                | Private key of the `domain-`   |
 
 
@@ -140,13 +137,10 @@ Specially the implementation of EAP-TLS on HostAPD in the Raspberry Pi  (See imp
 
  **Creation**
 
-The creation process for the RADIUS certificate is identical to the creation process for the registrar. It just refers to a different subject (the radius public key)
-
-
-
-| X509 C = IE, CN = registrar-tls-caiption/use              |
+The creation process for t| X509 Attribute             | Description/use              | the registrar. It just refers to a different subject (the rad
+| `Subject`                  | C = IE, CN = registrar-tls-ca                           |ion/use              |
 | -------------------------- | ---------------------------- |
-| `S C = IE, CN = registrar-tls-ca                          |
+| `S C C = IE, CN = registrar-tls-caIE, CN = registrar-tls-ca                          |
 | `Subject Key Identifier`   | Public key of the `radius+`  |
 | `Issuer`                   | ??                           |
 | `Authority Key Identifier` | Public key of the `domain+`  |
@@ -243,12 +237,4 @@ Simplified
 | (signed by)                | Private key of the `registrar-`                              |
 
 
-### Use of LDevID certificate
-
-LDevID is created in the EST enrol stage of the BRSKI flow
-
-LDevID is signed by registrar
-
-LDeviD is presented by the device as its EAP-TLS certificate when attempting to connect to the operational network.
-
-LDevID is intercepted by the r
+### Use of LDevID certif
