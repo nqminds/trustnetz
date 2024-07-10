@@ -125,17 +125,27 @@ The process should be in infrequent setup process
 
 ## Radius
 
-The radius server is an implementation detail of Many routers, use a RADIUS server to abstract the authentication process
+
+The radius server is an implementation detail of the router.
+
+It is not needed or referenced in the  BRSKI definition; it is useful in a practical implementation.
+
+Many routers, use a RADIUS server to abstract the authentication process  
+
 Specially the implementation of EAP-TLS on HostAPD in the Raspberry Pi  (See implementation notes )
+
+
+
  **Creation**
+
 The creation process for the RADIUS certificate is identical to the creation process for the registrar. It just refers to a different subject (the radius public key)
+
 | X509 Attribute             | Description/use              |
 | -------------------------- | ---------------------------- |
 | `Subject`                  | C = IE, CN = registrar-tls-ca |
 | `Subject Key Identifier`   | Public key of the `radius+`  |
 | `Issuer`                   | C = IE, CN = registrar-tls-ca |
 | `Authority Key Identifier` | Public key of the `domain+`  |
-| (signed by)                | Private key of the `domain-` |uthority Key Identifier` | Public key of the `domain+`  |
 | (signed by)                | Private key of the `domain-` |
 
 
