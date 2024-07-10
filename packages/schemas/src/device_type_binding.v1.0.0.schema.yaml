@@ -1,4 +1,4 @@
-$id: https://github.com/nqminds/nist-brski/blob/main/packages/schemas/src/device_type_binding.yaml
+$id: https://github.com/nqminds/nist-brski/blob/main/packages/schemas/src/device_type_binding.v1.0.0.schema.yaml
 $schema: https://json-schema.org/draft/2019-09/schema
 title: Device Type Binding
 description: Binds a device type to a device instance

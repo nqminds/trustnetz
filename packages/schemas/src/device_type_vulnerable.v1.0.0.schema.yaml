@@ -1,4 +1,4 @@
-$id: https://github.com/nqminds/nist-brski/blob/main/packages/schemas/src/device_type_vulnerable.yaml
+$id: https://github.com/nqminds/nist-brski/blob/main/packages/schemas/src/device_type_vulnerable.v1.0.0.schema.yaml
 $schema: https://json-schema.org/draft/2019-09/schema
 title: Device Type Vulnerable
 description: States whether a device type is considered vulnerable, whether it is above the allowed vulnerabilities threshold

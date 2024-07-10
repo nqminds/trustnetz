@@ -1,4 +1,4 @@
-$id: https://github.com/nqminds/nist-brski/blob/main/packages/schemas/src/device_trust.yaml
+$id: https://github.com/nqminds/nist-brski/blob/main/packages/schemas/src/device_trust.v1.0.0.schema.yaml
 $schema: https://json-schema.org/draft/2019-09/schema
 title: Device Trust
 description: Statement of trust of a device to connect to the secure network by a user

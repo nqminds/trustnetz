@@ -1,4 +1,4 @@
-$id: https://github.com/nqminds/nist-brski/blob/main/packages/schemas/src/manufacturer_trust.yaml
+$id: https://github.com/nqminds/nist-brski/blob/main/packages/schemas/src/manufacturer_trust.v1.0.0.schema.yaml
 $schema: https://json-schema.org/draft/2019-09/schema
 title: Manufacturer Trust
 description: Statement of trust of a manufacturer by a user - that the manufacturer's MASA should be trusted to be contacted by the registrar
