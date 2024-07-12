@@ -51,6 +51,16 @@ const config = {
     [
       "@docusaurus/plugin-content-docs",
       {
+        id: "cahn",
+        path: "./docs/CAHN",
+        routeBasePath: "cahn",
+        remarkPlugins: [require('remark-mermaid-dataurl')],
+        editUrl,
+      },
+    ],
+    [
+      "@docusaurus/plugin-content-docs",
+      {
         id: "docs",
         path: "./docs/build5-docs",
         routeBasePath: "docs",

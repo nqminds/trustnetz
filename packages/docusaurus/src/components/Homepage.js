@@ -4,6 +4,12 @@ import Link from '@docusaurus/Link';
 
 const Sections = [
   {
+    title: 'CAHN',
+    png: require('../../static/img/documentation.png').default,
+    description: "",
+    docsLink: "/cahn/",
+  },
+  {
     title: 'Build 5',
     png: require('../../static/img/documentation.png').default,
     description: "",
