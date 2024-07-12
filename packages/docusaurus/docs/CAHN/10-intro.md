@@ -9,7 +9,7 @@ Nick Allott, CEO of NquiringMinds comments: “Our concept of continuous assuran
 
 CAHN will develop new architectures working across networks. It will use advanced nations of identity and distributed credentials, combined with dynamic (AI) reasoning to dynamically infer trustworthiness and assurance. We will work with many different use case and endpoints, with use cases that include Digital Secure by Design hardware silicon to protect against memory vulnerabilities developed with ARM and University of Cambridge. [[3](https://www.dsbd.tech/)][[4](https://www.arm.com/architecture/cpu/morello)]
 
-## The Idea
+## Verifiable Credential Technology
 
 CAHN will be a system which can take in information from many sources and through many channels through the use of Verifiable Credential (VC) technology. With traditional secure communication, such as online banking, the channel by which you communicate information is secured (e.g. the https connection made to your online banking provider of choice, established via standard PKI technology). Using verifiable credentials you instead secure the information you are communicating itself by using PKI technology to sign the packets of information. The advantages of this approach are:
 
@@ -25,4 +25,8 @@ CAHN will be a system which can take in information from many sources and throug
 
 - Because the information itself is signed distributed storing of data becomes much easier, as it can be recommunicated and distributed between data lakes later, while maintaining the security and provencance of the information. 
 
-- 
+# Continuous Assurance 
+Another piece of our solution is continuous assurance, that is, *continuously* examining the claims made to the system to see if we still believe those piece of information and their sources, and *assuring* that the data and its sources are trustworthy. Rather than relying on a one-off assurance event, such as a two-factor authentication check, the system will continuously apply multiple different analytical techniques to infer the trustworthyness and validity of the information claimed to the system.
+
+This can be configured to work differently for each data-consuming user in the system, rather than being a top down authoritative approach of prescribing to users what they should trust, we give the freedom to users to configure their own thresholds and metrics for what information, routes of data provenance and originators they should trust.
+
