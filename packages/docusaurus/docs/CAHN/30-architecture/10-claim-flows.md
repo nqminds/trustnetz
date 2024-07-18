@@ -2,7 +2,7 @@
 title: Claim Flows
 ---
 
-Every piece of information communicated to the system will be claimed in the form of a verifiable credential, and signed by the private key of the user making the claim (henceforth called the claim originator). Where this signing takes place is completely optional, for example below we've outlined several different schemes by which the VC may be produced, signed and send to a node set up to receive the VC, with differing levels of locality, from everything performed on a local machine, including a node on the local machine, to a user authoring and signing the claim entirely through a web interface.
+Every piece of information communicated to the system will be claimed in the form of a verifiable credential, and signed by the private key of the user making the claim (henceforth called the claim issuer). Where this signing takes place is completely optional, for example below we've outlined several different schemes by which the VC may be produced, signed and send to a node set up to receive the VC, with differing levels of locality, from everything performed on a local machine, including a node on the local machine, to a user authoring and signing the claim entirely through a web interface.
 
 ![image](./CAHN_Architecture_Claim_production.png)
 
