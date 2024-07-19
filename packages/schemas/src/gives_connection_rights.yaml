@@ -1,0 +1,19 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/gives_connection_rights.v.1.0.0.schema.yaml
+title: Gives connection rights
+description: A giving of connection rights from an authorising user to a recipient user
+type: object
+properties:
+  recipient_id:
+    description: id of the user receiving connection rights
+    type: string
+  authoriser_id:
+    description: id of the authorising user
+    type: string
+  created_at:
+    description: timestamp at which connection rights were given in milliseconds
+    type: integer
+required:
+  - recipient_id
+  - authoriser_id
+  - created_at

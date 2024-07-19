@@ -1,0 +1,19 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/has_sbom.v.1.0.0.schema.yaml
+title: has sbom
+description: Binding between a device type and SBOM (Software Bill Of Materials)
+type: object
+properties:
+  sbom_id:
+    description: id of the sbom
+    type: string
+  device_type_id:
+    description: id of the device type to which the sbom applies
+    type: string
+  created_at:
+    description: timestamp at which sbom-device binding was created in milliseconds
+    type: integer
+required:
+  - sbom_id
+  - device_type_id
+  - created_at
