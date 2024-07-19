@@ -3,11 +3,11 @@ slug: /
 title: Introduction
 ---
 
-Nquiringminds is developing Continuous Assurance for Heterogeneous Networks (CAHN). New technology that underpins network-of-networks, with novel identity models and zero-trust security. [[1](https://www.ukri.org/news/major-future-telecoms-research-boost-announced/#:~:text=UKRI%20is%20investing%20%C2%A370,foundational%20role%20in%20communication%20networks.)]
+Continuous Assurance for Heterogeneous Networks (CAHN)  is a new technology that underpins network-of-networks, with novel identity models and zero-trust security. [[1](https://www.ukri.org/news/major-future-telecoms-research-boost-announced/#:~:text=UKRI%20is%20investing%20%C2%A370,foundational%20role%20in%20communication%20networks.)]
 
-Nick Allott, CEO of NquiringMinds comments: “Our concept of continuous assurance, builds on some innovative work that has been developed within NIST" [[2](https://www.nccoe.nist.gov/projects/trusted-iot-device-network-layer-onboarding-and-lifecycle-management)]
+CAHN, delivers continuous assurance, by building on some innovative work that has been developed within NIST as part of the trusted network-layer onboarding program [[2](https://www.nccoe.nist.gov/projects/trusted-iot-device-network-layer-onboarding-and-lifecycle-management)]
 
-CAHN will develop new architectures working across networks. It will use advanced nations of identity and distributed credentials, combined with dynamic (AI) reasoning to dynamically infer trustworthiness and assurance. We will work with many different use case and endpoints, with use cases that include Digital Secure by Design hardware silicon to protect against memory vulnerabilities developed with ARM and University of Cambridge. [[3](https://www.dsbd.tech/)][[4](https://www.arm.com/architecture/cpu/morello)]
+CAHN will develop new architectures working across networks. It will use advanced notions of identity and distributed credentials, combined with dynamic (AI) reasoning to dynamically infer trustworthiness and assurance. We will work with many different use case and endpoints, with use cases that include Digital Secure by Design hardware silicon to protect against memory vulnerabilities developed with ARM and University of Cambridge. [[3](https://www.dsbd.tech/)][[4](https://www.arm.com/architecture/cpu/morello)]
 
 ## Verifiable Credential Technology
 
