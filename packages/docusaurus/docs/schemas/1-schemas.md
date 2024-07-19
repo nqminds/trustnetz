@@ -3,7 +3,7 @@ slug: /
 title: Data Schemas
 ---
 
-These are the schemas for verifiable credential claims which may be submitted to the registrar by system users to make a claim of some piece of information. Claims are not treated as facts unless the verifiable credential validates (was signed by the author and has not been tampered with since signing) and the author of the verifiable credential is trusted to make such a claim.
+These are the schemas for all the different facts which may be submitted to the CAHN Claim Cascade system to communicate information about the devices on the network, thier device type, manufacturer, ownership, behaviour, vulnerabilities as well as which users trust which manufacturers and devices.
 
 import Link from '@docusaurus/Link';
 
