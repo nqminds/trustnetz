@@ -1,0 +1,31 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/user.v.1.0.0.schema.yaml
+title: user
+description: A user
+type: object
+properties:
+  id:
+    description: id of the user
+    type: string
+  username:
+    description: name of the user
+    type: string
+  created_at:
+    description: timestamp at which user was created in milliseconds
+    type: integer
+  can_issue_purchase_rights:
+    description: If user can issue purchase rights to other users
+    type: bool,
+  can_issue_connection_rights:
+    description: If user can issue connection rights to other users
+    type: bool,
+  can_issue_trust:
+    description: If user can issue trust to devices
+    type: bool
+required:
+  - id
+  - username
+  - created_at
+uniqueKeys:
+  - id
+  - username

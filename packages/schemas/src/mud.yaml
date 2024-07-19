@@ -1,0 +1,22 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/mud.v.1.0.0.schema.yaml
+title: MUD
+description: A MUD (Manufacturer Usage Description)
+type: object
+properties:
+  id:
+    description: id of the MUD
+    type: string
+  mud:
+    description: the MUD
+    type: string
+  created_at:
+    description: timestamp at which MUD was created in milliseconds
+    type: integer
+required:
+  - id
+  - mud
+  - created_at
+uniqueKeys:
+  - id
+  - mud

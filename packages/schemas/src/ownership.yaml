@@ -1,0 +1,19 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/ownership.v.1.0.0.schema.yaml
+title: ownership
+description: An ownership relationship between a user and device
+type: object
+properties:
+  user_id:
+    description: id of the owning user
+    type: string
+  device_id:
+    description: id of the owned device
+    type: string
+  created_at:
+    description: timestamp at which ownership was created in milliseconds
+    type: integer
+required:
+  - user_id
+  - device_id
+  - created_at

@@ -1,0 +1,22 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/sbom.v.1.0.0.schema.yaml
+title: SBOM
+description: An SBOM (Software Bill Of Materials)
+type: object
+properties:
+  id:
+    description: id of the sbom
+    type: string
+  sbom:
+    description: sbom definition
+    type: string
+  created_at:
+    description: timestamp at which sbom was created in milliseconds
+    type: integer
+required:
+  - id
+  - sbom
+  - created_at
+uniqueKeys:
+  - id
+  - sbom
