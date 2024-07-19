@@ -89,21 +89,28 @@ const config = {
           alt: 'NquiringMinds',
           src: 'img/nquiringminds.svg',
         },
-        items: [{
-          type: 'doc',
-          docId: 'intro',
-          docsPluginId: "docs",
-          position: 'left',
-          label: 'Build 5 docs',
-        },
-        {
-          type: 'doc',
-          docId: 'schemas',
-          docsPluginId: "schemas",
-          position: 'left',
-          label: 'Schemas',
-        },
-
+        items: [
+          {
+            type: 'doc',
+            docId: 'intro',
+            docsPluginId: "cahn",
+            position: 'left',
+            label: 'CAHN docs',
+          },
+          {
+            type: 'doc',
+            docId: 'intro',
+            docsPluginId: "docs",
+            position: 'left',
+            label: 'Build 5 docs',
+          },
+          {
+            type: 'doc',
+            docId: 'schemas',
+            docsPluginId: "schemas",
+            position: 'left',
+            label: 'Schemas',
+          },
         ],
       },
       footer: {
