@@ -2,13 +2,11 @@
 title: Claim Cascade Design
 ---
 
-## Generation and storage of key-pairs for Signing of VCs
+## Signing of VCs
 
 The claim cascade system is designed such that users or automated agents may sign claims with their private key (stored locally or stored on a remote server which for signs the claims on the user's behalf), the only requirement for the VC to be verifiable is that public key paired with the private key which was used to perform the signing will need to be securely shared in a trusted way with the system, such that the public key can be tied to a particular user's identity. 
 
 This will be achieved by utilising an authentication server which can be sent a request to generate a VC binding a public key to a user's identity, this request will contain the public key and a users credentials, in the most simple case, an email address. These credentials will then be verified, for example in the case of email; the user will receive an email which contains a link they must click to prove their identity, once that is completed the authentication server will sign a VC with it's own private key, which is trusted bt the system, binding the user's identity to that public key. This can be submitted to the system by the user to allow them to submit further VCs signed with their private key.
-
-The management of their keys then becomes an implementation detail which can be specified by the user, private-public key pairs may be ephemeral and generated 
 
 ## Receipt of VCs
 
@@ -34,3 +32,19 @@ The VCs which are trusted are then passed to a utility which generates the code 
 - rule - this defines a rule, which defines the logic used for inference, for example a rule may be that a device is not allowed to connect to this wifi router if it has a vulnerability with a score higher than a certain threshold. 
 
 Using these building blocks one may build any general inferencing system.
+
+## Querying the system
+
+When an external process needs to query the system, this query will take the form of a VC, the verification step will check the query is from the the VC issuer, and the trust engine will check that the VC issuer has the rights to perform that query and access the data required to fulfil the query.
+
+## Databots
+
+In order to perform more complex or numerical analytics which cannot be simply performed with a prolog query, for example generating some computed analytical artifact by analysing the data about device behaviour the analytics will be performed by a process set up to run on configurable inputs by a configurable trigger, which we call a databot. Upon a trigger being triggered, the trigger will receive any inputs which need to be configured at run-time and the process will run for those inputs, retrieve any data required for the analytics from the system by means of a query VC submitted to the system, and once it's computation is complete, send its output data into the system by means of a VC. These triggers can be triggered at query time if the information for a query result is not already present in the system, or is in need of update.
+
+## System Diagram
+
+Below is a diagram showing the components of the system. The components in the Claim Handling System box will be installed on a node of the system, inside a router or network element. The databots may be installed locally on the node, or run on a remote server. The authentication server, likewise could sit locally on the node, or run on a remote server. 
+
+Any process or app which wants to submit VCs to the system must generate a key pair and have it's public key bound to an identity which is verified through the authentication server. The process may submit VCs signed with it's private key and once the public key has been bound, those VC which have been submitted, or will be submitted, will be verified as being issued by their issuer and may proceed to be entered into the knowledge base held in the inference engine, depending on if the issuer is trusted by the trust engine or not.
+
+![image](./CAHN_Claim_Cascade_System_Design.png)
