@@ -43,6 +43,8 @@ post_update_actions() {
 # Initialize the current IP address
 current_ip=$(get_ip_address)
 
+post_update_actions # do post update actions once at initial run to make sure all up to date
+
 if [ -z "$current_ip" ]; then
   echo "Error: Unable to retrieve initial IP address for interface '$interface'"
   exit 1
