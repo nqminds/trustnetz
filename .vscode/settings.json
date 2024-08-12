@@ -16,7 +16,6 @@
     "wisekey",
     "wolfssl"
   ],
-  "rust-analyzer.linkedProjects": [
-    "./packages/nist_policy/Cargo.toml"
-]
+  "rust-analyzer.linkedProjects": ["./packages/nist_policy/Cargo.toml"],
+  "conventionalCommits.scopes": ["CAHN Demo"]
 }
