@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/manufacturer.v.1.0.0.schema.yaml",
+  "title": "manufacturer",
+  "description": "A manufacturer",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "id of the manufacturer",
+      "type": "string"
+    },
+    "name": {
+      "description": "name of the manufacturer",
+      "type": "string"
+    },
+    "created_at": {
+      "description": "timestamp at which manufacturer was created in milliseconds",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "created_at"
+  ],
+  "uniqueKeys": [
+    "id",
+    "name"
+  ]
+}

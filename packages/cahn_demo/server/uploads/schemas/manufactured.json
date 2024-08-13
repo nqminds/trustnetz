@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/manufactured.v.1.0.0.schema.yaml",
+  "title": "manufactured",
+  "description": "A manufactured relationship between a device and a manufacturer",
+  "type": "object",
+  "properties": {
+    "device_id": {
+      "description": "id of the device manufactured by the manufacturer",
+      "type": "string"
+    },
+    "manufacturer_id": {
+      "description": "id of the manufacturer of the device",
+      "type": "string"
+    },
+    "created_at": {
+      "description": "timestamp at which manufactured relationship was created in milliseconds",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "device_id",
+    "manufacturer_id",
+    "created_at"
+  ]
+}

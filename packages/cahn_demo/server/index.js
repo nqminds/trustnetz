@@ -66,10 +66,14 @@ app.use(cors());
 app.use(express.json());
 
 // Upload verifiable credentials
-app.post("/upload", upload.single("file"), (req, res) => {
-  console.log(req.file);
-  res.send("File uploaded successfully");
-});
+app.post(
+  "/upload/verifiable_credentials",
+  upload.single("file"),
+  (req, res) => {
+    console.log(req.file);
+    res.send("File uploaded successfully");
+  }
+);
 
 // Takes a Prolog query and returns the result
 app.get("/prolog_query", (req, res) => {
@@ -143,6 +147,7 @@ app.get("/sign_in/verify/:token", (req, res) => {
 
   try {
     // Save the public key to the email address
+    // TODO: change to VC saving
     addPublicKeyToEmail(email, publicKey);
     updateEmailToPublicKeys();
   } catch (err) {

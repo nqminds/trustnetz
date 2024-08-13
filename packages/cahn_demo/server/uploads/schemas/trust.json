@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/trust.v.1.0.0.schema.yaml",
+  "title": "trust",
+  "description": "A trust relationship between a user and manufacturer",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "description": "id of the trusting user",
+      "type": "string"
+    },
+    "manufacturer_id": {
+      "description": "id of the manufacturer",
+      "type": "string"
+    },
+    "created_at": {
+      "description": "timestamp at which trust was created in milliseconds",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "user_id",
+    "device_id",
+    "created_at"
+  ]
+}
