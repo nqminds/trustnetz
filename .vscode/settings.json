@@ -17,5 +17,5 @@
     "wolfssl"
   ],
   "rust-analyzer.linkedProjects": ["./packages/nist_policy/Cargo.toml"],
-  "conventionalCommits.scopes": ["CAHN Demo"]
+  "conventionalCommits.scopes": ["CAHN Demo", "CAHN Demo Server"]
 }
