@@ -1,6 +1,6 @@
 $schema: https://json-schema.org/draft/2020-12/schema
 $id: https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/trust.v.1.0.0.schema.yaml
-title: trust
+title: manufacturer trust
 description: A trust relationship between a user and manufacturer
 type: object
 properties:

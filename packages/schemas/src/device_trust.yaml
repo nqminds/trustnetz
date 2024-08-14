@@ -1,11 +1,11 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-$id: https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/gives_connection_rights.v.1.0.0.schema.yaml
-title: Gives connection rights
-description: A giving of connection rights from an authorising user to a recipient user
+$id: https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/allow_to_connect.v.1.0.0.schema.yaml
+title: device trust
+description: A giving of trust from an authorising user to a device to connect to the network
 type: object
 properties:
-  recipient_id:
-    description: id of the user receiving connection rights
+  device_id:
+    description: id of the device receiving connection rights
     type: string
   authoriser_id:
     description: id of the authorising user
@@ -14,6 +14,6 @@ properties:
     description: timestamp at which connection rights were given in milliseconds
     type: integer
 required:
-  - recipient_id
+  - device_id
   - authoriser_id
   - created_at
