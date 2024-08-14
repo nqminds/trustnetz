@@ -1,39 +1,15 @@
 "use client";
-
 import DeviceUnknownIcon from "@mui/icons-material/DeviceUnknown";
 import BuildIcon from "@mui/icons-material/Build";
 import DevicesOtherIcon from "@mui/icons-material/DevicesOther";
-import { useMediaQuery } from "@mui/material";
-import { Typography, Paper, Stack, Divider } from "@mui/material";
-import theme from "../theme";
+import { Typography, Paper, Stack, Divider, Container } from "@mui/material";
 import InfoSection from "./InfoSection";
-export default function DeviceInformationBoard() {
-  const deviceInfo = {
-    ID: "device id",
-    Name: "device name",
-    IDevID: "device IDevID",
-    "Created At": "created at timestamp",
-  };
 
-  const manufacturerInfo = {
-    ID: "manufacturer id",
-    Name: "manufacturer name",
-    "Created At": "created at timestamp",
-  };
-
-  const deviceTypeInfo = {
-    ID: "device type id",
-    Name: "device type name",
-    "Created At": "created at timestamp",
-  };
-
-  const matches = useMediaQuery(theme.breakpoints.up("xl"));
-
+export default function DeviceInformationBoard({ selectedDevice }) {
   return (
     <Paper
       sx={{
         m: 3,
-        borderRadius: 5,
         p: 2,
       }}
       elevation={24}
@@ -45,7 +21,8 @@ export default function DeviceInformationBoard() {
           mb: 5,
         }}
       >
-        {"> "}Device Information
+        {"> "}
+        {selectedDevice.deviceInfo.Name} Information
       </Typography>
       <Stack
         spacing={0}
@@ -59,17 +36,17 @@ export default function DeviceInformationBoard() {
         <InfoSection
           title="Device"
           icon={DeviceUnknownIcon}
-          info={deviceInfo}
+          info={selectedDevice.deviceInfo}
         />
         <InfoSection
           title="Manufacturer"
           icon={BuildIcon}
-          info={manufacturerInfo}
+          info={selectedDevice.manufacturerInfo}
         />
         <InfoSection
           title="Device Type"
           icon={DevicesOtherIcon}
-          info={deviceTypeInfo}
+          info={selectedDevice.deviceTypeInfo}
         />
       </Stack>
     </Paper>

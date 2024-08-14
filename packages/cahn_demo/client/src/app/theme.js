@@ -9,21 +9,22 @@ const ubuntuMono = Ubuntu_Mono({
 
 const themeOptions = {
   palette: {
-    type: "dark",
+    mode: "dark",
     primary: {
       main: "#0f0",
     },
     background: {
       default: "#111111",
-      paper: "#212121",
+      paper: "#000000",
     },
-    text: {
-      primary: "#ffffff",
-    },
+
     divider: "#0f0",
   },
   typography: {
     fontFamily: ubuntuMono.style.fontFamily,
+  },
+  shape: {
+    borderRadius: 15,
   },
 };
 
@@ -40,6 +41,12 @@ const themeOptions2 = {
     paper: "#fff",
   },
 };
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 const theme = createTheme(themeOptions);
 
 export default theme;
