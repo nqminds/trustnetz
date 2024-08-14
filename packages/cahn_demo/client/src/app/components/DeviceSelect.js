@@ -18,9 +18,8 @@ const DeviceSelect = ({ devices, selectedDevice, setSelectedDevice }) => {
     <Paper
       sx={{
         m: 3,
-        p: 2,
+        p: 4,
       }}
-      elevation={24}
     >
       <Typography
         variant="h2"
