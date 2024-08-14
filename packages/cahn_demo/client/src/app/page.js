@@ -1,19 +1,19 @@
-import { Typography, Container, Paper } from "@mui/material";
-
+import { Typography, Box } from "@mui/material";
+import DeviceInformationBoard from "./components/DeviceInformationBoard";
 export default function Home() {
   return (
-    <Container>
-      <Paper elevation={3} sx={{ p: 2, mt: 2 }}>
-        <Typography
-          variant="h1"
-          sx={{
-            textAlign: "center",
-            color: "primary.main",
-          }}
-        >
-          CAHN Dashboard
-        </Typography>
-      </Paper>
-    </Container>
+    <Box>
+      <Typography
+        variant="h1"
+        sx={{
+          textAlign: "center",
+          color: "primary.main",
+          m: 3,
+        }}
+      >
+        CAHN Dashboard
+      </Typography>
+      <DeviceInformationBoard />
+    </Box>
   );
 }
