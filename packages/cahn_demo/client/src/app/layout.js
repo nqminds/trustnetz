@@ -1,15 +1,23 @@
-import ThemeClient from "./components/ThemeClient";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+import { ThemeProvider } from "@mui/material";
+import theme from "./components/theme";
+import CssBaseline from "@mui/material/CssBaseline";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <title>CAHN Demo</title>
+        <title>CAHN Dashboard</title>
       </head>
 
       <body>
-        <ThemeClient>{children}</ThemeClient>
+        <AppRouterCacheProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {children}
+          </ThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );
