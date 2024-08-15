@@ -29,7 +29,7 @@ const themeOptions = {
 };
 
 const themeOptions2 = {
-  type: "light",
+  mode: "light",
   primary: {
     main: "#1976d2",
   },

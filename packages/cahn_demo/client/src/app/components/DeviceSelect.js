@@ -17,16 +17,17 @@ const DeviceSelect = ({ devices, selectedDevice, setSelectedDevice }) => {
   return (
     <Paper
       sx={{
-        m: 3,
-        p: 4,
+        m: { xs: 1, sm: 3 },
+        p: { xs: 2, sm: 3 },
+        minWidth: 400,
       }}
     >
       <Typography
-        variant="h2"
+        variant="h3"
         sx={{
           color: "primary.main",
-          mb: 5,
         }}
+        gutterBottom
       >
         {"> "}Device Select
       </Typography>

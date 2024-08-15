@@ -17,13 +17,13 @@ const InfoSection = ({ title, icon: Icon, info }) => {
       >
         <Icon
           sx={{
-            fontSize: "50px",
+            fontSize: "35px",
             color: "primary.main",
             textAlign: "center",
             mr: 2,
           }}
         />
-        <Typography variant="h3" textAlign={"center"}>
+        <Typography variant="h4" textAlign={"center"}>
           {title}
         </Typography>
       </Box>
@@ -36,10 +36,10 @@ const InfoSection = ({ title, icon: Icon, info }) => {
             justifyContent="space-between"
             alignItems="flex-end"
           >
-            <Typography variant="h5" sx={{ color: "primary.main" }}>
+            <Typography variant="body1" sx={{ color: "primary.main" }}>
               <b>{key}: </b>
             </Typography>
-            <Typography variant="h6">{value}</Typography>
+            <Typography variant="body1">{value}</Typography>
           </Stack>
         ))}
       </Stack>
