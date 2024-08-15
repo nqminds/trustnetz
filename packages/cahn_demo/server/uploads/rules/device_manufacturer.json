@@ -1,0 +1,6 @@
+{
+  "type": "rule",
+  "id": "0a9e5dbd-cec6-481c-b19e-9dc1c63c7914",
+  "timestamp": 1716131868000,
+  "rule": "device_manufacturer(DeviceName, ManufacturerId, ManufacturerName, ManufacturerCreatedOn) :-  \n  device(Id, DeviceName, _IDevID, _DeviceCreatedOn), \n manufactured(Id, ManufacturerId, _ManufacturedEntryCreatedOn), \n  manufacturer(ManufacturerId, ManufacturerName, ManufacturerCreatedOn)."
+}

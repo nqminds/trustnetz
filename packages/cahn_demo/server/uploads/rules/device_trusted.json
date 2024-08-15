@@ -1,0 +1,6 @@
+{
+  "type": "rule",
+  "id": "0a9e5dbd-cec6-481c-b19e-9dc1c63c7914",
+  "timestamp": 1716131868000,
+  "rule": "device_trusted(DeviceName) :-\n (device_connection_rights(DeviceName, true, false) ; device_connection_rights(DeviceName, false, true))."
+}

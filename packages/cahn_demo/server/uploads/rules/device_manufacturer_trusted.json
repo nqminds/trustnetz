@@ -1,0 +1,6 @@
+{
+  "type": "rule",
+  "id": "0a9e5dbd-cec6-481c-b19e-9dc1c63c7914",
+  "timestamp": 1716131868000,
+  "rule": "device_manufacturer_trusted(DeviceName) :-  \n device_manufacturer(DeviceName, ManufacturerId, _ManufacturerName, _ManufacturerCreatedOn),  \n trust(TrusterId, ManufacturerId, _TrustCreatedOn),  \n user(TrusterId, _Username, _Role, _UserCreatedOn, _CanIssuePurchaseRights, _CanIssueConnectionRights, true)."
+}

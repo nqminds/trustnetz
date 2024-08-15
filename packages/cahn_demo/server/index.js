@@ -158,6 +158,30 @@ app.get("/sign_in/verify/:token", (req, res) => {
   return res.send("Sign in successful").status(200);
 });
 
+app.get("/is_device_trusted/:device", (req, res) => {
+  const { exec } = require("child_process");
+  const device = req.params.device;
+
+  // Execute Prolog query to find allergens
+  const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:device_trusted(\\"${device}\\"), halt."`;
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return res.status(400).json({ error: "Bad request" });
+    }
+    console.log("stdout :>> ", stdout);
+    const result = JSON.parse(stdout.trim());
+    console.log("result :>> ", result);
+
+    res.json(result);
+  });
+});
+
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });

@@ -560,3 +560,27 @@ remove_is_of_device_type(CreatedAt, DeviceId, DeviceTypeId) :-
   )).
 
 % rules from rule claims
+
+  device_connection_rights(DeviceName, OwnerCanIssueConnectionRights, AuthoriserCanIssueConnectionRights) :- 
+ device(Id, DeviceName, _IDevID, _DeviceCreatedOn),
+ owns(OwnerId, Id),
+ user(OwnerId, _OwnerName, _, _, _, OwnerCanIssueConnectionRights, _),
+ allow_to_connect(Id, AuthoriserId),
+ user(AuthoriserId, _AuthoriserName, _, _, _, AuthoriserCanIssueConnectionRights, _).
+
+
+device_trusted(DeviceName) :-
+ (device_connection_rights(DeviceName, true, false) ; device_connection_rights(DeviceName, false, true)).
+
+
+device_manufacturer(DeviceName, ManufacturerId, ManufacturerName, ManufacturerCreatedOn) :-  
+  device(Id, DeviceName, _IDevID, _DeviceCreatedOn), 
+ manufactured(Id, ManufacturerId, _ManufacturedEntryCreatedOn), 
+  manufacturer(ManufacturerId, ManufacturerName, ManufacturerCreatedOn).
+
+
+device_manufacturer_trusted(DeviceName) :-  
+ device_manufacturer(DeviceName, ManufacturerId, _ManufacturerName, _ManufacturerCreatedOn),  
+ trust(TrusterId, ManufacturerId, _TrustCreatedOn),  
+ user(TrusterId, _Username, _Role, _UserCreatedOn, _CanIssuePurchaseRights, _CanIssueConnectionRights, true).
+
