@@ -13,14 +13,11 @@ properties:
   created_at:
     description: timestamp at which user was created in milliseconds
     type: integer
-  can_issue_purchase_rights:
-    description: If user can issue purchase rights to other users
-    type: bool,
-  can_issue_connection_rights:
-    description: If user can issue connection rights to other users
-    type: bool,
-  can_issue_trust:
+  can_issue_device_trust:
     description: If user can issue trust to devices
+    type: bool,
+  can_issue_manufacturer_trust:
+    description: If user can issue trust to manufacturers
     type: bool
 required:
   - id
