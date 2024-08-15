@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/device_trust.v.1.0.0.schema.yaml",
+  "title": "device trust",
+  "description": "A giving of trust from an authorising user to a device to connect to the network",
+  "type": "object",
+  "properties": {
+    "device_id": {
+      "description": "id of the device receiving trust",
+      "type": "string"
+    },
+    "authoriser_id": {
+      "description": "id of the authorising user",
+      "type": "string"
+    },
+    "created_at": {
+      "description": "timestamp at which trust was granted in milliseconds",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "device_id",
+    "authoriser_id",
+    "created_at"
+  ]
+}

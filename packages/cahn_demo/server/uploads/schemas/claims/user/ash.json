@@ -1,0 +1,7 @@
+{
+  "id": "ash-id",
+  "username": "ash",
+  "created_at": 1723716151033,
+  "can_issue_device_trust": false,
+  "can_issue_manufacturer_trust": false
+}
