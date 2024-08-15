@@ -19,7 +19,7 @@ const DeviceSelect = ({ devices, selectedDevice, setSelectedDevice }) => {
       sx={{
         m: { xs: 1, sm: 3 },
         p: { xs: 2, sm: 3 },
-        minWidth: 400,
+        minWidth: 300,
       }}
     >
       <Typography

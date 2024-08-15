@@ -1,5 +1,5 @@
 "use client";
-import { createTheme } from "@mui/material";
+import { createTheme, responsiveFontSizes } from "@mui/material";
 import { Ubuntu_Mono } from "next/font/google";
 const ubuntuMono = Ubuntu_Mono({
   display: "swap",
@@ -47,6 +47,6 @@ const darkTheme = createTheme({
     mode: "dark",
   },
 });
-const theme = createTheme(themeOptions);
+const theme = responsiveFontSizes(createTheme(themeOptions));
 
 export default theme;

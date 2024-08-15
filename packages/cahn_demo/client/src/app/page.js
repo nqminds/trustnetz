@@ -15,7 +15,7 @@ export default function Home() {
         sx={{
           textAlign: "center",
           color: "primary.main",
-          m: 3,
+          m: { xs: 1, sm: 3 },
         }}
       >
         CAHN Dashboard
