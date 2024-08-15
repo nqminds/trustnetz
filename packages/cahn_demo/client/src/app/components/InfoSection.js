@@ -1,6 +1,5 @@
-import { Box, Stack, Typography } from "@mui/material";
-
-const InfoSection = ({ title, icon: Icon, info }) => {
+import { Box, Stack, Typography, Link } from "@mui/material";
+const InfoSection = ({ title, icon: Icon, info, link }) => {
   return (
     <Box
       sx={{
@@ -23,9 +22,14 @@ const InfoSection = ({ title, icon: Icon, info }) => {
             mr: 2,
           }}
         />
-        <Typography variant="h4" textAlign={"center"}>
+        <Link
+          href={"/" + link + "/" + info.ID}
+          variant="h4"
+          textAlign={"center"}
+          color="text.primary"
+        >
           {title}
-        </Typography>
+        </Link>
       </Box>
       <Stack direction="column">
         {Object.entries(info).map(([key, value]) => (

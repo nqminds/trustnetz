@@ -1,6 +1,13 @@
 "use client";
 import { createTheme, responsiveFontSizes } from "@mui/material";
 import { Ubuntu_Mono } from "next/font/google";
+import NextLink from "next/link";
+import { forwardRef } from "react";
+
+const LinkBehaviour = forwardRef(function LinkBehaviour(props, ref) {
+  return <NextLink ref={ref} {...props} />;
+});
+
 const ubuntuMono = Ubuntu_Mono({
   display: "swap",
   weight: "400",
@@ -26,27 +33,20 @@ const themeOptions = {
   shape: {
     borderRadius: 15,
   },
-};
-
-const themeOptions2 = {
-  mode: "light",
-  primary: {
-    main: "#1976d2",
-  },
-  secondary: {
-    main: "rgb(220, 0, 78)",
-  },
-  background: {
-    default: "#fff",
-    paper: "#fff",
+  components: {
+    MuiLink: {
+      defaultProps: {
+        component: LinkBehaviour,
+      },
+    },
+    MuiButtonBase: {
+      defaultProps: {
+        LinkComponent: LinkBehaviour,
+      },
+    },
   },
 };
 
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-  },
-});
 const theme = responsiveFontSizes(createTheme(themeOptions));
 
 export default theme;

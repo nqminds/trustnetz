@@ -37,16 +37,19 @@ export default function DeviceInformationBoard({ selectedDevice }) {
           title="Device"
           icon={DeviceUnknownIcon}
           info={selectedDevice.deviceInfo}
+          link="device"
         />
         <InfoSection
           title="Manufacturer"
           icon={BuildIcon}
           info={selectedDevice.manufacturerInfo}
+          link="manufacturer"
         />
         <InfoSection
           title="Device Type"
           icon={DevicesOtherIcon}
           info={selectedDevice.deviceTypeInfo}
+          link="device-type"
         />
       </Stack>
     </Paper>
