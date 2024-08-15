@@ -1,30 +1,29 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/sbom.v.1.0.0.schema.yaml",
-  "title": "SBOM",
-  "description": "An SBOM (Software Bill Of Materials)",
-  "type": "object",
-  "properties": {
-    "id": {
-      "description": "id of the sbom",
-      "type": "string"
+  "type": "schema",
+  "id": "48cfd960-f02d-4024-8827-fb8bd6d16cca",
+  "timestamp": 1716131759000,
+  "schemaName": "sbom",
+  "schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/sbom.v.1.0.0.schema.yaml",
+    "title": "sbom",
+    "description": "An SBOM (Software Bill Of Materials)",
+    "type": "object",
+    "properties": {
+      "id": {
+        "description": "id of the sbom",
+        "type": "string"
+      },
+      "sbom": {
+        "description": "sbom definition",
+        "type": "string"
+      },
+      "created_at": {
+        "description": "timestamp at which sbom was created in milliseconds",
+        "type": "integer"
+      }
     },
-    "sbom": {
-      "description": "sbom definition",
-      "type": "string"
-    },
-    "created_at": {
-      "description": "timestamp at which sbom was created in milliseconds",
-      "type": "integer"
-    }
-  },
-  "required": [
-    "id",
-    "sbom",
-    "created_at"
-  ],
-  "uniqueKeys": [
-    "id",
-    "sbom"
-  ]
+    "required": ["id", "sbom", "created_at"],
+    "uniqueKeys": ["id", "sbom"]
+  }
 }

@@ -1,7 +1,13 @@
 {
-  "id": "ash-id",
-  "username": "ash",
-  "created_at": 1723716151033,
-  "can_issue_device_trust": false,
-  "can_issue_manufacturer_trust": false
+  "type": "fact",
+  "schemaName": "user",
+  "id": "d5a4adae-f5c1-4fa6-9ee5-99207af5006c",
+  "timestamp": 1716287268891,
+  "fact": {
+    "id": "ash-id",
+    "username": "ash",
+    "created_at": 1723716151033,
+    "can_issue_device_trust": false,
+    "can_issue_manufacturer_trust": false
+  }
 }

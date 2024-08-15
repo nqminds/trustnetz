@@ -1,5 +1,11 @@
 {
-  "device_id": "HenryVulnerableCamera-id",
-  "device_type_id": "VulnerableCamera-id",
-  "created_at": 1723716151033
+  "type": "fact",
+  "schemaName": "is_of_device_type",
+  "id": "24a9ecf6-e1ce-44b4-8f31-2d1ac3852d02",
+  "timestamp": 1716287268891,
+  "fact": {
+    "device_id": "HenryVulnerableCamera-id",
+    "device_type_id": "VulnerableCamera-id",
+    "created_at": 1723716151033
+  }
 }

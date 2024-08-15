@@ -1,6 +1,12 @@
 {
-  "id": "EvilPhone-id",
-  "name": "EvilPhone",
-  "idevid": "EvilPhone-idevid",
-  "created_at": 1723716151033
+  "type": "fact",
+  "schemaName": "device_type",
+  "id": "ebff3c1d-b499-4ee3-a5d6-65eadc9def2a",
+  "timestamp": 1716287268891,
+  "fact": {
+    "id": "EvilPhone-id",
+    "name": "EvilPhone",
+    "idevid": "EvilPhone-idevid",
+    "created_at": 1723716151033
+  }
 }

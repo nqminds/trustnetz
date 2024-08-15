@@ -1,5 +1,11 @@
 {
-  "device_type_id": "EvilPhone-id",
-  "authoriser_id": "Ash-id",
-  "created_at": 1723716151033
+  "type": "fact",
+  "schemaName": "device_type_trust",
+  "id": "906d9075-e0ad-4f0f-bd75-425e1c742985",
+  "timestamp": 1716287268891,
+  "fact": {
+    "device_type_id": "EvilPhone-id",
+    "authoriser_id": "Ash-id",
+    "created_at": 1723716151033
+  }
 }

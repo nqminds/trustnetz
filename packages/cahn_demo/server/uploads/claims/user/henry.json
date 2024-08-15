@@ -1,7 +1,13 @@
 {
-  "id": "henry-id",
-  "username": "henry",
-  "created_at": 1723716151033,
-  "can_issue_device_trust": true,
-  "can_issue_manufacturer_trust": true
+  "type": "fact",
+  "schemaName": "user",
+  "id": "28515e46-1e33-4e17-b6ef-f01179bd083e",
+  "timestamp": 1716287268891,
+  "fact": {
+    "id": "henry-id",
+    "username": "henry",
+    "created_at": 1723716151033,
+    "can_issue_device_trust": true,
+    "can_issue_manufacturer_trust": true
+  }
 }

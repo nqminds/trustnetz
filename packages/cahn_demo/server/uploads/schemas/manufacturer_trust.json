@@ -1,26 +1,28 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/manufacturer_trust.v.1.0.0.schema.yaml",
-  "title": "manufacturer trust",
-  "description": "A trust relationship between a user and manufacturer",
-  "type": "object",
-  "properties": {
-    "user_id": {
-      "description": "id of the trusting user",
-      "type": "string"
+  "type": "schema",
+  "id": "570b55db-5f35-4e14-b7b6-57ff3c67521c",
+  "timestamp": 1716131759000,
+  "schemaName": "manufacturer_trust",
+  "schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/manufacturer_trust.v.1.0.0.schema.yaml",
+    "title": "manufacturer_trust",
+    "description": "A trust relationship between a user and manufacturer",
+    "type": "object",
+    "properties": {
+      "user_id": {
+        "description": "id of the trusting user",
+        "type": "string"
+      },
+      "manufacturer_id": {
+        "description": "id of the manufacturer",
+        "type": "string"
+      },
+      "created_at": {
+        "description": "timestamp at which trust was granted in milliseconds",
+        "type": "integer"
+      }
     },
-    "manufacturer_id": {
-      "description": "id of the manufacturer",
-      "type": "string"
-    },
-    "created_at": {
-      "description": "timestamp at which trust was granted in milliseconds",
-      "type": "integer"
-    }
-  },
-  "required": [
-    "user_id",
-    "device_id",
-    "created_at"
-  ]
+    "required": ["user_id", "manufacturer_id", "created_at"]
+  }
 }

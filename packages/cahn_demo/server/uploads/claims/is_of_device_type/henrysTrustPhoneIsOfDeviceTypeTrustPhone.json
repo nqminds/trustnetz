@@ -1,5 +1,11 @@
 {
-  "device_id": "HenryTrustPhone-id",
-  "device_type_id": "TrustPhone-id",
-  "created_at": 1723716151033
+  "type": "fact",
+  "schemaName": "is_of_device_type",
+  "id": "3bf15f6c-cd0d-4ce7-b9f4-388bdc54b02c",
+  "timestamp": 1716287268891,
+  "fact": {
+    "device_id": "HenryTrustPhone-id",
+    "device_type_id": "TrustPhone-id",
+    "created_at": 1723716151033
+  }
 }

@@ -1,5 +1,11 @@
 {
-  "user_id": "Henry-id",
-  "manufacturer_id": "TrustCorp-id",
-  "created_at": 1723716151033
+  "type": "fact",
+  "schemaName": "manufacturer_trust",
+  "id": "c885fb8a-8396-4fc3-8ed0-38e820faff1a",
+  "timestamp": 1716287268891,
+  "fact": {
+    "user_id": "Henry-id",
+    "manufacturer_id": "TrustCorp-id",
+    "created_at": 1723716151033
+  }
 }

@@ -1,5 +1,11 @@
 {
-  "device_id": "EvilPhone-id",
-  "manufacturer_id": "EvilInc-id",
-  "created_at": 1723716151033
+  "type": "fact",
+  "schemaName": "manufactured",
+  "id": "1e39678b-7dc3-4dbf-9dee-5168e2e6e8a9",
+  "timestamp": 1716287268891,
+  "fact": {
+    "device_id": "EvilPhone-id",
+    "manufacturer_id": "EvilInc-id",
+    "created_at": 1723716151033
+  }
 }

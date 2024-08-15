@@ -1,6 +1,12 @@
 {
-  "id": "HenryVulnerableCamera-id",
-  "name": "HenryVulnerableCamera",
-  "idevid": "HenryVulnerableCamera-idevid",
-  "created_at": 1723716151033
+  "type": "fact",
+  "schemaName": "device",
+  "id": "335982f3-645d-4ece-b6ce-2458eb7f5a5e",
+  "timestamp": 1716287268891,
+  "fact": {
+    "id": "HenryVulnerableCamera-id",
+    "name": "HenryVulnerableCamera",
+    "idevid": "HenryVulnerableCamera-idevid",
+    "created_at": 1723716151033
+  }
 }

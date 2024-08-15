@@ -1,6 +1,12 @@
 {
-  "id": "HenryTrustPhone-id",
-  "name": "HenryTrustPhone",
-  "idevid": "HenryTrustPhone-idevid",
-  "created_at": 1723716151033
+  "type": "fact",
+  "schemaName": "device",
+  "id": "344f588c-5905-4ac8-8c70-ddcf61bf0bbe",
+  "timestamp": 1716287268891,
+  "fact": {
+    "id": "HenryTrustPhone-id",
+    "name": "HenryTrustPhone",
+    "idevid": "HenryTrustPhone-idevid",
+    "created_at": 1723716151033
+  }
 }

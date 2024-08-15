@@ -1,6 +1,12 @@
 {
-  "id": "TrustPhone-id",
-  "name": "TrustPhone",
-  "idevid": "TrustPhone-idevid",
-  "created_at": 1723716151033
+  "type": "fact",
+  "schemaName": "device_type",
+  "id": "4d8935d7-d423-48e8-a2d2-1480e7636bfb",
+  "timestamp": 1716287268891,
+  "fact": {
+    "id": "TrustPhone-id",
+    "name": "TrustPhone",
+    "idevid": "TrustPhone-idevid",
+    "created_at": 1723716151033
+  }
 }

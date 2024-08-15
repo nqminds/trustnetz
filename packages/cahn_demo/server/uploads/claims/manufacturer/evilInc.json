@@ -1,5 +1,11 @@
 {
-  "id": "EvilInc-id",
-  "name": "EvilInc",
-  "created_at": 1723716151033
+  "type": "fact",
+  "schemaName": "manufacturer",
+  "id": "3e6a3b34-5383-4ce0-9b81-e7e1056f3eac",
+  "timestamp": 1716287268891,
+  "fact": {
+    "id": "EvilInc-id",
+    "name": "EvilInc",
+    "created_at": 1723716151033
+  }
 }
