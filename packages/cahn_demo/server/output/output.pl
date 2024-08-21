@@ -561,7 +561,7 @@ remove_has_vulnerability(CreatedAt, SbomId, VulnerabilityId) :-
 
 % rules from rule claims
 
-allowed_to_connect(DeviceId, UserId) :- 
+allowed_to_connect(DeviceId) :- 
     % Check if the device type is trusted by the user
     device(_, DeviceId, _, _),  
     is_of_device_type(_, DeviceId, DeviceTypeId),

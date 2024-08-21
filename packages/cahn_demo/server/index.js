@@ -162,7 +162,7 @@ app.get("/allowed_to_connect", (req, res) => {
   const { exec } = require("child_process");
 
   // Execute Prolog query to find allergens
-  const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:allowed_to_connect(DeviceId, UserId), write(DeviceId),write(\\" SPLITTER \\"), write(UserId),write(\\" END OF ENTRY \\"), halt."`;
+  const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:allowed_to_connect(DeviceId), write(DeviceId), halt."`;
 
   exec(command, (error, stdout, stderr) => {
     if (error) {
@@ -174,27 +174,18 @@ app.get("/allowed_to_connect", (req, res) => {
       return res.status(400).json({ error: "Bad request" });
     }
 
-    const result = stdout.trim().split(" END OF ENTRY");
+    const result = stdout.split("\n").filter((line) => line !== "");
 
-    const resultArray = result
-      .map((entry) => {
-        const [deviceId, userId] = entry.split(" SPLITTER ");
-        if (deviceId !== "" && userId !== "") {
-          return { deviceId, userId };
-        }
-      })
-      .filter((entry) => entry !== undefined);
-
-    res.json(resultArray);
+    res.json(result).status(200);
   });
 });
 
-app.get("/allowed_to_connect/:device", (req, res) => {
+app.get("/allowed_to_connect/:deviceId", (req, res) => {
   const { exec } = require("child_process");
-  const device = req.params.device;
+  const deviceId = req.params.deviceId;
 
   // Execute Prolog query to find allergens
-  const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:device_trusted(\\"${device}\\"), halt."`;
+  const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), (db:allowed_to_connect(\\"${deviceId}\\") -> write(true); write(false)), halt."`;
 
   exec(command, (error, stdout, stderr) => {
     if (error) {
@@ -205,11 +196,10 @@ app.get("/allowed_to_connect/:device", (req, res) => {
       console.error(`stderr: ${stderr}`);
       return res.status(400).json({ error: "Bad request" });
     }
-    console.log("stdout :>> ", stdout);
-    const result = JSON.parse(stdout.trim());
-    console.log("result :>> ", result);
+    // Cast output to boolean
+    const result = stdout.trim() === "true";
 
-    res.json(result);
+    res.json(result).status(200);
   });
 });
 
