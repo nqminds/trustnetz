@@ -579,3 +579,7 @@ allowed_to_connect(DeviceId) :-
         sbom_vulnerability(_, VulnerabilityId, Severity),
         Severity > 5).
 
+
+list_devices(DeviceList) :- 
+    findall(Device, device(_, Device, _, _), DeviceList).
+

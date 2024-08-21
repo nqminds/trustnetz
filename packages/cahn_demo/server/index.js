@@ -159,8 +159,6 @@ app.get("/sign_in/verify/:token", (req, res) => {
 });
 
 app.get("/allowed_to_connect", (req, res) => {
-  const { exec } = require("child_process");
-
   // Execute Prolog query to find allergens
   const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:allowed_to_connect(DeviceId), write(DeviceId), halt."`;
 
@@ -182,7 +180,6 @@ app.get("/allowed_to_connect", (req, res) => {
 });
 
 app.get("/allowed_to_connect/:deviceId", (req, res) => {
-  const { exec } = require("child_process");
   const deviceId = req.params.deviceId;
 
   // Execute Prolog query to find allergens
@@ -201,6 +198,26 @@ app.get("/allowed_to_connect/:deviceId", (req, res) => {
     const result = stdout.trim() === "true";
 
     res.json(result).status(200);
+  });
+});
+
+app.get("/device", (req, res) => {
+  const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:list_devices(DeviceList), write(DeviceList), halt."`;
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return res.status(400).json({ error: "Bad request" });
+    }
+
+    // Convert stdout to a list
+    let deviceList = stdout.slice(1, -1).split(",");
+
+    res.json(deviceList).status(200);
   });
 });
 
