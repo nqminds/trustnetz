@@ -1,6 +1,0 @@
-{
-  "type": "rule",
-  "id": "0a9e5dbd-cec6-481c-b19e-9dc1c63c7914",
-  "timestamp": 1716131868000,
-  "rule": "  device_connection_rights(DeviceName, OwnerCanIssueConnectionRights, AuthoriserCanIssueConnectionRights) :- \n device(Id, DeviceName, _IDevID, _DeviceCreatedOn),\n owns(OwnerId, Id),\n user(OwnerId, _OwnerName, _, _, _, OwnerCanIssueConnectionRights, _),\n allow_to_connect(Id, AuthoriserId),\n user(AuthoriserId, _AuthoriserName, _, _, _, AuthoriserCanIssueConnectionRights, _)."
-}

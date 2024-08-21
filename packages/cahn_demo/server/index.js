@@ -158,7 +158,38 @@ app.get("/sign_in/verify/:token", (req, res) => {
   return res.send("Sign in successful").status(200);
 });
 
-app.get("/is_device_trusted/:device", (req, res) => {
+app.get("/allowed_to_connect", (req, res) => {
+  const { exec } = require("child_process");
+
+  // Execute Prolog query to find allergens
+  const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:allowed_to_connect(DeviceId, UserId), write(DeviceId),write(\\" SPLITTER \\"), write(UserId),write(\\" END OF ENTRY \\"), halt."`;
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return res.status(400).json({ error: "Bad request" });
+    }
+
+    const result = stdout.trim().split(" END OF ENTRY");
+
+    const resultArray = result
+      .map((entry) => {
+        const [deviceId, userId] = entry.split(" SPLITTER ");
+        if (deviceId !== "" && userId !== "") {
+          return { deviceId, userId };
+        }
+      })
+      .filter((entry) => entry !== undefined);
+
+    res.json(resultArray);
+  });
+});
+
+app.get("/allowed_to_connect/:device", (req, res) => {
   const { exec } = require("child_process");
   const device = req.params.device;
 
