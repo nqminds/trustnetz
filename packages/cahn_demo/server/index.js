@@ -174,6 +174,7 @@ app.get("/allowed_to_connect", (req, res) => {
       return res.status(400).json({ error: "Bad request" });
     }
 
+    // TODO: Check this works when there are multiple results
     const result = stdout.split("\n").filter((line) => line !== "");
 
     res.json(result).status(200);
