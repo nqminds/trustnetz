@@ -585,14 +585,14 @@ list_devices(DeviceList) :-
 
 
 output_device_data(DeviceDataList) :- 
-  findall(DeviceData, (
-    device(CreatedAtDevice, DeviceId, Idevid, Name),
-    is_of_device_type(CreatedAtDeviceType, DeviceId, DeviceTypeId),
-    device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType),
-    manufactured(CreatedAtManufactured, DeviceTypeId, ManufacturerId),
-    manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer),
-    format(atom(DeviceData), 'ENTRY(CreatedAtDevice: ~w, DeviceId: ~w, Idevid: ~w, Name: ~w, CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w, CreatedAtManufactured: ~w, ManufacturerId: ~w, CreatedAtManufacturer: ~w, Manufacturer: ~w)', [CreatedAtDevice, DeviceId, Idevid, Name, CreatedAtDeviceType, DeviceTypeId, DeviceType, CreatedAtManufactured, ManufacturerId, CreatedAtManufacturer, Manufacturer])
-  ), DeviceDataList).
+    findall(DeviceData, (
+        device(CreatedAtDevice, DeviceId, Idevid, Name),
+        is_of_device_type(CreatedAtDeviceType, DeviceId, DeviceTypeId),
+        device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType),
+        manufactured(CreatedAtManufactured, DeviceTypeId, ManufacturerId),
+        manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer),
+        format(atom(DeviceData), 'ENTRY(CreatedAtDevice: ~w, DeviceId: ~w, Idevid: ~w, Name: ~w, CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w, CreatedAtManufactured: ~w, ManufacturerId: ~w, CreatedAtManufacturer: ~w, Manufacturer: ~w)', [CreatedAtDevice, DeviceId, Idevid, Name, CreatedAtDeviceType, DeviceTypeId, DeviceType, CreatedAtManufactured, ManufacturerId, CreatedAtManufacturer, Manufacturer])
+    ), DeviceDataList).
 
 
 list_manufacturers(ManufacturerList) :- 
