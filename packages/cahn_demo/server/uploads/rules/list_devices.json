@@ -2,5 +2,5 @@
   "type": "rule",
   "id": "9ae072c4-d51f-4dc4-9569-606cfa33efb0",
   "timestamp": 1716131868000,
-  "rule": "list_devices(DeviceList) :- \n    findall(Device, device(_, Device, _, _), DeviceList)."
+  "rule": "list_devices(DeviceList) :- \n    findall(device(Field1, Field2, Field3, Field4), device(Field1, Field2, Field3, Field4), DeviceList)."
 }

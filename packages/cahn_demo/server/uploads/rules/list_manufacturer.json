@@ -1,0 +1,6 @@
+{
+  "type": "rule",
+  "id": "j1k2l3m4-n5o6-7p8q-r9s0-t1u2v3w4x5y6",
+  "timestamp": 1724315244564,
+  "rule": "list_manufacturers(ManufacturerList) :- \n    findall(manufacturer(Field1, Field2, Field3), manufacturer(Field1, Field2, Field3), ManufacturerList)."
+}

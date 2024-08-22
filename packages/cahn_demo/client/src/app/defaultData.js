@@ -1,4 +1,4 @@
-const exampleData = [
+const defaultData = [
   {
     deviceInfo: {
       ID: "device123",
@@ -55,4 +55,4 @@ const exampleData = [
   },
 ];
 
-export default exampleData;
+export default defaultData;

@@ -1,11 +1,23 @@
 "use client";
+
 import { Typography, Box } from "@mui/material";
 import DeviceInformationBoard from "./components/DeviceInformationBoard";
 import DeviceSelect from "./components/DeviceSelect";
-import { useState } from "react";
-import exampleData from "./exampleData";
+import { useState, useEffect } from "react";
+import defaultData from "./defaultData";
+import axios from "axios";
+
 export default function Home() {
-  const [selectedDevice, setSelectedDevice] = useState(exampleData[0]);
+  const [data, setData] = useState(defaultData);
+  const [selectedDevice, setSelectedDevice] = useState(defaultData[0]);
+
+  useEffect(() => {
+    axios.get("http://localhost:3001/device").then((res) => {
+      console.log(res.data);
+      setData(res.data);
+      setSelectedDevice(res.data[0]);
+    });
+  }, []);
 
   return (
     <Box>
@@ -20,7 +32,7 @@ export default function Home() {
         CAHN Dashboard
       </Typography>
       <DeviceSelect
-        devices={exampleData}
+        devices={data}
         selectedDevice={selectedDevice}
         setSelectedDevice={setSelectedDevice}
       />

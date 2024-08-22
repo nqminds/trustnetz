@@ -215,9 +215,127 @@ app.get("/device", (req, res) => {
     }
 
     // Convert stdout to a list
-    let deviceList = stdout.slice(1, -1).split(",");
 
-    res.json(deviceList).status(200);
+    // Step 1: Extract the contents within the brackets
+    const devicesString = stdout.slice(1, -1); // Remove the square brackets
+
+    // Step 2: Split the string into individual device sections
+    const deviceArray = devicesString
+      .split(/device\(|\),device\(|\)$/)
+      .filter(Boolean);
+
+    // Step 3: Map each device section to an object
+    const resultArray = deviceArray.map((device) => {
+      const [createdAt, id, idevid, name] = device.split(",");
+
+      return {
+        "Created At": createdAt.trim(),
+        ID: id.trim(),
+        IDevID: idevid.trim(),
+        Name: name.trim(),
+      };
+    });
+
+    res.json(resultArray).status(200);
+  });
+});
+app.get("/manufacturer", (req, res) => {
+  const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:list_manufacturers(ManufacturerList), write(ManufacturerList), halt."`;
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return res.status(400).json({ error: "Bad request" });
+    }
+
+    // Convert stdout to a list
+
+    // Step 1: Extract the contents within the brackets
+    const manufacturersString = stdout.slice(1, -1); // Remove the square brackets
+
+    // Step 2: Split the string into individual device sections
+    const manufacturersArray = manufacturersString
+      .split(/manufacturer\(|\),manufacturer\(|\)$/)
+      .filter(Boolean);
+
+    // Step 3: Map each device section to an object
+    const resultArray = manufacturersArray.map((device) => {
+      const [createdAt, id, name] = device.split(",");
+
+      return {
+        "Created At": createdAt.trim(),
+        ID: id.trim(),
+        Name: name.trim(),
+      };
+    });
+
+    res.json(resultArray).status(200);
+  });
+});
+app.get("/device_type", (req, res) => {
+  const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:list_device_types(DeviceTypeList), write(DeviceTypeList), halt."`;
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return res.status(400).json({ error: "Bad request" });
+    }
+
+    // Convert stdout to a list
+
+    // Step 1: Extract the contents within the brackets
+    const deviceTypesString = stdout.slice(1, -1); // Remove the square brackets
+
+    // Step 2: Split the string into individual device sections
+    const deviceTypesArray = deviceTypesString
+      .split(/device_type\(|\),device_type\(|\)$/)
+      .filter(Boolean);
+
+    // Step 3: Map each device section to an object
+    const resultArray = deviceTypesArray.map((device) => {
+      const [createdAt, id, name] = device.split(",");
+
+      return {
+        "Created At": createdAt.trim(),
+        ID: id.trim(),
+        Name: name.trim(),
+      };
+    });
+
+    res.json(resultArray).status(200);
+  });
+});
+
+app.get("/all_devices_data", (req, res) => {
+  // Prolog query to retrieve data for all devices
+  const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_device_data(DeviceDataList), write(current_output, DeviceDataList), halt."`;
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    if (stderr) {
+      console.error(`stderr: ${stderr}`);
+      return res.status(400).json({ error: "Bad request" });
+    }
+
+    // Parse the Prolog output to JSON and send it as a response
+    try {
+      const deviceDataList = JSON.parse(stdout);
+      res.json(deviceDataList).status(200);
+    } catch (parseError) {
+      console.error(`parse error: ${parseError}`);
+      res.status(500).json({ error: "Failed to parse Prolog output" });
+    }
   });
 });
 
