@@ -331,8 +331,6 @@ app.get("/all_devices_data", (req, res) => {
       return res.status(400).json({ error: "Bad request" });
     }
 
-    console.log("Prolog output:", stdout);
-
     // Clean and parse the Prolog output
     const cleanOutput = stdout.slice(1, -1); // Remove square brackets
     const deviceSections = cleanOutput
