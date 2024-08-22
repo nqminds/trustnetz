@@ -12,7 +12,7 @@ export default function Home() {
   const [selectedDevice, setSelectedDevice] = useState(defaultData[0]);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/device").then((res) => {
+    axios.get("http://localhost:3001/all_devices_data").then((res) => {
       console.log(res.data);
       setData(res.data);
       setSelectedDevice(res.data[0]);

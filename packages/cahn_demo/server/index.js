@@ -276,6 +276,7 @@ app.get("/manufacturer", (req, res) => {
     res.json(resultArray).status(200);
   });
 });
+
 app.get("/device_type", (req, res) => {
   const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:list_device_types(DeviceTypeList), write(DeviceTypeList), halt."`;
 
@@ -315,30 +316,69 @@ app.get("/device_type", (req, res) => {
 });
 
 app.get("/all_devices_data", (req, res) => {
-  // Prolog query to retrieve data for all devices
-  const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_device_data(DeviceDataList), write(current_output, DeviceDataList), halt."`;
+  // Command to run Prolog query and retrieve data for all devices
+  const command = `
+    swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_device_data(DeviceDataList), write(current_output, DeviceDataList), halt."`;
 
   exec(command, (error, stdout, stderr) => {
     if (error) {
-      console.error(`exec error: ${error}`);
+      console.error(`Execution error: ${error}`);
       return res.status(500).json({ error: "Internal server error" });
     }
+
     if (stderr) {
-      console.error(`stderr: ${stderr}`);
+      console.error(`Standard error: ${stderr}`);
       return res.status(400).json({ error: "Bad request" });
     }
 
-    // Parse the Prolog output to JSON and send it as a response
-    try {
-      const deviceDataList = JSON.parse(stdout);
-      res.json(deviceDataList).status(200);
-    } catch (parseError) {
-      console.error(`parse error: ${parseError}`);
-      res.status(500).json({ error: "Failed to parse Prolog output" });
-    }
+    console.log("Prolog output:", stdout);
+
+    // Clean and parse the Prolog output
+    const cleanOutput = stdout.slice(1, -1); // Remove square brackets
+    const deviceSections = cleanOutput
+      .split(/ENTRY\(|\),ENTRY\(|\)$/)
+      .filter(Boolean);
+
+    // Convert each string section into an object
+    const parseDeviceString = (str) => {
+      const obj = {};
+      const pairs = str.split(", ");
+      pairs.forEach((pair) => {
+        const [key, value] = pair.split(": ");
+        obj[key] = value;
+      });
+      return obj;
+    };
+
+    // Transform each device string into an object
+    const devicesArray = deviceSections.map(parseDeviceString);
+
+    // Transform data into the desired structure
+    const transformDeviceData = (device) => ({
+      deviceInfo: {
+        ID: device.DeviceId,
+        Name: device.Name,
+        IDevID: device.Idevid,
+        "Created At": device.CreatedAtDevice,
+      },
+      manufacturerInfo: {
+        ID: device.ManufacturerId,
+        Name: device.Manufacturer,
+        "Created At": device.CreatedAtManufactured,
+      },
+      deviceTypeInfo: {
+        ID: device.DeviceTypeId,
+        Name: device.DeviceType,
+        "Created At": device.CreatedAtDeviceType,
+      },
+    });
+
+    const transformedDevices = devicesArray.map(transformDeviceData);
+
+    // Send the transformed data as JSON response
+    res.status(200).json(transformedDevices);
   });
 });
-
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });

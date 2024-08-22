@@ -2,5 +2,5 @@
   "type": "rule",
   "id": "b1c2d3e4-f5g6-7h89-i0j1-2k3l4m5n6o7p",
   "timestamp": 1724315244564,
-  "rule": "output_device_data(DeviceDataList) :- \n    findall(DeviceData, (\n        device(_, DeviceId, Idevid, Name),\n        is_of_device_type(_, DeviceId, DeviceTypeId),\n        device_type(_, DeviceTypeId, DeviceType),\n        manufactured(_, DeviceId, ManufacturerId),\n        manufacturer(_, ManufacturerId, Manufacturer),\n        format(atom(DeviceData), 'Device Name: ~w, Device Type: ~w, Manufacturer: ~w, Idevid: ~w', [Name, DeviceType, Manufacturer, Idevid])\n    ), DeviceDataList)."
+  "rule": "output_device_data(DeviceDataList) :- \n    findall(DeviceData, (\n        device(_, DeviceId, Idevid, Name),\n        is_of_device_type(_, DeviceId, DeviceTypeId),\n        device_type(_, DeviceTypeId, DeviceType),\n        manufactured(_, DeviceTypeId, ManufacturerId),\n        manufacturer(_, ManufacturerId, Manufacturer),\n        format(atom(DeviceData), 'Device Name: ~w, Device Type: ~w, Manufacturer: ~w, Idevid: ~w', [Name, DeviceType, Manufacturer, Idevid])\n    ), DeviceDataList)."
 }
