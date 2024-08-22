@@ -22,6 +22,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
   },
 }));
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.background.default,
@@ -33,6 +34,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 14,
   },
 }));
+
+function unixInMillisecondsToDateString(unixInMilliseconds) {
+  return new Date(unixInMilliseconds).toDateString();
+}
 
 export default function SpecificDeviceInformationBoard({ deviceData }) {
   return (
@@ -85,55 +90,77 @@ export default function SpecificDeviceInformationBoard({ deviceData }) {
 
               <TableBody>
                 <StyledTableRow>
-                  <StyledTableCell>Created at Device</StyledTableCell>
+                  <StyledTableCell>
+                    <b>Device</b> Created At
+                  </StyledTableCell>
                   <StyledTableCell align="right">
-                    {deviceData.CreatedAtDevice}
+                    {unixInMillisecondsToDateString(deviceData.CreatedAtDevice)}{" "}
+                    ({deviceData.CreatedAtDevice})
                   </StyledTableCell>
                 </StyledTableRow>
                 <StyledTableRow>
-                  <StyledTableCell>Device ID</StyledTableCell>
+                  <StyledTableCell>
+                    <b>Device</b> ID
+                  </StyledTableCell>
                   <StyledTableCell align="right">
                     {deviceData.DeviceId}
                   </StyledTableCell>
                 </StyledTableRow>
                 <StyledTableRow>
-                  <StyledTableCell>Device IDevID</StyledTableCell>
+                  <StyledTableCell>
+                    <b>Device</b> IDevID
+                  </StyledTableCell>
                   <StyledTableCell align="right">
                     {deviceData.Idevid}
                   </StyledTableCell>
                 </StyledTableRow>
                 <StyledTableRow>
-                  <StyledTableCell>Device Name</StyledTableCell>
+                  <StyledTableCell>
+                    <b>Device</b> Name
+                  </StyledTableCell>
                   <StyledTableCell align="right">
                     {deviceData.Name}
                   </StyledTableCell>
                 </StyledTableRow>
                 <StyledTableRow>
-                  <StyledTableCell>Created at Device Type</StyledTableCell>
+                  <StyledTableCell>
+                    <b>Device Type</b> Created At
+                  </StyledTableCell>
                   <StyledTableCell align="right">
-                    {deviceData.CreatedAtDeviceType}
+                    {unixInMillisecondsToDateString(
+                      deviceData.CreatedAtDeviceType
+                    )}{" "}
+                    ({deviceData.CreatedAtDeviceType})
                   </StyledTableCell>
                 </StyledTableRow>
                 <StyledTableRow>
-                  <StyledTableCell>Device Type ID</StyledTableCell>
+                  <StyledTableCell>
+                    <b>Device Type</b> ID
+                  </StyledTableCell>
                   <StyledTableCell align="right">
                     {deviceData.DeviceTypeId}
                   </StyledTableCell>
                 </StyledTableRow>
                 <StyledTableRow>
-                  <StyledTableCell>Device Type</StyledTableCell>
+                  <StyledTableCell>
+                    <b>Device Type</b> Name
+                  </StyledTableCell>
                   <StyledTableCell align="right">
                     {deviceData.DeviceType}
                   </StyledTableCell>
                 </StyledTableRow>
                 <StyledTableRow>
-                  <StyledTableCell>Manufacturer ID</StyledTableCell>
+                  <StyledTableCell>
+                    <b>Manufacturer</b> ID
+                  </StyledTableCell>
                   <StyledTableCell align="right">
                     {deviceData.ManufacturerId}
                   </StyledTableCell>
                 </StyledTableRow>
                 <StyledTableRow>
-                  <StyledTableCell>Manufacturer</StyledTableCell>
+                  <StyledTableCell>
+                    <b>Manufacturer</b> Name
+                  </StyledTableCell>
                   <StyledTableCell align="right">
                     {deviceData.Manufacturer}
                   </StyledTableCell>
