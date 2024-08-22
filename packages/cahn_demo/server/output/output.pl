@@ -596,17 +596,17 @@ output_all_device_data(DeviceDataList) :-
 
 
 output_device_data(DeviceId, DeviceData) :- 
-  device(CreatedAtDevice, DeviceId, Idevid, Name),
-  is_of_device_type(CreatedAtDeviceType, DeviceId, DeviceTypeId),
-  device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType),
-  manufactured(CreatedAtManufactured, DeviceTypeId, ManufacturerId),
-  manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer),
-  user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAtUser, UserId, Username),
-  (allowed_to_connect(DeviceId) ->
-    format(atom(DeviceData), 'CreatedAtDevice: ~w, DeviceId: ~w, Idevid: ~w, Name: ~w, CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w, CreatedAtManufactured: ~w, ManufacturerId: ~w, CreatedAtManufacturer: ~w, Manufacturer: ~w, CanConnect: true, CreatedAtUser: ~w, UserId: ~w, Username: ~w, CanIssueDeviceTrust: ~w, CanIssueManufacturerTrust: ~w', [CreatedAtDevice, DeviceId, Idevid, Name, CreatedAtDeviceType, DeviceTypeId, DeviceType, CreatedAtManufactured, ManufacturerId, CreatedAtManufacturer, Manufacturer, CreatedAtUser, UserId, Username, CanIssueDeviceTrust, CanIssueManufacturerTrust])
-  ;
-    format(atom(DeviceData), 'CreatedAtDevice: ~w, DeviceId: ~w, Idevid: ~w, Name: ~w, CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w, CreatedAtManufactured: ~w, ManufacturerId: ~w, CreatedAtManufacturer: ~w, Manufacturer: ~w, CanConnect: false, CreatedAtUser: ~w, UserId: ~w, Username: ~w, CanIssueDeviceTrust: ~w, CanIssueManufacturerTrust: ~w', [CreatedAtDevice, DeviceId, Idevid, Name, CreatedAtDeviceType, DeviceTypeId, DeviceType, CreatedAtManufactured, ManufacturerId, CreatedAtManufacturer, Manufacturer, CreatedAtUser, UserId, Username, CanIssueDeviceTrust, CanIssueManufacturerTrust])
-  ).
+      device(CreatedAtDevice, DeviceId, Idevid, Name),
+      is_of_device_type(CreatedAtDeviceType, DeviceId, DeviceTypeId),
+      device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType),
+      manufactured(CreatedAtManufactured, DeviceTypeId, ManufacturerId),
+      manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer),
+      (allowed_to_connect(DeviceId) ->
+        format(atom(DeviceData), 'CreatedAtDevice: ~w, DeviceId: ~w, Idevid: ~w, Name: ~w, CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w, CreatedAtManufactured: ~w, ManufacturerId: ~w, CreatedAtManufacturer: ~w, Manufacturer: ~w, CanConnect: true', [CreatedAtDevice, DeviceId, Idevid, Name, CreatedAtDeviceType, DeviceTypeId, DeviceType, CreatedAtManufactured, ManufacturerId, CreatedAtManufacturer, Manufacturer])
+      ;
+        format(atom(DeviceData), 'CreatedAtDevice: ~w, DeviceId: ~w, Idevid: ~w, Name: ~w, CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w, CreatedAtManufactured: ~w, ManufacturerId: ~w, CreatedAtManufacturer: ~w, Manufacturer: ~w, CanConnect: false', [CreatedAtDevice, DeviceId, Idevid, Name, CreatedAtDeviceType, DeviceTypeId, DeviceType, CreatedAtManufactured, ManufacturerId, CreatedAtManufacturer, Manufacturer])
+      ).
+
 
 
 list_manufacturers(ManufacturerList) :- 

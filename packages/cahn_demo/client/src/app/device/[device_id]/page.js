@@ -2,15 +2,48 @@
 import { Typography, Box, Paper } from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import SpecificDeviceInformationBoard from "../../components/SpecificDeviceInformationBoard";
 
 export default function Page({ params }) {
-  const [deviceData, setDeviceData] = useState(null);
+  const [deviceData, setDeviceData] = useState({
+    CreatedAtDevice: 0,
+    DeviceId: "",
+    Idevid: "",
+    Name: "",
+    CreatedAtDeviceType: 0,
+    DeviceTypeId: "",
+    DeviceType: "",
+    CreatedAtManufactured: 0,
+    ManufacturerId: "",
+    CreatedAtManufacturer: 0,
+    Manufacturer: "",
+    CanConnect: false,
+    CreatedAtUser: 0,
+    UserId: "",
+    Username: "",
+    CanIssueDeviceTrust: false,
+    CanIssueManufacturerTrust: false,
+  });
+
+  const thisiswhatdevicedatalookslike = {
+    CreatedAtDevice: 1723716151033,
+    DeviceId: "HenryTrustPhone-id",
+    Idevid: "HenryTrustPhone-idevid",
+    Name: "HenryTrustPhone",
+    CreatedAtDeviceType: 1723716151033,
+    DeviceTypeId: "TrustPhone-id",
+    DeviceType: "TrustPhone",
+    CreatedAtManufactured: 1723716151033,
+    ManufacturerId: "TrustCorp-id",
+    CreatedAtManufacturer: 1723716151033,
+    Manufacturer: "TrustCorp",
+    CanConnect: true,
+  };
 
   useEffect(() => {
     axios
       .get("http://localhost:3001/device/" + params.device_id)
       .then((res) => {
-        console.log(res.data);
         setDeviceData(res.data);
       });
   }, []);
@@ -27,15 +60,7 @@ export default function Page({ params }) {
       >
         Device Information
       </Typography>
-      <Paper
-        sx={{
-          m: { xs: 1, sm: 3 },
-          p: { xs: 2, sm: 3 },
-          minWidth: 300,
-        }}
-      >
-        <Typography>Device id: {params.device_id}</Typography>
-      </Paper>
+      <SpecificDeviceInformationBoard deviceData={deviceData} />
     </Box>
   );
 }

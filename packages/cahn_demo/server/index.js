@@ -431,7 +431,6 @@ app.get("/device/:deviceId", (req, res) => {
       console.error("Error parsing JSON:", e);
     }
 
-    console.log(jsonObject);
     res.status(200).json(jsonObject);
   });
 });
