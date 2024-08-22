@@ -3,7 +3,7 @@ import DeviceUnknownIcon from "@mui/icons-material/DeviceUnknown";
 import BuildIcon from "@mui/icons-material/Build";
 import DevicesOtherIcon from "@mui/icons-material/DevicesOther";
 import { Typography, Paper, Stack, Divider } from "@mui/material";
-import InfoSection from "./InfoSection";
+import InfoSection from "./DeviceInfoSection";
 
 export default function DeviceInformationBoard({ selectedDevice }) {
   return (

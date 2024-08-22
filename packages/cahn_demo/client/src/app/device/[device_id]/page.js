@@ -1,6 +1,20 @@
+"use client";
 import { Typography, Box, Paper } from "@mui/material";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 export default function Page({ params }) {
+  const [deviceData, setDeviceData] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/device/" + params.device_id)
+      .then((res) => {
+        console.log(res.data);
+        setDeviceData(res.data);
+      });
+  }, []);
+
   return (
     <Box>
       <Typography

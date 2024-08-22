@@ -318,7 +318,7 @@ app.get("/device_type", (req, res) => {
 app.get("/all_devices_data", (req, res) => {
   // Command to run Prolog query and retrieve data for all devices
   const command = `
-    swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_device_data(DeviceDataList), write(current_output, DeviceDataList), halt."`;
+    swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_all_device_data(DeviceDataList), write(current_output, DeviceDataList), halt."`;
 
   exec(command, (error, stdout, stderr) => {
     if (error) {
@@ -375,6 +375,64 @@ app.get("/all_devices_data", (req, res) => {
 
     // Send the transformed data as JSON response
     res.status(200).json(transformedDevices);
+  });
+});
+
+app.get("/device/:deviceId", (req, res) => {
+  // Device specific data
+  const deviceId = req.params.deviceId;
+
+  // Command to run Prolog query and retrieve data for a specific device
+  const command = `
+    swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_device_data(\\"${deviceId}\\", DeviceData), write(current_output, DeviceData), halt."`;
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Execution error: ${error}`);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    if (stderr) {
+      console.error(`Standard error: ${stderr}`);
+      return res.status(400).json({ error: "Bad request" });
+    }
+
+    // Clean and parse the Prolog output
+    let str = stdout;
+
+    // Replace "N/A" with null
+    str = str.replace(/: N\/A/g, ": null");
+
+    // Function to format string to valid JSON
+    function formatToJSON(str) {
+      // Add quotes around keys and values
+      return str
+        .replace(/(\w+):/g, '"$1":') // Add quotes around keys
+        .replace(/: (\w+(-\w+)?)/g, (match, p1) => {
+          // Check if the value is a number or null
+          if (/^\d+$/.test(p1)) {
+            return `: ${p1}`; // Number values remain unquoted
+          }
+          if (p1 === "true" || p1 === "false") {
+            return `: ${p1}`; // Boolean values remain unquoted
+          }
+          return `: "${p1}"`; // String values get quoted
+        })
+        .replace(/: "null"/g, ": null"); // Handle "null" as null
+    }
+    // Convert string to JSON object
+    let jsonStr = "{" + formatToJSON(str) + "}";
+
+    // Parse the JSON string
+    let jsonObject;
+    try {
+      jsonObject = JSON.parse(jsonStr);
+    } catch (e) {
+      console.error("Error parsing JSON:", e);
+    }
+
+    console.log(jsonObject);
+    res.status(200).json(jsonObject);
   });
 });
 app.get("/", (req, res) => {
