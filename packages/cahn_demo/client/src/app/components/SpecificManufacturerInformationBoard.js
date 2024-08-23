@@ -158,7 +158,12 @@ export default function SpecificDeviceInformationBoard({ manufacturerData }) {
               Devices made by {manufacturerData.Manufacturer}
             </Typography>
 
-            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+            <Stack
+              direction="row"
+              divider={<Divider orientation="vertical" flexItem />}
+              spacing={2}
+              sx={{ mt: 2 }}
+            >
               {manufacturerData.Devices.map((device, index) => (
                 <TableContainer>
                   <Table
