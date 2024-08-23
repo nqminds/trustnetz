@@ -25,21 +25,6 @@ export default function Page({ params }) {
     CanIssueManufacturerTrust: false,
   });
 
-  const thisiswhatdevicedatalookslike = {
-    CreatedAtDevice: 1723716151033,
-    DeviceId: "HenryTrustPhone-id",
-    Idevid: "HenryTrustPhone-idevid",
-    Name: "HenryTrustPhone",
-    CreatedAtDeviceType: 1723716151033,
-    DeviceTypeId: "TrustPhone-id",
-    DeviceType: "TrustPhone",
-    CreatedAtManufactured: 1723716151033,
-    ManufacturerId: "TrustCorp-id",
-    CreatedAtManufacturer: 1723716151033,
-    Manufacturer: "TrustCorp",
-    CanConnect: true,
-  };
-
   useEffect(() => {
     axios
       .get("http://localhost:3001/device/" + params.device_id)
@@ -51,7 +36,7 @@ export default function Page({ params }) {
   return (
     <Box>
       <Typography
-        variant="h1"
+        variant="h2"
         sx={{
           textAlign: "center",
           color: "primary.main",
