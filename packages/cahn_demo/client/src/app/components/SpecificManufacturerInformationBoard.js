@@ -12,6 +12,7 @@ import {
   TableRow,
   Chip,
   Button,
+  Container,
   ButtonGroup,
 } from "@mui/material";
 import { tableCellClasses } from "@mui/material/TableCell";
@@ -59,42 +60,183 @@ export default function SpecificDeviceInformationBoard({ manufacturerData }) {
         {"> "}
         {manufacturerData.Manufacturer}
       </Typography>
-
       <Paper
         elevation={3}
         sx={{
           p: { xs: 2, sm: 3 },
-          width: "40%",
           margin: "auto",
+          width: "60%",
         }}
       >
-        <TableContainer
-          sx={{
-            // maxHeight: 500,
-            // overflow: "auto",
-            maxWidth: 1000,
-            minWidth: 500,
-            margin: "auto",
-          }}
-        >
-          <Table
-            sx={{
-              [`& .${tableCellClasses.root}`]: {
-                borderBottom: "none",
-              },
-            }}
-          >
-            <TableHead>
-              <StyledTableRow>
-                <StyledTableCell>Field</StyledTableCell>
-                <StyledTableCell align="right">Value</StyledTableCell>
-              </StyledTableRow>
-            </TableHead>
+        <Stack divider={<Divider />} spacing={2}>
+          <Box>
+            <TableContainer
+              sx={{
+                margin: "auto",
+              }}
+            >
+              <Table
+                sx={{
+                  [`& .${tableCellClasses.root}`]: {
+                    borderBottom: "none",
+                  },
+                }}
+              >
+                <TableHead>
+                  <StyledTableRow>
+                    <StyledTableCell>Field</StyledTableCell>
+                    <StyledTableCell align="right">Value</StyledTableCell>
+                  </StyledTableRow>
+                </TableHead>
 
-            <TableBody></TableBody>
-          </Table>
-        </TableContainer>
+                <TableBody>
+                  {/* Manufacturer Fields */}
+                  <StyledTableRow>
+                    <StyledTableCell>
+                      <b>Manufacturer</b> Created At
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      {unixInMillisecondsToDateString(
+                        manufacturerData.CreatedAtManufacturer
+                      )}{" "}
+                      ({manufacturerData.CreatedAtManufacturer})
+                    </StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledTableCell>
+                      <b>Manufacturer</b> ID
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      {manufacturerData.ManufacturerId}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledTableCell>
+                      <b>Manufacturer</b> Name
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      {manufacturerData.Manufacturer}
+                    </StyledTableCell>
+                  </StyledTableRow>
+
+                  <StyledTableRow
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <StyledTableCell>
+                      Can Issue Manufacturer Trust
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      <Chip
+                        icon={
+                          manufacturerData.CanIssueManufacturerTrust ? (
+                            <CheckIcon />
+                          ) : (
+                            <DoDisturbIcon />
+                          )
+                        }
+                        label={manufacturerData.CanIssueManufacturerTrust.toString()}
+                        color={
+                          manufacturerData.CanIssueManufacturerTrust
+                            ? "success"
+                            : "error"
+                        }
+                      />
+                    </StyledTableCell>
+                  </StyledTableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+
+          <>
+            <Typography
+              variant="h4"
+              sx={{
+                color: "primary.main",
+              }}
+            >
+              Devices made by {manufacturerData.Manufacturer}
+            </Typography>
+
+            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+              {manufacturerData.Devices.map((device, index) => (
+                <TableContainer>
+                  <Table
+                    sx={{
+                      [`& .${tableCellClasses.root}`]: {
+                        borderBottom: "none",
+                      },
+                    }}
+                  >
+                    <TableHead>
+                      <StyledTableRow>
+                        <StyledTableCell>{device.Name}</StyledTableCell>
+                        <StyledTableCell align="right"></StyledTableCell>
+                      </StyledTableRow>
+                    </TableHead>
+                    <TableBody>
+                      <>
+                        <StyledTableRow>
+                          <StyledTableCell>
+                            <b>Device {index + 1}</b> ID
+                          </StyledTableCell>
+                          <StyledTableCell align="right">
+                            {device.DeviceId}
+                          </StyledTableCell>
+                        </StyledTableRow>
+                        <StyledTableRow>
+                          <StyledTableCell>
+                            <b>Device {index + 1}</b> IDevID
+                          </StyledTableCell>
+                          <StyledTableCell align="right">
+                            {device.Idevid}
+                          </StyledTableCell>
+                        </StyledTableRow>
+                        <StyledTableRow>
+                          <StyledTableCell>
+                            <b>Device {index + 1}</b> Name
+                          </StyledTableCell>
+                          <StyledTableCell align="right">
+                            {device.Name}
+                          </StyledTableCell>
+                        </StyledTableRow>
+                        <StyledTableRow>
+                          <StyledTableCell>
+                            <b>Device {index + 1} Type</b> Created At
+                          </StyledTableCell>
+                          <StyledTableCell align="right">
+                            {unixInMillisecondsToDateString(
+                              device.CreatedAtDeviceType
+                            )}{" "}
+                            ({device.CreatedAtDeviceType})
+                          </StyledTableCell>
+                        </StyledTableRow>
+                        <StyledTableRow>
+                          <StyledTableCell>
+                            <b>Device {index + 1} Type</b> ID
+                          </StyledTableCell>
+                          <StyledTableCell align="right">
+                            {device.DeviceTypeId}
+                          </StyledTableCell>
+                        </StyledTableRow>
+                        <StyledTableRow>
+                          <StyledTableCell>
+                            <b>Device {index + 1} Type</b> Name
+                          </StyledTableCell>
+                          <StyledTableCell align="right">
+                            {device.DeviceType}
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      </>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              ))}
+            </Stack>
+          </>
+        </Stack>
       </Paper>
+
       <Box
         sx={{
           display: "flex",

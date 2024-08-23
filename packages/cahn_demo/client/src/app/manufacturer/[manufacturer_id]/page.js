@@ -27,6 +27,7 @@ export default function Page({ params }) {
       .get("http://localhost:3001/manufacturer/" + params.manufacturer_id)
       .then((res) => {
         setManufacturerData(res.data);
+        console.log("res.data", res.data);
       });
   }, []);
 
