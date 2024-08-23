@@ -122,9 +122,7 @@ export default function SpecificDeviceInformationBoard({ manufacturerData }) {
                   <StyledTableRow
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <StyledTableCell>
-                      Can Issue Manufacturer Trust
-                    </StyledTableCell>
+                    <StyledTableCell>Manufacturer is Trusted</StyledTableCell>
                     <StyledTableCell align="right">
                       <Chip
                         icon={
