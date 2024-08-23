@@ -1,27 +1,46 @@
+"use client";
 import { Typography, Box, Paper } from "@mui/material";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import SpecificDeviceTypeInformationBoard from "../../components/SpecificDeviceTypeInformationBoard";
 
 export default function Page({ params }) {
+  const [deviceTypeData, setDeviceTypeData] = useState({
+    CreatedAtDeviceType: 0,
+    DeviceTypeId: "",
+    DeviceType: "",
+    Devices: [
+      {
+        DeviceId: "",
+        Idevid: "",
+        Name: "",
+        ManufacturerId: "",
+        Manufacturer: "",
+      },
+    ],
+  });
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/deviceType/" + params.device_type_id)
+      .then((res) => {
+        setDeviceTypeData(res.data);
+      });
+  }, []);
+
   return (
     <Box>
       <Typography
-        variant="h1"
+        variant="h2"
         sx={{
           textAlign: "center",
           color: "primary.main",
           m: { xs: 1, sm: 3 },
         }}
       >
-        Device Type Information
+        Device Information
       </Typography>
-      <Paper
-        sx={{
-          m: { xs: 1, sm: 3 },
-          p: { xs: 2, sm: 3 },
-          minWidth: 300,
-        }}
-      >
-        <Typography>Device type id: {params.device_type_id}</Typography>
-      </Paper>
+      <SpecificDeviceTypeInformationBoard deviceTypeData={deviceTypeData} />
     </Box>
   );
 }
