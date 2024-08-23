@@ -181,7 +181,7 @@ export default function SpecificDeviceInformationBoard({ manufacturerData }) {
                       <>
                         <StyledTableRow>
                           <StyledTableCell>
-                            <b>Device {index + 1}</b> ID
+                            <b>Device</b> ID
                           </StyledTableCell>
                           <StyledTableCell align="right">
                             {device.DeviceId}
@@ -189,7 +189,7 @@ export default function SpecificDeviceInformationBoard({ manufacturerData }) {
                         </StyledTableRow>
                         <StyledTableRow>
                           <StyledTableCell>
-                            <b>Device {index + 1}</b> IDevID
+                            <b>Device</b> IDevID
                           </StyledTableCell>
                           <StyledTableCell align="right">
                             {device.Idevid}
@@ -197,7 +197,7 @@ export default function SpecificDeviceInformationBoard({ manufacturerData }) {
                         </StyledTableRow>
                         <StyledTableRow>
                           <StyledTableCell>
-                            <b>Device {index + 1}</b> Name
+                            <b>Device</b> Name
                           </StyledTableCell>
                           <StyledTableCell align="right">
                             {device.Name}
@@ -205,7 +205,7 @@ export default function SpecificDeviceInformationBoard({ manufacturerData }) {
                         </StyledTableRow>
                         <StyledTableRow>
                           <StyledTableCell>
-                            <b>Device {index + 1} Type</b> Created At
+                            <b>Device Type</b> Created At
                           </StyledTableCell>
                           <StyledTableCell align="right">
                             {unixInMillisecondsToDateString(
@@ -216,7 +216,7 @@ export default function SpecificDeviceInformationBoard({ manufacturerData }) {
                         </StyledTableRow>
                         <StyledTableRow>
                           <StyledTableCell>
-                            <b>Device {index + 1} Type</b> ID
+                            <b>Device Type</b> ID
                           </StyledTableCell>
                           <StyledTableCell align="right">
                             {device.DeviceTypeId}
@@ -224,7 +224,7 @@ export default function SpecificDeviceInformationBoard({ manufacturerData }) {
                         </StyledTableRow>
                         <StyledTableRow>
                           <StyledTableCell>
-                            <b>Device {index + 1} Type</b> Name
+                            <b>Device Type</b> Name
                           </StyledTableCell>
                           <StyledTableCell align="right">
                             {device.DeviceType}

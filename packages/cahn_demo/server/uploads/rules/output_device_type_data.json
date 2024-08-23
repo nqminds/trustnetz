@@ -1,0 +1,6 @@
+{
+  "type": "rule",
+  "id": "b1c2d3e4-f5g5-7h89-i0j1-2k3l4m5n6o7p",
+  "timestamp": 1724315234564,
+  "rule": "output_device_type_data(DeviceTypeId, DeviceTypeData) :-\n    device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType),\n    findall(DeviceData, (\n        is_of_device_type(_, DeviceId, DeviceTypeId),\n        device(_, DeviceId, Idevid, Name),\n        manufactured(_, DeviceTypeId, ManufacturerId),\n        manufacturer(_, ManufacturerId, Manufacturer),\n        format(atom(DeviceData), 'DEVICE(DeviceId: ~w, Idevid: ~w, Name: ~w, ManufacturerId: ~w, Manufacturer: ~w)', [DeviceId, Idevid, Name, ManufacturerId, Manufacturer])\n    ), DeviceDataList),\n    format(atom(DeviceTypeData), 'CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w, Devices: ~w', [CreatedAtDeviceType, DeviceTypeId, DeviceType, DeviceDataList])."
+}

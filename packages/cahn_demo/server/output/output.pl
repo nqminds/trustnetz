@@ -584,6 +584,18 @@ list_devices(DeviceList) :-
     findall(device(Field1, Field2, Field3, Field4), device(Field1, Field2, Field3, Field4), DeviceList).
 
 
+output_device_type_data(DeviceTypeId, DeviceTypeData) :-
+    device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType),
+    findall(DeviceData, (
+        is_of_device_type(_, DeviceId, DeviceTypeId),
+        device(_, DeviceId, Idevid, Name),
+        manufactured(_, DeviceTypeId, ManufacturerId),
+        manufacturer(_, ManufacturerId, Manufacturer),
+        format(atom(DeviceData), 'DEVICE(DeviceId: ~w, Idevid: ~w, Name: ~w, ManufacturerId: ~w, Manufacturer: ~w)', [DeviceId, Idevid, Name, ManufacturerId, Manufacturer])
+    ), DeviceDataList),
+    format(atom(DeviceTypeData), 'CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w, Devices: ~w', [CreatedAtDeviceType, DeviceTypeId, DeviceType, DeviceDataList]).
+
+
 list_manufacturers(ManufacturerList) :- 
     findall(manufacturer(Field1, Field2, Field3), manufacturer(Field1, Field2, Field3), ManufacturerList).
 

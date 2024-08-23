@@ -487,6 +487,29 @@ app.get("/manufacturer/:manufacturerId", (req, res) => {
   });
 });
 
+app.get("/deviceType/:deviceTypeId", (req, res) => {
+  // Device specific data
+  const deviceTypeId = req.params.deviceTypeId;
+
+  // Command to run Prolog query and retrieve data for a specific device
+  const command = `
+    swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_device_type_data(\\"${deviceTypeId}\\", DeviceTypeData), write(current_output, DeviceTypeData), halt."`;
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Execution error: ${error}`);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    if (stderr) {
+      console.error(`Standard error: ${stderr}`);
+      return res.status(400).json({ error: "Bad request" });
+    }
+
+    res.status(200).json(stdout);
+  });
+});
+
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
