@@ -69,119 +69,6 @@ validate_type_boolean(Var, ValidVar, FieldName) :-
 % type definitions and get, add, remove function definitions generated from schema claims
 
 :- persistent
-  db:device_type_trust(_AuthoriserId, _CreatedAt, _DeviceTypeId).
-
-get_device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId) :-
-  with_mutex(db, device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId)).
-
-get_all_device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId, Matches) :- 
- with_mutex(db, 
-    findall(device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId),
-            device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId),
-            Matches)
-).
-
-add_device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId) :-
-  % Validate required fields
-  validate_required(DeviceTypeId, "DeviceTypeId"),
-  validate_required(AuthoriserId, "AuthoriserId"),
-  validate_required(CreatedAt, "CreatedAt"),
-  % Check unique fields are unique
-  % Validate and assert AuthoriserId
-  validate_type_string(AuthoriserId, ValidAuthoriserId, "AuthoriserId"),
-  % Validate and assert CreatedAt
-  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
-  % Validate and assert DeviceTypeId
-  validate_type_string(DeviceTypeId, ValidDeviceTypeId, "DeviceTypeId"),
-  assert_device_type_trust(ValidAuthoriserId, ValidCreatedAt, ValidDeviceTypeId).
-
-remove_device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId) :-
-  device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId),
-  with_mutex(db, (
-    retractall_device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId)
-  )).
-
-:- persistent
-  db:sbom_vulnerability(_CreatedAt, _SbomId, _VulnerabilityScore).
-
-get_sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore) :-
-  with_mutex(db, sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore)).
-
-get_all_sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore, Matches) :- 
- with_mutex(db, 
-    findall(sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore),
-            sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore),
-            Matches)
-).
-
-add_sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore) :-
-  % Validate required fields
-  validate_required(SbomId, "SbomId"),
-  validate_required(VulnerabilityScore, "VulnerabilityScore"),
-  validate_required(CreatedAt, "CreatedAt"),
-  % Check unique fields are unique
-  % Validate and assert CreatedAt
-  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
-  % Validate and assert SbomId
-  validate_type_string(SbomId, ValidSbomId, "SbomId"),
-  % Validate and assert VulnerabilityScore
-  validate_type_number(VulnerabilityScore, ValidVulnerabilityScore, "VulnerabilityScore"),
-  assert_sbom_vulnerability(ValidCreatedAt, ValidSbomId, ValidVulnerabilityScore).
-
-remove_sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore) :-
-  sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore),
-  with_mutex(db, (
-    retractall_sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore)
-  )).
-
-:- persistent
-  db:user(_CanIssueDeviceTrust, _CanIssueManufacturerTrust, _CreatedAt, _Id, _Username).
-
-get_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username) :-
-  with_mutex(db, user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username)).
-
-get_all_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username, Matches) :- 
- with_mutex(db, 
-    findall(user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username),
-            user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username),
-            Matches)
-).
-
-add_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username) :-
-  % Validate required fields
-  validate_required(Id, "Id"),
-  validate_required(Username, "Username"),
-  validate_required(CreatedAt, "CreatedAt"),
-  % Check unique fields are unique
-  (user(_,_,_,Id,_) ->
-    format(atom(Msg), 'found existing user with Id "~w"', [Id]),
-    !,
-    throw(error(Msg))
-  ; true),
-  (user(_,_,_,_,Username) ->
-    format(atom(Msg), 'found existing user with Username "~w"', [Username]),
-    !,
-    throw(error(Msg))
-  ; true),
-  % Validate and assert CanIssueDeviceTrust
-  validate_type_boolean(CanIssueDeviceTrust, ValidCanIssueDeviceTrust, "CanIssueDeviceTrust"),
-  % Validate and assert CanIssueManufacturerTrust
-  validate_type_boolean(CanIssueManufacturerTrust, ValidCanIssueManufacturerTrust, "CanIssueManufacturerTrust"),
-  % Validate and assert CreatedAt
-  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
-  % Validate and assert Id
-  validate_type_string(Id, ValidId, "Id"),
-  % Validate and assert Username
-  validate_type_string(Username, ValidUsername, "Username"),
-  assert_user(ValidCanIssueDeviceTrust, ValidCanIssueManufacturerTrust, ValidCreatedAt, ValidId, ValidUsername).
-
-remove_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username) :-
-  user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username),
-  with_mutex(db, (
-    retractall_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username)
-  )).
-
-:- persistent
   db:device(_CreatedAt, _Id, _Idevid, _Name).
 
 get_device(CreatedAt, Id, Idevid, Name) :-
@@ -230,39 +117,6 @@ remove_device(CreatedAt, Id, Idevid, Name) :-
   device(CreatedAt, Id, Idevid, Name),
   with_mutex(db, (
     retractall_device(CreatedAt, Id, Idevid, Name)
-  )).
-
-:- persistent
-  db:manufactured(_CreatedAt, _DeviceId, _ManufacturerId).
-
-get_manufactured(CreatedAt, DeviceId, ManufacturerId) :-
-  with_mutex(db, manufactured(CreatedAt, DeviceId, ManufacturerId)).
-
-get_all_manufactured(CreatedAt, DeviceId, ManufacturerId, Matches) :- 
- with_mutex(db, 
-    findall(manufactured(CreatedAt, DeviceId, ManufacturerId),
-            manufactured(CreatedAt, DeviceId, ManufacturerId),
-            Matches)
-).
-
-add_manufactured(CreatedAt, DeviceId, ManufacturerId) :-
-  % Validate required fields
-  validate_required(DeviceId, "DeviceId"),
-  validate_required(ManufacturerId, "ManufacturerId"),
-  validate_required(CreatedAt, "CreatedAt"),
-  % Check unique fields are unique
-  % Validate and assert CreatedAt
-  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
-  % Validate and assert DeviceId
-  validate_type_string(DeviceId, ValidDeviceId, "DeviceId"),
-  % Validate and assert ManufacturerId
-  validate_type_string(ManufacturerId, ValidManufacturerId, "ManufacturerId"),
-  assert_manufactured(ValidCreatedAt, ValidDeviceId, ValidManufacturerId).
-
-remove_manufactured(CreatedAt, DeviceId, ManufacturerId) :-
-  manufactured(CreatedAt, DeviceId, ManufacturerId),
-  with_mutex(db, (
-    retractall_manufactured(CreatedAt, DeviceId, ManufacturerId)
   )).
 
 :- persistent
@@ -342,6 +196,294 @@ remove_sbom(CreatedAt, Id, Sbom) :-
   )).
 
 :- persistent
+  db:has_sbom(_CreatedAt, _DeviceTypeId, _SbomId).
+
+get_has_sbom(CreatedAt, DeviceTypeId, SbomId) :-
+  with_mutex(db, has_sbom(CreatedAt, DeviceTypeId, SbomId)).
+
+get_all_has_sbom(CreatedAt, DeviceTypeId, SbomId, Matches) :- 
+ with_mutex(db, 
+    findall(has_sbom(CreatedAt, DeviceTypeId, SbomId),
+            has_sbom(CreatedAt, DeviceTypeId, SbomId),
+            Matches)
+).
+
+add_has_sbom(CreatedAt, DeviceTypeId, SbomId) :-
+  % Validate required fields
+  validate_required(SbomId, "SbomId"),
+  validate_required(DeviceTypeId, "DeviceTypeId"),
+  validate_required(CreatedAt, "CreatedAt"),
+  % Check unique fields are unique
+  % Validate and assert CreatedAt
+  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
+  % Validate and assert DeviceTypeId
+  validate_type_string(DeviceTypeId, ValidDeviceTypeId, "DeviceTypeId"),
+  % Validate and assert SbomId
+  validate_type_string(SbomId, ValidSbomId, "SbomId"),
+  assert_has_sbom(ValidCreatedAt, ValidDeviceTypeId, ValidSbomId).
+
+remove_has_sbom(CreatedAt, DeviceTypeId, SbomId) :-
+  has_sbom(CreatedAt, DeviceTypeId, SbomId),
+  with_mutex(db, (
+    retractall_has_sbom(CreatedAt, DeviceTypeId, SbomId)
+  )).
+
+:- persistent
+  db:manufactured(_CreatedAt, _DeviceId, _ManufacturerId).
+
+get_manufactured(CreatedAt, DeviceId, ManufacturerId) :-
+  with_mutex(db, manufactured(CreatedAt, DeviceId, ManufacturerId)).
+
+get_all_manufactured(CreatedAt, DeviceId, ManufacturerId, Matches) :- 
+ with_mutex(db, 
+    findall(manufactured(CreatedAt, DeviceId, ManufacturerId),
+            manufactured(CreatedAt, DeviceId, ManufacturerId),
+            Matches)
+).
+
+add_manufactured(CreatedAt, DeviceId, ManufacturerId) :-
+  % Validate required fields
+  validate_required(DeviceId, "DeviceId"),
+  validate_required(ManufacturerId, "ManufacturerId"),
+  validate_required(CreatedAt, "CreatedAt"),
+  % Check unique fields are unique
+  % Validate and assert CreatedAt
+  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
+  % Validate and assert DeviceId
+  validate_type_string(DeviceId, ValidDeviceId, "DeviceId"),
+  % Validate and assert ManufacturerId
+  validate_type_string(ManufacturerId, ValidManufacturerId, "ManufacturerId"),
+  assert_manufactured(ValidCreatedAt, ValidDeviceId, ValidManufacturerId).
+
+remove_manufactured(CreatedAt, DeviceId, ManufacturerId) :-
+  manufactured(CreatedAt, DeviceId, ManufacturerId),
+  with_mutex(db, (
+    retractall_manufactured(CreatedAt, DeviceId, ManufacturerId)
+  )).
+
+:- persistent
+  db:user(_CanIssueDeviceTrust, _CanIssueManufacturerTrust, _CreatedAt, _Id, _Username).
+
+get_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username) :-
+  with_mutex(db, user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username)).
+
+get_all_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username, Matches) :- 
+ with_mutex(db, 
+    findall(user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username),
+            user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username),
+            Matches)
+).
+
+add_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username) :-
+  % Validate required fields
+  validate_required(Id, "Id"),
+  validate_required(Username, "Username"),
+  validate_required(CreatedAt, "CreatedAt"),
+  % Check unique fields are unique
+  (user(_,_,_,Id,_) ->
+    format(atom(Msg), 'found existing user with Id "~w"', [Id]),
+    !,
+    throw(error(Msg))
+  ; true),
+  (user(_,_,_,_,Username) ->
+    format(atom(Msg), 'found existing user with Username "~w"', [Username]),
+    !,
+    throw(error(Msg))
+  ; true),
+  % Validate and assert CanIssueDeviceTrust
+  validate_type_boolean(CanIssueDeviceTrust, ValidCanIssueDeviceTrust, "CanIssueDeviceTrust"),
+  % Validate and assert CanIssueManufacturerTrust
+  validate_type_boolean(CanIssueManufacturerTrust, ValidCanIssueManufacturerTrust, "CanIssueManufacturerTrust"),
+  % Validate and assert CreatedAt
+  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
+  % Validate and assert Id
+  validate_type_string(Id, ValidId, "Id"),
+  % Validate and assert Username
+  validate_type_string(Username, ValidUsername, "Username"),
+  assert_user(ValidCanIssueDeviceTrust, ValidCanIssueManufacturerTrust, ValidCreatedAt, ValidId, ValidUsername).
+
+remove_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username) :-
+  user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username),
+  with_mutex(db, (
+    retractall_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username)
+  )).
+
+:- persistent
+  db:device_type(_CreatedAt, _Id, _Name).
+
+get_device_type(CreatedAt, Id, Name) :-
+  with_mutex(db, device_type(CreatedAt, Id, Name)).
+
+get_all_device_type(CreatedAt, Id, Name, Matches) :- 
+ with_mutex(db, 
+    findall(device_type(CreatedAt, Id, Name),
+            device_type(CreatedAt, Id, Name),
+            Matches)
+).
+
+add_device_type(CreatedAt, Id, Name) :-
+  % Validate required fields
+  validate_required(Id, "Id"),
+  validate_required(Name, "Name"),
+  validate_required(CreatedAt, "CreatedAt"),
+  % Check unique fields are unique
+  (device_type(_,Id,_) ->
+    format(atom(Msg), 'found existing device_type with Id "~w"', [Id]),
+    !,
+    throw(error(Msg))
+  ; true),
+  (device_type(_,_,Name) ->
+    format(atom(Msg), 'found existing device_type with Name "~w"', [Name]),
+    !,
+    throw(error(Msg))
+  ; true),
+  % Validate and assert CreatedAt
+  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
+  % Validate and assert Id
+  validate_type_string(Id, ValidId, "Id"),
+  % Validate and assert Name
+  validate_type_string(Name, ValidName, "Name"),
+  assert_device_type(ValidCreatedAt, ValidId, ValidName).
+
+remove_device_type(CreatedAt, Id, Name) :-
+  device_type(CreatedAt, Id, Name),
+  with_mutex(db, (
+    retractall_device_type(CreatedAt, Id, Name)
+  )).
+
+:- persistent
+  db:device_trust(_AuthoriserId, _CreatedAt, _DeviceId).
+
+get_device_trust(AuthoriserId, CreatedAt, DeviceId) :-
+  with_mutex(db, device_trust(AuthoriserId, CreatedAt, DeviceId)).
+
+get_all_device_trust(AuthoriserId, CreatedAt, DeviceId, Matches) :- 
+ with_mutex(db, 
+    findall(device_trust(AuthoriserId, CreatedAt, DeviceId),
+            device_trust(AuthoriserId, CreatedAt, DeviceId),
+            Matches)
+).
+
+add_device_trust(AuthoriserId, CreatedAt, DeviceId) :-
+  % Validate required fields
+  validate_required(DeviceId, "DeviceId"),
+  validate_required(AuthoriserId, "AuthoriserId"),
+  validate_required(CreatedAt, "CreatedAt"),
+  % Check unique fields are unique
+  % Validate and assert AuthoriserId
+  validate_type_string(AuthoriserId, ValidAuthoriserId, "AuthoriserId"),
+  % Validate and assert CreatedAt
+  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
+  % Validate and assert DeviceId
+  validate_type_string(DeviceId, ValidDeviceId, "DeviceId"),
+  assert_device_trust(ValidAuthoriserId, ValidCreatedAt, ValidDeviceId).
+
+remove_device_trust(AuthoriserId, CreatedAt, DeviceId) :-
+  device_trust(AuthoriserId, CreatedAt, DeviceId),
+  with_mutex(db, (
+    retractall_device_trust(AuthoriserId, CreatedAt, DeviceId)
+  )).
+
+:- persistent
+  db:is_of_device_type(_CreatedAt, _DeviceId, _DeviceTypeId).
+
+get_is_of_device_type(CreatedAt, DeviceId, DeviceTypeId) :-
+  with_mutex(db, is_of_device_type(CreatedAt, DeviceId, DeviceTypeId)).
+
+get_all_is_of_device_type(CreatedAt, DeviceId, DeviceTypeId, Matches) :- 
+ with_mutex(db, 
+    findall(is_of_device_type(CreatedAt, DeviceId, DeviceTypeId),
+            is_of_device_type(CreatedAt, DeviceId, DeviceTypeId),
+            Matches)
+).
+
+add_is_of_device_type(CreatedAt, DeviceId, DeviceTypeId) :-
+  % Validate required fields
+  validate_required(DeviceId, "DeviceId"),
+  validate_required(DeviceTypeId, "DeviceTypeId"),
+  validate_required(CreatedAt, "CreatedAt"),
+  % Check unique fields are unique
+  % Validate and assert CreatedAt
+  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
+  % Validate and assert DeviceId
+  validate_type_string(DeviceId, ValidDeviceId, "DeviceId"),
+  % Validate and assert DeviceTypeId
+  validate_type_string(DeviceTypeId, ValidDeviceTypeId, "DeviceTypeId"),
+  assert_is_of_device_type(ValidCreatedAt, ValidDeviceId, ValidDeviceTypeId).
+
+remove_is_of_device_type(CreatedAt, DeviceId, DeviceTypeId) :-
+  is_of_device_type(CreatedAt, DeviceId, DeviceTypeId),
+  with_mutex(db, (
+    retractall_is_of_device_type(CreatedAt, DeviceId, DeviceTypeId)
+  )).
+
+:- persistent
+  db:device_type_trust(_AuthoriserId, _CreatedAt, _DeviceTypeId).
+
+get_device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId) :-
+  with_mutex(db, device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId)).
+
+get_all_device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId, Matches) :- 
+ with_mutex(db, 
+    findall(device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId),
+            device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId),
+            Matches)
+).
+
+add_device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId) :-
+  % Validate required fields
+  validate_required(DeviceTypeId, "DeviceTypeId"),
+  validate_required(AuthoriserId, "AuthoriserId"),
+  validate_required(CreatedAt, "CreatedAt"),
+  % Check unique fields are unique
+  % Validate and assert AuthoriserId
+  validate_type_string(AuthoriserId, ValidAuthoriserId, "AuthoriserId"),
+  % Validate and assert CreatedAt
+  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
+  % Validate and assert DeviceTypeId
+  validate_type_string(DeviceTypeId, ValidDeviceTypeId, "DeviceTypeId"),
+  assert_device_type_trust(ValidAuthoriserId, ValidCreatedAt, ValidDeviceTypeId).
+
+remove_device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId) :-
+  device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId),
+  with_mutex(db, (
+    retractall_device_type_trust(AuthoriserId, CreatedAt, DeviceTypeId)
+  )).
+
+:- persistent
+  db:sbom_vulnerability(_CreatedAt, _SbomId, _VulnerabilityScore).
+
+get_sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore) :-
+  with_mutex(db, sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore)).
+
+get_all_sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore, Matches) :- 
+ with_mutex(db, 
+    findall(sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore),
+            sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore),
+            Matches)
+).
+
+add_sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore) :-
+  % Validate required fields
+  validate_required(SbomId, "SbomId"),
+  validate_required(VulnerabilityScore, "VulnerabilityScore"),
+  validate_required(CreatedAt, "CreatedAt"),
+  % Check unique fields are unique
+  % Validate and assert CreatedAt
+  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
+  % Validate and assert SbomId
+  validate_type_string(SbomId, ValidSbomId, "SbomId"),
+  % Validate and assert VulnerabilityScore
+  validate_type_number(VulnerabilityScore, ValidVulnerabilityScore, "VulnerabilityScore"),
+  assert_sbom_vulnerability(ValidCreatedAt, ValidSbomId, ValidVulnerabilityScore).
+
+remove_sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore) :-
+  sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore),
+  with_mutex(db, (
+    retractall_sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore)
+  )).
+
+:- persistent
   db:manufacturer(_CreatedAt, _Id, _Name).
 
 get_manufacturer(CreatedAt, Id, Name) :-
@@ -417,148 +559,6 @@ remove_has_vulnerability(CreatedAt, SbomId, VulnerabilityId) :-
     retractall_has_vulnerability(CreatedAt, SbomId, VulnerabilityId)
   )).
 
-:- persistent
-  db:device_trust(_AuthoriserId, _CreatedAt, _DeviceId).
-
-get_device_trust(AuthoriserId, CreatedAt, DeviceId) :-
-  with_mutex(db, device_trust(AuthoriserId, CreatedAt, DeviceId)).
-
-get_all_device_trust(AuthoriserId, CreatedAt, DeviceId, Matches) :- 
- with_mutex(db, 
-    findall(device_trust(AuthoriserId, CreatedAt, DeviceId),
-            device_trust(AuthoriserId, CreatedAt, DeviceId),
-            Matches)
-).
-
-add_device_trust(AuthoriserId, CreatedAt, DeviceId) :-
-  % Validate required fields
-  validate_required(DeviceId, "DeviceId"),
-  validate_required(AuthoriserId, "AuthoriserId"),
-  validate_required(CreatedAt, "CreatedAt"),
-  % Check unique fields are unique
-  % Validate and assert AuthoriserId
-  validate_type_string(AuthoriserId, ValidAuthoriserId, "AuthoriserId"),
-  % Validate and assert CreatedAt
-  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
-  % Validate and assert DeviceId
-  validate_type_string(DeviceId, ValidDeviceId, "DeviceId"),
-  assert_device_trust(ValidAuthoriserId, ValidCreatedAt, ValidDeviceId).
-
-remove_device_trust(AuthoriserId, CreatedAt, DeviceId) :-
-  device_trust(AuthoriserId, CreatedAt, DeviceId),
-  with_mutex(db, (
-    retractall_device_trust(AuthoriserId, CreatedAt, DeviceId)
-  )).
-
-:- persistent
-  db:has_sbom(_CreatedAt, _DeviceTypeId, _SbomId).
-
-get_has_sbom(CreatedAt, DeviceTypeId, SbomId) :-
-  with_mutex(db, has_sbom(CreatedAt, DeviceTypeId, SbomId)).
-
-get_all_has_sbom(CreatedAt, DeviceTypeId, SbomId, Matches) :- 
- with_mutex(db, 
-    findall(has_sbom(CreatedAt, DeviceTypeId, SbomId),
-            has_sbom(CreatedAt, DeviceTypeId, SbomId),
-            Matches)
-).
-
-add_has_sbom(CreatedAt, DeviceTypeId, SbomId) :-
-  % Validate required fields
-  validate_required(SbomId, "SbomId"),
-  validate_required(DeviceTypeId, "DeviceTypeId"),
-  validate_required(CreatedAt, "CreatedAt"),
-  % Check unique fields are unique
-  % Validate and assert CreatedAt
-  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
-  % Validate and assert DeviceTypeId
-  validate_type_string(DeviceTypeId, ValidDeviceTypeId, "DeviceTypeId"),
-  % Validate and assert SbomId
-  validate_type_string(SbomId, ValidSbomId, "SbomId"),
-  assert_has_sbom(ValidCreatedAt, ValidDeviceTypeId, ValidSbomId).
-
-remove_has_sbom(CreatedAt, DeviceTypeId, SbomId) :-
-  has_sbom(CreatedAt, DeviceTypeId, SbomId),
-  with_mutex(db, (
-    retractall_has_sbom(CreatedAt, DeviceTypeId, SbomId)
-  )).
-
-:- persistent
-  db:device_type(_CreatedAt, _Id, _Name).
-
-get_device_type(CreatedAt, Id, Name) :-
-  with_mutex(db, device_type(CreatedAt, Id, Name)).
-
-get_all_device_type(CreatedAt, Id, Name, Matches) :- 
- with_mutex(db, 
-    findall(device_type(CreatedAt, Id, Name),
-            device_type(CreatedAt, Id, Name),
-            Matches)
-).
-
-add_device_type(CreatedAt, Id, Name) :-
-  % Validate required fields
-  validate_required(Id, "Id"),
-  validate_required(Name, "Name"),
-  validate_required(CreatedAt, "CreatedAt"),
-  % Check unique fields are unique
-  (device_type(_,Id,_) ->
-    format(atom(Msg), 'found existing device_type with Id "~w"', [Id]),
-    !,
-    throw(error(Msg))
-  ; true),
-  (device_type(_,_,Name) ->
-    format(atom(Msg), 'found existing device_type with Name "~w"', [Name]),
-    !,
-    throw(error(Msg))
-  ; true),
-  % Validate and assert CreatedAt
-  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
-  % Validate and assert Id
-  validate_type_string(Id, ValidId, "Id"),
-  % Validate and assert Name
-  validate_type_string(Name, ValidName, "Name"),
-  assert_device_type(ValidCreatedAt, ValidId, ValidName).
-
-remove_device_type(CreatedAt, Id, Name) :-
-  device_type(CreatedAt, Id, Name),
-  with_mutex(db, (
-    retractall_device_type(CreatedAt, Id, Name)
-  )).
-
-:- persistent
-  db:is_of_device_type(_CreatedAt, _DeviceId, _DeviceTypeId).
-
-get_is_of_device_type(CreatedAt, DeviceId, DeviceTypeId) :-
-  with_mutex(db, is_of_device_type(CreatedAt, DeviceId, DeviceTypeId)).
-
-get_all_is_of_device_type(CreatedAt, DeviceId, DeviceTypeId, Matches) :- 
- with_mutex(db, 
-    findall(is_of_device_type(CreatedAt, DeviceId, DeviceTypeId),
-            is_of_device_type(CreatedAt, DeviceId, DeviceTypeId),
-            Matches)
-).
-
-add_is_of_device_type(CreatedAt, DeviceId, DeviceTypeId) :-
-  % Validate required fields
-  validate_required(DeviceId, "DeviceId"),
-  validate_required(DeviceTypeId, "DeviceTypeId"),
-  validate_required(CreatedAt, "CreatedAt"),
-  % Check unique fields are unique
-  % Validate and assert CreatedAt
-  validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
-  % Validate and assert DeviceId
-  validate_type_string(DeviceId, ValidDeviceId, "DeviceId"),
-  % Validate and assert DeviceTypeId
-  validate_type_string(DeviceTypeId, ValidDeviceTypeId, "DeviceTypeId"),
-  assert_is_of_device_type(ValidCreatedAt, ValidDeviceId, ValidDeviceTypeId).
-
-remove_is_of_device_type(CreatedAt, DeviceId, DeviceTypeId) :-
-  is_of_device_type(CreatedAt, DeviceId, DeviceTypeId),
-  with_mutex(db, (
-    retractall_is_of_device_type(CreatedAt, DeviceId, DeviceTypeId)
-  )).
-
 % rules from rule claims
 
 allowed_to_connect(DeviceId) :- 
@@ -584,15 +584,8 @@ list_devices(DeviceList) :-
     findall(device(Field1, Field2, Field3, Field4), device(Field1, Field2, Field3, Field4), DeviceList).
 
 
-output_all_device_data(DeviceDataList) :- 
-    findall(DeviceData, (
-        device(CreatedAtDevice, DeviceId, Idevid, Name),
-        is_of_device_type(CreatedAtDeviceType, DeviceId, DeviceTypeId),
-        device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType),
-        manufactured(CreatedAtManufactured, DeviceTypeId, ManufacturerId),
-        manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer),
-        format(atom(DeviceData), 'ENTRY(CreatedAtDevice: ~w, DeviceId: ~w, Idevid: ~w, Name: ~w, CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w, CreatedAtManufactured: ~w, ManufacturerId: ~w, CreatedAtManufacturer: ~w, Manufacturer: ~w)', [CreatedAtDevice, DeviceId, Idevid, Name, CreatedAtDeviceType, DeviceTypeId, DeviceType, CreatedAtManufactured, ManufacturerId, CreatedAtManufacturer, Manufacturer])
-    ), DeviceDataList).
+list_manufacturers(ManufacturerList) :- 
+    findall(manufacturer(Field1, Field2, Field3), manufacturer(Field1, Field2, Field3), ManufacturerList).
 
 
 output_device_data(DeviceId, DeviceData) :- 
@@ -609,10 +602,37 @@ output_device_data(DeviceId, DeviceData) :-
 
 
 
-list_manufacturers(ManufacturerList) :- 
-    findall(manufacturer(Field1, Field2, Field3), manufacturer(Field1, Field2, Field3), ManufacturerList).
-
-
 list_device_types(DeviceTypeList) :- 
     findall(device_type(Field1, Field2, Field3), device_type(Field1, Field2, Field3), DeviceTypeList).
+
+
+output_all_device_data(DeviceDataList) :- 
+    findall(DeviceData, (
+        device(CreatedAtDevice, DeviceId, Idevid, Name),
+        is_of_device_type(CreatedAtDeviceType, DeviceId, DeviceTypeId),
+        device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType),
+        manufactured(CreatedAtManufactured, DeviceTypeId, ManufacturerId),
+        manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer),
+        format(atom(DeviceData), 'ENTRY(CreatedAtDevice: ~w, DeviceId: ~w, Idevid: ~w, Name: ~w, CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w, CreatedAtManufactured: ~w, ManufacturerId: ~w, CreatedAtManufacturer: ~w, Manufacturer: ~w)', [CreatedAtDevice, DeviceId, Idevid, Name, CreatedAtDeviceType, DeviceTypeId, DeviceType, CreatedAtManufactured, ManufacturerId, CreatedAtManufacturer, Manufacturer])
+    ), DeviceDataList).
+
+
+% Output information about the manufacturer, like id, the name, the devices it has manufactured, and whether it has trust from a user that can issue manufacturer trust
+output_manufacturer_data(ManufacturerId, ManufacturerData) :-
+    manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer),
+    findall(DeviceData, (
+        manufactured(_, DeviceTypeId, ManufacturerId),
+        device(_, DeviceId, Idevid, Name),
+        is_of_device_type(CreatedAtDeviceType, DeviceId, DeviceTypeId),
+        device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType),
+        format(atom(DeviceData), 'DEVICE(DeviceId: ~w, Idevid: ~w, Name: ~w, CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w)', [DeviceId, Idevid, Name, CreatedAtDeviceType, DeviceTypeId, DeviceType])
+    ), DeviceDataList),
+    (   
+        % Check if there is a user that can issue manufacturer trust
+        once((manufacturer_trust(_, ManufacturerId, UserId), user(true, true, _, UserId, _))) ->
+        format(atom(ManufacturerData), 'CreatedAtManufacturer: ~w, ManufacturerId: ~w, Manufacturer: ~w, Devices: ~w, CanIssueManufacturerTrust: true', [CreatedAtManufacturer, ManufacturerId, Manufacturer, DeviceDataList])
+    ;   % If no trust is issued
+        format(atom(ManufacturerData), 'CreatedAtManufacturer: ~w, ManufacturerId: ~w, Manufacturer: ~w, Devices: ~w, CanIssueManufacturerTrust: false', [CreatedAtManufacturer, ManufacturerId, Manufacturer, DeviceDataList])
+    ).
+
 

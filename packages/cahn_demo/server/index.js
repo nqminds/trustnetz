@@ -434,6 +434,59 @@ app.get("/device/:deviceId", (req, res) => {
     res.status(200).json(jsonObject);
   });
 });
+
+app.get("/manufacturer/:manufacturerId", (req, res) => {
+  // Device specific data
+  const manufacturerId = req.params.manufacturerId;
+
+  // Command to run Prolog query and retrieve data for a specific device
+  const command = `
+    swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_manufacturer_data(\\"${manufacturerId}\\", ManufacturerData), write(current_output, ManufacturerData), halt."`;
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Execution error: ${error}`);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    if (stderr) {
+      console.error(`Standard error: ${stderr}`);
+      return res.status(400).json({ error: "Bad request" });
+    }
+    // Function to format string to valid JSON
+    function formatToJSON(str) {
+      // Add quotes around keys and values
+      return str
+        .replace(/(\w+):/g, '"$1":') // Add quotes around keys
+        .replace(/: (\w+(-\w+)?)/g, (match, p1) => {
+          // Check if the value is a number or null
+          if (/^\d+$/.test(p1)) {
+            return `: ${p1}`; // Number values remain unquoted
+          }
+          if (p1 === "true" || p1 === "false") {
+            return `: ${p1}`; // Boolean values remain unquoted
+          }
+          return `: "${p1}"`; // String values get quoted
+        })
+        .replace(/: "null"/g, ": null") // Handle "null" as null
+        .replace(/DEVICE\(/g, "{") // Replace DEVICE( with {
+        .replace(/\)/g, "}"); // Parse the JSON string
+    }
+    // Convert string to JSON object
+    let jsonStr = "{" + formatToJSON(stdout) + "}";
+
+    // Parse the JSON string
+    let jsonObject;
+    try {
+      jsonObject = JSON.parse(jsonStr);
+    } catch (e) {
+      console.error("Error parsing JSON:", e);
+    }
+
+    res.status(200).json(jsonObject);
+  });
+});
+
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
