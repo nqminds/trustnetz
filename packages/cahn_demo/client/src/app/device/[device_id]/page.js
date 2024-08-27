@@ -3,8 +3,9 @@ import { Typography, Box, Button, ButtonGroup } from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import DeviceInfoTable from "../../components/DeviceInfoTable";
+import withAuth from "@/app/utils/withAuth";
 
-export default function Page({ params }) {
+const Page = ({ params }) => {
   const [deviceData, setDeviceData] = useState({
     CreatedAtDevice: 0,
     DeviceId: "",
@@ -64,4 +65,6 @@ export default function Page({ params }) {
       </Box>
     </Box>
   );
-}
+};
+
+export default withAuth(Page);

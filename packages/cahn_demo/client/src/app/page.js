@@ -6,8 +6,9 @@ import DeviceSelect from "./components/DeviceSelect";
 import { useState, useEffect } from "react";
 import defaultData from "./defaultData";
 import axios from "axios";
+import withAuth from "./utils/withAuth";
 
-export default function Home() {
+const Home = () => {
   const [data, setData] = useState(defaultData);
   const [selectedDevice, setSelectedDevice] = useState(defaultData[0]);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,4 +45,6 @@ export default function Home() {
       />
     </Box>
   );
-}
+};
+
+export default withAuth(Home);

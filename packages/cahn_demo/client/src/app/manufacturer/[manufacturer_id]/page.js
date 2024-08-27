@@ -3,8 +3,9 @@ import { Typography, Box, Button, ButtonGroup } from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ManufacturerInfoTable from "../../components/ManufacturerInfoTable";
+import withAuth from "@/app/utils/withAuth";
 
-export default function Page({ params }) {
+const Page = ({ params }) => {
   const [manufacturerData, setManufacturerData] = useState({
     CreatedAtManufacturer: null,
     ManufacturerId: null,
@@ -62,4 +63,6 @@ export default function Page({ params }) {
       </Box>
     </Box>
   );
-}
+};
+
+export default withAuth(Page);
