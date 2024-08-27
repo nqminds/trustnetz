@@ -21,8 +21,9 @@ const Page = () => {
   useEffect(() => {
     const emailAddress = localStorage.getItem("emailAddress");
     const publicKey = localStorage.getItem("publicKey");
+    const privateKey = localStorage.getItem("privateKey");
 
-    if (emailAddress && publicKey) {
+    if (emailAddress && publicKey && privateKey) {
       // Redirect to the home page
       router.push("/");
     }
@@ -51,6 +52,10 @@ const Page = () => {
       "base64"
     );
 
+    const privateKey = Buffer.from(window.gen_keys().private_key()).toString(
+      "base64"
+    );
+
     axios
       .post("http://localhost:3001/sign_in", { email, publicKey })
       .then((res) => {
@@ -66,6 +71,7 @@ const Page = () => {
                   clearInterval(interval);
                   localStorage.setItem("emailAddress", email);
                   localStorage.setItem("publicKey", publicKey);
+                  localStorage.setItem("privateKey", privateKey);
                   router.push("/");
                 }
               })
