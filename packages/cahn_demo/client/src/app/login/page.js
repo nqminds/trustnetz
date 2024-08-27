@@ -23,6 +23,7 @@ const Page = () => {
       router.push("/");
     }
   }, []);
+
   const handleLogin = () => {
     // Console log the email that is in the email input
     console.log("email :>> ", email);
