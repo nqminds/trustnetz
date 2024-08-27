@@ -174,7 +174,7 @@ app.get("/sign_in/verify/:token", (req, res) => {
 
 app.get("/all_devices_data", (req, res) => {
   // Command to run Prolog query and retrieve data for all devices
-  const command = `F
+  const command = `
     swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_all_device_data(DeviceDataList), write(current_output, DeviceDataList), halt."`;
 
   exec(command, (error, stdout, stderr) => {
