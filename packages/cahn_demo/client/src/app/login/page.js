@@ -6,12 +6,16 @@ import {
   Paper,
   Button,
   TextField,
+  Alert,
 } from "@mui/material";
+import axios from "axios";
 import { useRouter } from "next/navigation";
+import CheckIcon from "@mui/icons-material/Check";
 import { useEffect, useState } from "react";
 
 const Page = () => {
   const [email, setEmail] = useState("");
+  const [emailIsSent, setEmailIsSent] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -24,9 +28,36 @@ const Page = () => {
     }
   }, []);
 
+  const generateKey = () => {
+    // TODO: Change this to use the WASM key generation
+    return "fakeKey";
+  };
+
   const handleLogin = () => {
-    // Console log the email that is in the email input
-    console.log("email :>> ", email);
+    const privateKey = generateKey();
+    axios
+      .post("http://localhost:3001/sign_in", { email, privateKey })
+      .then((res) => {
+        if (res.status === 200) {
+          setEmailIsSent(true);
+
+          // Start pinging the server to check if the private key has been approved
+          const interval = setInterval(() => {
+            axios
+              .get(
+                `http://localhost:3001/check_key?email=${email}?privateKey=${privateKey}`
+              )
+              .then((res) => {
+                if (res.status === 200) {
+                  clearInterval(interval);
+                  localStorage.setItem("emailAddress", email);
+                  localStorage.setItem("privateKey", privateKey);
+                  router.push("/");
+                }
+              });
+          }, 1000);
+        }
+      });
   };
 
   return (
@@ -78,6 +109,16 @@ const Page = () => {
             >
               Log in
             </Button>
+            {emailIsSent && (
+              <Alert
+                variant="outlined"
+                icon={<CheckIcon fontSize="inherit" />}
+                severity="success"
+                sx={{ m: 2 }}
+              >
+                An email has been sent to {email}. Please check your inbox.
+              </Alert>
+            )}
           </Box>
         </Paper>
       </Container>

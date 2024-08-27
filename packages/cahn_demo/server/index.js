@@ -135,6 +135,21 @@ app.post("/sign_in", async (req, res) => {
   res.send("Email sent").status(200);
 });
 
+app.get("/check_key", (req, res) => {
+  const email = req.query.email;
+  const privateKey = req.query.privateKey;
+
+  // Check if the private key is in the emailToPublicKeys.json file
+  if (
+    emailToPublicKeys[email] &&
+    emailToPublicKeys[email].includes(privateKey)
+  ) {
+    return res.send("Private key approved").status(200);
+  }
+
+  return res.send("Private key not approved").status(400);
+});
+
 app.get("/sign_in/verify/:token", (req, res) => {
   const token = req.params.token;
   if (!tokenToEmail[token]) {
