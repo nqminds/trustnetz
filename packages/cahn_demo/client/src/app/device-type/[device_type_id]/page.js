@@ -38,7 +38,7 @@ export default function Page({ params }) {
           m: { xs: 1, sm: 3 },
         }}
       >
-        Device Information
+        Device Type Information
       </Typography>
       <DeviceTypeInfoTable deviceTypeData={deviceTypeData} />
       <Box
