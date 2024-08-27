@@ -1,23 +1,28 @@
-// utils/withAuth.js
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Box } from "@mui/material";
+
+// utils/withAuth.js
+
 const withAuth = (WrappedComponent) => {
   const Wrapper = (props) => {
     const [loading, setLoading] = useState(true); // State to manage loading state
     const router = useRouter();
-    const emailAddress =
+    const { emailAddress, publicKey } =
       typeof window !== "undefined"
-        ? localStorage.getItem("emailAddress")
-        : null;
+        ? {
+            emailAddress: localStorage.getItem("emailAddress"),
+            publicKey: localStorage.getItem("publicKey"),
+          }
+        : { emailAddress: null, publicKey: null };
 
     useEffect(() => {
-      if (emailAddress === null) {
+      if (emailAddress === null || publicKey === null) {
         router.replace("/login");
       } else {
-        setLoading(false); // Set loading to false if emailAddress exists
+        setLoading(false); // Set loading to false if emailAddress and publicKey exist
       }
-    }, [emailAddress, router]);
+    }, [emailAddress, publicKey, router]);
 
     if (loading) {
       return (

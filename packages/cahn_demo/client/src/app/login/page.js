@@ -19,10 +19,10 @@ const Page = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const email = localStorage.getItem("email");
-    const privateKey = localStorage.getItem("privateKey");
+    const emailAddress = localStorage.getItem("emailAddress");
+    const publicKey = localStorage.getItem("publicKey");
 
-    if (email && privateKey) {
+    if (emailAddress && publicKey) {
       // Redirect to the home page
       router.push("/");
     }
@@ -47,9 +47,12 @@ const Page = () => {
   }, []);
 
   const handleLogin = () => {
-    const privateKey = window.gen_keys().private_key();
+    const publicKey = Buffer.from(window.gen_keys().public_key()).toString(
+      "base64"
+    );
+
     axios
-      .post("http://localhost:3001/sign_in", { email, privateKey })
+      .post("http://localhost:3001/sign_in", { email, publicKey })
       .then((res) => {
         if (res.status === 200) {
           setEmailIsSent(true);
@@ -57,16 +60,17 @@ const Page = () => {
           // Start pinging the server to check if the private key has been approved
           const interval = setInterval(() => {
             axios
-              .get(
-                `http://localhost:3001/check_key?email=${email}?privateKey=${privateKey}`
-              )
+              .post("http://localhost:3001/check_key", { email, publicKey })
               .then((res) => {
                 if (res.status === 200) {
                   clearInterval(interval);
                   localStorage.setItem("emailAddress", email);
-                  localStorage.setItem("privateKey", privateKey);
+                  localStorage.setItem("publicKey", publicKey);
                   router.push("/");
                 }
+              })
+              .catch((_err) => {
+                // Don't do anything
               });
           }, 1000);
         }
