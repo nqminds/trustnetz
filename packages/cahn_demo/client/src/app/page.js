@@ -10,19 +10,20 @@ import axios from "axios";
 export default function Home() {
   const [data, setData] = useState(defaultData);
   const [selectedDevice, setSelectedDevice] = useState(defaultData[0]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     axios.get("http://localhost:3001/all_devices_data").then((res) => {
-      console.log(res.data);
       setData(res.data);
       setSelectedDevice(res.data[0]);
+      setIsLoading(false);
     });
   }, []);
 
   return (
     <Box>
       <Typography
-        variant="h1"
+        variant="h2"
         sx={{
           textAlign: "center",
           color: "primary.main",
@@ -35,8 +36,12 @@ export default function Home() {
         devices={data}
         selectedDevice={selectedDevice}
         setSelectedDevice={setSelectedDevice}
+        isLoading={isLoading}
       />
-      <DeviceInformationBoard selectedDevice={selectedDevice} />
+      <DeviceInformationBoard
+        selectedDevice={selectedDevice}
+        isLoading={isLoading}
+      />
     </Box>
   );
 }

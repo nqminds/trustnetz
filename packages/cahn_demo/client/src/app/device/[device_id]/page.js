@@ -1,8 +1,8 @@
 "use client";
-import { Typography, Box, Paper } from "@mui/material";
+import { Typography, Box, Button, ButtonGroup } from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import SpecificDeviceInformationBoard from "../../components/SpecificDeviceInformationBoard";
+import DeviceInfoTable from "../../components/DeviceInfoTable";
 
 export default function Page({ params }) {
   const [deviceData, setDeviceData] = useState({
@@ -45,7 +45,23 @@ export default function Page({ params }) {
       >
         Device Information
       </Typography>
-      <SpecificDeviceInformationBoard deviceData={deviceData} />
+      <DeviceInfoTable deviceData={deviceData} />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          mt: 2,
+        }}
+      >
+        <ButtonGroup variant="contained" size="large">
+          <Button>
+            <Typography variant="button">Button 1</Typography>
+          </Button>
+          <Button>
+            <Typography variant="button">Button 2</Typography>
+          </Button>
+        </ButtonGroup>
+      </Box>
     </Box>
   );
 }

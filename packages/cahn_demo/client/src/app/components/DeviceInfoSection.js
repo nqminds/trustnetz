@@ -1,5 +1,6 @@
 import { Box, Stack, Typography, Link } from "@mui/material";
-const InfoSection = ({ title, icon: Icon, info, link }) => {
+
+const DeviceInfoSection = ({ title, icon: Icon, info, link }) => {
   return (
     <Box
       sx={{
@@ -51,4 +52,4 @@ const InfoSection = ({ title, icon: Icon, info, link }) => {
   );
 };
 
-export default InfoSection;
+export default DeviceInfoSection;

@@ -42,7 +42,7 @@ function unixInMillisecondsToDateString(unixInMilliseconds) {
   return new Date(unixInMilliseconds).toDateString();
 }
 
-export default function SpecificDeviceInformationBoard({ manufacturerData }) {
+export default function ManufacturerInfoTable({ manufacturerData }) {
   return (
     <Paper
       sx={{
@@ -239,23 +239,6 @@ export default function SpecificDeviceInformationBoard({ manufacturerData }) {
           </>
         </Stack>
       </Paper>
-
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          mt: 2,
-        }}
-      >
-        <ButtonGroup variant="contained" size="large">
-          <Button>
-            <Typography variant="button">Button 1</Typography>
-          </Button>
-          <Button>
-            <Typography variant="button">Button 2</Typography>
-          </Button>
-        </ButtonGroup>
-      </Box>
     </Paper>
   );
 }

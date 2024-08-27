@@ -2,7 +2,7 @@
 import { Typography, Box, Paper } from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import SpecificDeviceTypeInformationBoard from "../../components/SpecificDeviceTypeInformationBoard";
+import DeviceTypeInfoTable from "../../components/DeviceTypeInfoTable";
 
 export default function Page({ params }) {
   const [deviceTypeData, setDeviceTypeData] = useState({
@@ -40,7 +40,23 @@ export default function Page({ params }) {
       >
         Device Information
       </Typography>
-      <SpecificDeviceTypeInformationBoard deviceTypeData={deviceTypeData} />
+      <DeviceTypeInfoTable deviceTypeData={deviceTypeData} />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          mt: 2,
+        }}
+      >
+        <ButtonGroup variant="contained" size="large">
+          <Button>
+            <Typography variant="button">Button 1</Typography>
+          </Button>
+          <Button>
+            <Typography variant="button">Button 2</Typography>
+          </Button>
+        </ButtonGroup>
+      </Box>
     </Box>
   );
 }

@@ -2,7 +2,7 @@
 import { Typography, Box, Paper } from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import SpecificManufacturerInformationBoard from "../../components/SpecificManufacturerInformationBoard";
+import ManufacturerInfoTable from "../../components/ManufacturerInfoTable";
 
 export default function Page({ params }) {
   const [manufacturerData, setManufacturerData] = useState({
@@ -43,9 +43,23 @@ export default function Page({ params }) {
       >
         Manufacturer Information
       </Typography>
-      <SpecificManufacturerInformationBoard
-        manufacturerData={manufacturerData}
-      />
+      <ManufacturerInfoTable manufacturerData={manufacturerData} />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          mt: 2,
+        }}
+      >
+        <ButtonGroup variant="contained" size="large">
+          <Button>
+            <Typography variant="button">Button 1</Typography>
+          </Button>
+          <Button>
+            <Typography variant="button">Button 2</Typography>
+          </Button>
+        </ButtonGroup>
+      </Box>
     </Box>
   );
 }
