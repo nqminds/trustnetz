@@ -53,12 +53,8 @@ const Page = ({ params }) => {
         }}
       >
         <ButtonGroup variant="contained" size="large">
-          <Button>
-            <Typography variant="button">Button 1</Typography>
-          </Button>
-          <Button>
-            <Typography variant="button">Button 2</Typography>
-          </Button>
+          <Button>Button 1</Button>
+          <Button>Button 2</Button>
         </ButtonGroup>
       </Box>
     </Box>

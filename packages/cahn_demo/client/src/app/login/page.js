@@ -32,14 +32,14 @@ const Page = () => {
       const {
         default: init,
         gen_keys,
-        sign,
-        verify,
+        VerifiableCredential,
       } = await import("../wasm/vc_signing");
       await init();
       console.log("WASM Module initialized");
 
       // Store functions for later use
       window.gen_keys = gen_keys;
+      window.VerifiableCredential = VerifiableCredential;
     }
 
     // If functions aren't already stored on the window object, initialize them
