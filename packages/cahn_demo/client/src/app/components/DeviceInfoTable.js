@@ -64,17 +64,12 @@ export default function DeviceInfoTable({ deviceData }) {
         elevation={3}
         sx={{
           p: { xs: 2, sm: 3 },
-          margin: "auto",
+          mx: "auto",
+          mb: 1,
           width: "60%",
         }}
       >
-        <TableContainer
-          sx={{
-            // maxHeight: 500,
-            // overflow: "auto",
-            margin: "auto",
-          }}
-        >
+        <TableContainer>
           <Table
             sx={{
               [`& .${tableCellClasses.root}`]: {

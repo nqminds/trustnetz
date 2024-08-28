@@ -1,5 +1,12 @@
 "use client";
-import { Typography, Box, Button, ButtonGroup } from "@mui/material";
+import {
+  Typography,
+  Box,
+  Button,
+  ButtonGroup,
+  Paper,
+  Stack,
+} from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import DeviceInfoTable from "../../components/DeviceInfoTable";
@@ -47,22 +54,62 @@ const Page = ({ params }) => {
         Device Information
       </Typography>
       <DeviceInfoTable deviceData={deviceData} />
-      <Box
+
+      <Paper
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          mt: 2,
+          p: { xs: 2, sm: 3 },
+          m: { xs: 1, sm: 3 },
         }}
       >
-        <ButtonGroup variant="contained" size="large">
-          <Button>
-            <Typography variant="button">Button 1</Typography>
-          </Button>
-          <Button>
-            <Typography variant="button">Button 2</Typography>
-          </Button>
-        </ButtonGroup>
-      </Box>
+        <Typography
+          variant="h3"
+          sx={{
+            color: "primary.main",
+          }}
+          gutterBottom
+        >
+          {"> "}
+          {deviceData.Name} Trust
+        </Typography>
+        <Box
+          component="pre"
+          sx={{
+            padding: "16px",
+            borderRadius: "4px",
+            overflowX: "auto",
+            fontFamily: "Monaco, monospace",
+            fontSize: "14px",
+            backgroundColor: "rgba(0, 0, 0, 0.2)",
+          }}
+        >
+          <Typography component="code">
+            {`Some stuff here from the Prolog environment about who trusts this device.
+
+assert(device_trust("Henry-id",1723716151033,"HenryTrustPhone-id")).
+assert(device_trust("Henry-id",1723716151033,"HenryVulnerableCamera-id")).
+assert(device_trust("Ash-id",1723716151033,"AshEvilPhone-id")).
+
+
+`}
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            mt: 3,
+          }}
+        >
+          <ButtonGroup variant="contained" size="large">
+            <Button>
+              <Typography variant="button">Add trust</Typography>
+            </Button>
+            <Button>
+              <Typography variant="button">Remove Trust</Typography>
+            </Button>
+          </ButtonGroup>
+        </Box>
+      </Paper>
     </Box>
   );
 };
