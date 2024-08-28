@@ -1,0 +1,37 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:dc229e70-4917-4309-811c-805b8074d157",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "name": null,
+  "description": null,
+  "issuer": "urn:uuid:213e7336-cbd2-4510-835a-0ba2605b2be4",
+  "validFrom": "2024-08-28T14:15:50.311212Z",
+  "validUntil": null,
+  "credentialStatus": null,
+  "credentialSchema": {
+    "id": "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/manufacturer.yaml",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "fact",
+    "schemaName": "manufacturer",
+    "id": "407ca73c-8d06-40b7-8e47-fd3ec1a950df",
+    "timestamp": 1716287268891,
+    "fact": {
+      "id": "TrustCorp-id",
+      "name": "TrustCorp",
+      "created_at": 1723716151033
+    }
+  },
+  "proof": {
+    "type": "JsonWebSignature2020",
+    "jws": "fh9eOth+LK85k0W2Y/YBxrOHV2ftVIuXowsWZktW4GHIx9VU+b2qEI7coiXS1F+JkEHQzg52Tm21JaZlmn3iAw==",
+    "proofPurpose": "assertionMethod",
+    "created": "2024-08-28T14:15:50.311221Z"
+  }
+}

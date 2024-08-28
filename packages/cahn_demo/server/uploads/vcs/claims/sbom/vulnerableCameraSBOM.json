@@ -1,0 +1,37 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:bb0635d5-4c34-446d-b2c1-2d1a52e57209",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "name": null,
+  "description": null,
+  "issuer": "urn:uuid:d65584ab-8373-422c-a33d-7fdd60a9a02f",
+  "validFrom": "2024-08-28T14:15:50.310813Z",
+  "validUntil": null,
+  "credentialStatus": null,
+  "credentialSchema": {
+    "id": "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/sbom.yaml",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "fact",
+    "schemaName": "sbom",
+    "id": "268d86b9-1674-41af-8aa5-f3d819690982",
+    "timestamp": 1716287268891,
+    "fact": {
+      "id": "VulnerableCameraSBOM-id",
+      "sbom": "VulnerableCamera SBOM (change this later?)",
+      "created_at": 1723716151033
+    }
+  },
+  "proof": {
+    "type": "JsonWebSignature2020",
+    "jws": "fh9eOth+LK85k0W2Y/YBxrOHV2ftVIuXowsWZktW4GHIx9VU+b2qEI7coiXS1F+JkEHQzg52Tm21JaZlmn3iAw==",
+    "proofPurpose": "assertionMethod",
+    "created": "2024-08-28T14:15:50.310816Z"
+  }
+}

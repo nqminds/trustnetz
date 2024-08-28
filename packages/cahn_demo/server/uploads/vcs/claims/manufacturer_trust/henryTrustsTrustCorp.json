@@ -1,0 +1,37 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:b0850c59-9451-4d86-9d58-2658fe3e956f",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "name": null,
+  "description": null,
+  "issuer": "urn:uuid:6060f35b-ffb1-4f55-b349-4e5dc551e24b",
+  "validFrom": "2024-08-28T14:15:50.306429Z",
+  "validUntil": null,
+  "credentialStatus": null,
+  "credentialSchema": {
+    "id": "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/manufacturer_trust.yaml",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "fact",
+    "schemaName": "manufacturer_trust",
+    "id": "c885fb8a-8396-4fc3-8ed0-38e820faff1a",
+    "timestamp": 1716287268891,
+    "fact": {
+      "user_id": "Henry-id",
+      "manufacturer_id": "TrustCorp-id",
+      "created_at": 1723716151033
+    }
+  },
+  "proof": {
+    "type": "JsonWebSignature2020",
+    "jws": "fh9eOth+LK85k0W2Y/YBxrOHV2ftVIuXowsWZktW4GHIx9VU+b2qEI7coiXS1F+JkEHQzg52Tm21JaZlmn3iAw==",
+    "proofPurpose": "assertionMethod",
+    "created": "2024-08-28T14:15:50.306432Z"
+  }
+}

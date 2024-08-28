@@ -1,0 +1,37 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:d0ecbedb-4f9a-4245-ba77-c253827cd34d",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "name": null,
+  "description": null,
+  "issuer": "urn:uuid:0f15f964-19aa-40ea-b12a-4d099d5779fb",
+  "validFrom": "2024-08-28T14:15:50.310003Z",
+  "validUntil": null,
+  "credentialStatus": null,
+  "credentialSchema": {
+    "id": "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/device_trust.yaml",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "fact",
+    "schemaName": "device_trust",
+    "id": "b51f5f74-6f2b-4b4d-bf5a-9bb1a613363c",
+    "timestamp": 1716287268891,
+    "fact": {
+      "device_id": "AshEvilPhone-id",
+      "authoriser_id": "Ash-id",
+      "created_at": 1723716151033
+    }
+  },
+  "proof": {
+    "type": "JsonWebSignature2020",
+    "jws": "fh9eOth+LK85k0W2Y/YBxrOHV2ftVIuXowsWZktW4GHIx9VU+b2qEI7coiXS1F+JkEHQzg52Tm21JaZlmn3iAw==",
+    "proofPurpose": "assertionMethod",
+    "created": "2024-08-28T14:15:50.310006Z"
+  }
+}

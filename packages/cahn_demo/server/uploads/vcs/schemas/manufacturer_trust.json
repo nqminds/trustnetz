@@ -1,0 +1,48 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:5d5b937c-9011-486a-a0a9-50677706cfda",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "issuer": "urn:uuid:0368d2e7-d376-40de-9e61-a59ce3ee067c",
+  "validFrom": "2024-08-28T14:15:50.312460Z",
+  "credentialSchema": {
+    "id": "2442ef07-c8f0-47de-ba6f-839342455adc",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "schema",
+    "id": "570b55db-5f35-4e14-b7b6-57ff3c67521c",
+    "timestamp": 1716131759000,
+    "schemaName": "manufacturer_trust",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/manufacturer_trust.v.1.0.0.schema.yaml",
+      "title": "manufacturer_trust",
+      "description": "A trust relationship between a user and manufacturer",
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "description": "id of the trusting user",
+          "type": "string"
+        },
+        "manufacturer_id": {
+          "description": "id of the manufacturer",
+          "type": "string"
+        },
+        "created_at": {
+          "description": "timestamp at which trust was granted in milliseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "user_id",
+        "manufacturer_id",
+        "created_at"
+      ]
+    }
+  }
+}
