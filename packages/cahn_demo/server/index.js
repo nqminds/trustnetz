@@ -56,8 +56,10 @@ app.use(express.json());
 app.post("/upload/verifiable_credential", (req, res) => {
   const vc = req.body.vc;
 
+  // TODO: Validation and verification of the VC?
+
   // Save the VC to a file
-  const fileName = `./uploads/claims/custom/verifiable_credentials_${Date.now()}.json`;
+  const fileName = `./uploads/vcs/custom/verifiable_credentials_${Date.now()}.json`;
   fs.appendFile(fileName, JSON.stringify(vc) + "\n", (err) => {
     if (err) {
       console.error(err);
@@ -379,6 +381,40 @@ app.get("/deviceType/:deviceTypeId", (req, res) => {
       console.error("Error parsing JSON:", e);
     }
     res.status(200).json(jsonObject);
+  });
+});
+
+app.get("/trust_vc/:deviceId/:authoriser_id", (req, res) => {
+  const deviceId = req.params.deviceId;
+  const authoriserId = req.params.authoriser_id;
+
+  // Search through /uploads/vcs/custom/ for every VC that has the authoriser_id and deviceId
+
+  // Read all files in the directory
+
+  const directory = "./uploads/vcs/custom/";
+
+  fs.readdir(directory, (err, files) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
+    // Filter files that contain the authoriser_id and deviceId
+    const filteredFiles = files.filter((file) => {
+      console.log("file :>> ", file);
+      const fileContents = fs.readFileSync(directory + file, "utf8");
+      return (
+        fileContents.includes(authoriserId) && fileContents.includes(deviceId)
+      );
+    });
+
+    // Read the contents of the filtered files
+    const vcs = filteredFiles.map((file) => {
+      return JSON.parse(fs.readFileSync(directory + file, "utf8"));
+    });
+
+    res.status(200).json(vcs);
   });
 });
 
