@@ -1,5 +1,4 @@
 const express = require("express");
-const multer = require("multer");
 const { exec } = require("child_process");
 const morgan = require("morgan");
 const nodemailer = require("nodemailer");
@@ -39,18 +38,6 @@ const addPublicKeyToEmail = (email, publicKey) => {
   emailToPublicKeys[email].push(publicKey);
 };
 
-const upload = multer({
-  dest: "uploads/",
-  fileFilter: (req, file, cb) => {
-    // Only accept json files
-    if (file.mimetype === "application/json") {
-      cb(null, true);
-    } else {
-      cb(null, false);
-    }
-  },
-});
-
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: process.env.SMTP_PORT,
@@ -65,15 +52,20 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
-// Upload verifiable credentials
-app.post(
-  "/upload/verifiable_credentials",
-  upload.single("file"),
-  (req, res) => {
-    console.log(req.file);
-    res.send("File uploaded successfully");
-  }
-);
+// Route to upload a verifiable credential
+app.post("/upload/verifiable_credential", (req, res) => {
+  const vc = req.body.vc;
+
+  // Save the VC to a file
+  const fileName = `./uploads/claims/custom/verifiable_credentials_${Date.now()}.json`;
+  fs.appendFile(fileName, JSON.stringify(vc) + "\n", (err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+    res.status(200).send("Verifiable credential saved");
+  });
+});
 
 // Takes a Prolog query and returns the result
 app.get("/prolog_query", (req, res) => {

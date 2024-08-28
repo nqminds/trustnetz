@@ -134,9 +134,16 @@ const Page = ({ params }) => {
       Buffer.from(privateKey, "base64")
     );
 
-    const signedVc = vc.sign(privateKeyAsUint8Array);
+    const signedVc = vc.sign(privateKeyAsUint8Array).to_object();
 
-    console.log("signedVc :>> ", signedVc.to_object());
+    // Send the signed VC to the server
+    axios
+      .post("http://localhost:3001/upload/verifiable_credential", {
+        vc: signedVc,
+      })
+      .then((res) => {
+        console.log(res.data);
+      });
   };
 
   const handleRemoveTrust = () => {
