@@ -1,0 +1,39 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:a0e4a548-ad6e-4328-9cff-53c0844d5b1c",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "name": null,
+  "description": null,
+  "issuer": "urn:uuid:585df7b5-8891-4630-9f5d-a5659f3abe04",
+  "validFrom": "2024-08-28T14:15:50.307579Z",
+  "validUntil": null,
+  "credentialStatus": null,
+  "credentialSchema": {
+    "id": "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/user.yaml",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "fact",
+    "schemaName": "user",
+    "id": "d5a4adae-f5c1-4fa6-9ee5-99207af5006c",
+    "timestamp": 1716287268891,
+    "fact": {
+      "id": "Ash-id",
+      "username": "ash",
+      "created_at": 1723716151033,
+      "can_issue_device_trust": false,
+      "can_issue_manufacturer_trust": false
+    }
+  },
+  "proof": {
+    "type": "JsonWebSignature2020",
+    "jws": "fh9eOth+LK85k0W2Y/YBxrOHV2ftVIuXowsWZktW4GHIx9VU+b2qEI7coiXS1F+JkEHQzg52Tm21JaZlmn3iAw==",
+    "proofPurpose": "assertionMethod",
+    "created": "2024-08-28T14:15:50.307581Z"
+  }
+}

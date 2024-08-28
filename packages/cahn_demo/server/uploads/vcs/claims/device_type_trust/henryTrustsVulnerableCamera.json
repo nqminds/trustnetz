@@ -1,0 +1,37 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:8aa4083e-8e66-4dee-b28e-07c8586e5baf",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "name": null,
+  "description": null,
+  "issuer": "urn:uuid:ad021fb3-9a57-44f7-a1e2-688419a5cf48",
+  "validFrom": "2024-08-28T14:15:50.307397Z",
+  "validUntil": null,
+  "credentialStatus": null,
+  "credentialSchema": {
+    "id": "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/device_type_trust.yaml",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "fact",
+    "schemaName": "device_type_trust",
+    "id": "b63f66c6-2c1f-4856-a530-f4824046c495",
+    "timestamp": 1716287268891,
+    "fact": {
+      "device_type_id": "VulnerableCamera-id",
+      "authoriser_id": "Henry-id",
+      "created_at": 1723716151033
+    }
+  },
+  "proof": {
+    "type": "JsonWebSignature2020",
+    "jws": "fh9eOth+LK85k0W2Y/YBxrOHV2ftVIuXowsWZktW4GHIx9VU+b2qEI7coiXS1F+JkEHQzg52Tm21JaZlmn3iAw==",
+    "proofPurpose": "assertionMethod",
+    "created": "2024-08-28T14:15:50.307399Z"
+  }
+}

@@ -1,1 +1,1 @@
-./claim_cascade --dirs ./uploads
+./claim_cascade --dirs ./uploads --vcmode

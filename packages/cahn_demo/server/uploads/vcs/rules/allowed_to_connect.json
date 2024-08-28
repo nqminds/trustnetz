@@ -1,0 +1,17 @@
+{
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
+  "id": "urn:uuid:91cf3009-28ee-488e-8ae8-a751a289c8cb",
+  "type": ["VerifiableCredential", "UserCredential"],
+  "issuer": "urn:uuid:8bbabf61-758b-4bcb-8dab-4a4d1d493e25",
+  "validFrom": "2024-07-25T19:23:24Z",
+  "credentialSchema": {
+    "id": "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/user.yaml",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "rule",
+    "id": "0a9e5dbd-cec6-481c-b19e-9dc1c63c7914",
+    "timestamp": 1716131868000,
+    "rule": "allowed_to_connect(DeviceId) :- \n    % Check if the device type is trusted by the user\n    device(_, DeviceId, _, _),  \n    is_of_device_type(_, DeviceId, DeviceTypeId),\n    manufactured(_, DeviceTypeId, ManufacturerId),\n    manufacturer_trust(_, ManufacturerId, UserId),\n    \n    % Check if the device type is trusted by the user\n    device_type_trust(UserId, _, DeviceTypeId),\n\n    % Check if the user has the permissions to issue device trust\n    user(true, true, _, UserId, _),\n    \n    % Check if the device has any vulnerabilities\n    \\+ (has_sbom(_, DeviceTypeId, VulnerabilityId),\n        sbom_vulnerability(_, VulnerabilityId, Severity),\n        Severity > 5)."
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
+  "id": "urn:uuid:91cf3009-28ee-488e-8ae8-a751a289c8cb",
+  "type": ["VerifiableCredential", "UserCredential"],
+  "issuer": "urn:uuid:8bbabf61-758b-4bcb-8dab-4a4d1d493e25",
+  "validFrom": "2024-07-25T19:23:24Z",
+  "credentialSchema": {
+    "id": "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/user.yaml",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "rule",
+    "id": "b1c2d3e4-f5g6-7h89-i0j1-2k3l4m5n6o7p",
+    "timestamp": 1724315244564,
+    "rule": "output_all_device_data(DeviceDataList) :- \n    findall(DeviceData, (\n        device(CreatedAtDevice, DeviceId, Idevid, Name),\n        is_of_device_type(CreatedAtDeviceType, DeviceId, DeviceTypeId),\n        device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType),\n        manufactured(CreatedAtManufactured, DeviceTypeId, ManufacturerId),\n        manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer),\n        format(atom(DeviceData), 'ENTRY(CreatedAtDevice: ~w, DeviceId: ~w, Idevid: ~w, Name: ~w, CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w, CreatedAtManufactured: ~w, ManufacturerId: ~w, CreatedAtManufacturer: ~w, Manufacturer: ~w)', [CreatedAtDevice, DeviceId, Idevid, Name, CreatedAtDeviceType, DeviceTypeId, DeviceType, CreatedAtManufactured, ManufacturerId, CreatedAtManufacturer, Manufacturer])\n    ), DeviceDataList)."
+  }
+}

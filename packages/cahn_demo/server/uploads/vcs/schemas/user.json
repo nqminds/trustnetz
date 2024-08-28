@@ -1,0 +1,60 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:642167e7-5cd1-4219-bf20-b74067a1533d",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "issuer": "urn:uuid:958f60ae-b93e-44a0-9c8e-d22c0dfe2b58",
+  "validFrom": "2024-08-28T14:15:50.311957Z",
+  "credentialSchema": {
+    "id": "bdc57167-b302-426f-83d5-0864355ff45a",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "schema",
+    "id": "48cfd960-f02d-4024-8827-fb8bd6d16cca",
+    "timestamp": 1716131759000,
+    "schemaName": "user",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/user.v.1.0.0.schema.yaml",
+      "title": "user",
+      "description": "A user",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id of the user",
+          "type": "string"
+        },
+        "username": {
+          "description": "name of the user",
+          "type": "string"
+        },
+        "created_at": {
+          "description": "timestamp at which user was created in milliseconds",
+          "type": "integer"
+        },
+        "can_issue_device_trust": {
+          "description": "If user can issue trust to devices",
+          "type": "bool"
+        },
+        "can_issue_manufacturer_trust": {
+          "description": "If user can issue trust to manufacturers",
+          "type": "bool"
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "created_at"
+      ],
+      "uniqueKeys": [
+        "id",
+        "username"
+      ]
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:d7ada408-5641-4acd-a87a-3d34794cf7d7",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "name": null,
+  "description": null,
+  "issuer": "urn:uuid:8083b8a7-7636-4ec7-8819-b55ba556812b",
+  "validFrom": "2024-08-28T14:15:50.310587Z",
+  "validUntil": null,
+  "credentialStatus": null,
+  "credentialSchema": {
+    "id": "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/device.yaml",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "fact",
+    "schemaName": "device",
+    "id": "335982f3-645d-4ece-b6ce-2458eb7f5a5e",
+    "timestamp": 1716287268891,
+    "fact": {
+      "id": "HenryVulnerableCamera-id",
+      "name": "HenryVulnerableCamera",
+      "idevid": "HenryVulnerableCamera-idevid",
+      "created_at": 1723716151033
+    }
+  },
+  "proof": {
+    "type": "JsonWebSignature2020",
+    "jws": "fh9eOth+LK85k0W2Y/YBxrOHV2ftVIuXowsWZktW4GHIx9VU+b2qEI7coiXS1F+JkEHQzg52Tm21JaZlmn3iAw==",
+    "proofPurpose": "assertionMethod",
+    "created": "2024-08-28T14:15:50.310590Z"
+  }
+}

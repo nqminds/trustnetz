@@ -1,0 +1,52 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:09740561-6977-4cee-ab05-bab604e7fc0a",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "issuer": "urn:uuid:048adcd4-13ef-4ea1-af6c-1ae073524b63",
+  "validFrom": "2024-08-28T14:15:50.312615Z",
+  "credentialSchema": {
+    "id": "89bcd055-98e7-4f7a-9494-227f4e2e3688",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "schema",
+    "id": "48cfd960-f02d-4024-8827-fb8bd6d16cca",
+    "timestamp": 1716131759000,
+    "schemaName": "sbom",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/sbom.v.1.0.0.schema.yaml",
+      "title": "sbom",
+      "description": "An SBOM (Software Bill Of Materials)",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id of the sbom",
+          "type": "string"
+        },
+        "sbom": {
+          "description": "sbom definition",
+          "type": "string"
+        },
+        "created_at": {
+          "description": "timestamp at which sbom was created in milliseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "sbom",
+        "created_at"
+      ],
+      "uniqueKeys": [
+        "id",
+        "sbom"
+      ]
+    }
+  }
+}
