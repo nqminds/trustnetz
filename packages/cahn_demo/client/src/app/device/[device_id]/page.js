@@ -68,7 +68,6 @@ const Page = ({ params }) => {
       .get("http://localhost:3001/trust_vc/" + params.device_id)
       .then((res) => {
         setTrustVCs(res.data);
-        console.log("res.data :>> ", res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -292,8 +291,8 @@ assert(device_trust("Ash-id",1723716151033,"AshEvilPhone-id")).
             useFlexGap
             sx={{ flexWrap: "wrap" }}
           >
-            {trustVCs.map((vc) => (
-              <Card raised key={vc.id} sx={{ maxWidth: 345, marginBottom: 2 }}>
+            {trustVCs.map((vc, index) => (
+              <Card raised key={index} sx={{ maxWidth: 345, marginBottom: 2 }}>
                 <CardContent>
                   <Stack spacing={0.4}>
                     <Typography variant="body2" color="textSecondary">

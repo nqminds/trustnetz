@@ -11,14 +11,12 @@ import {
   TableHead,
   TableRow,
   Chip,
-  Button,
-  Container,
-  ButtonGroup,
 } from "@mui/material";
 import { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
 import DoDisturbIcon from "@mui/icons-material/DoDisturb";
 import CheckIcon from "@mui/icons-material/Check";
+import { useEffect } from "react";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(even)": {
@@ -43,6 +41,8 @@ function unixInMillisecondsToDateString(unixInMilliseconds) {
 }
 
 export default function ManufacturerInfoTable({ manufacturerData }) {
+  useEffect(() => {}, [manufacturerData]);
+
   return (
     <Paper
       sx={{
@@ -155,63 +155,78 @@ export default function ManufacturerInfoTable({ manufacturerData }) {
             >
               Device Types Made by {manufacturerData.Manufacturer}
             </Typography>
-
-            <Stack
-              direction="row"
-              divider={<Divider orientation="vertical" flexItem />}
-              spacing={2}
-              sx={{ mt: 2 }}
+            <TableContainer
+              sx={{
+                margin: "auto",
+              }}
             >
-              {manufacturerData.DeviceTypes.map((device, index) => (
-                <TableContainer>
-                  <Table
-                    sx={{
-                      [`& .${tableCellClasses.root}`]: {
-                        borderBottom: "none",
-                      },
-                    }}
-                  >
-                    <TableHead>
+              <Table
+                sx={{
+                  [`& .${tableCellClasses.root}`]: {
+                    borderBottom: "none",
+                  },
+                }}
+              >
+                <TableHead>
+                  <StyledTableRow>
+                    <StyledTableCell>Attribute</StyledTableCell>
+                    {manufacturerData.DeviceTypes.map((device) => (
+                      <StyledTableCell key={device.DeviceTypeId} align="center">
+                        {device.DeviceType}
+                      </StyledTableCell>
+                    ))}
+                  </StyledTableRow>
+                </TableHead>
+                <TableBody>
+                  {manufacturerData.DeviceTypes.length > 0 && (
+                    <>
                       <StyledTableRow>
-                        <StyledTableCell>{device.DeviceType}</StyledTableCell>
-                        <StyledTableCell align="right"></StyledTableCell>
-                      </StyledTableRow>
-                    </TableHead>
-                    <TableBody>
-                      <>
-                        <StyledTableRow>
-                          <StyledTableCell>
-                            <b>Device Type</b> ID
-                          </StyledTableCell>
-                          <StyledTableCell align="right">
+                        <StyledTableCell>
+                          <b>Device Type</b> ID
+                        </StyledTableCell>
+                        {manufacturerData.DeviceTypes.map((device) => (
+                          <StyledTableCell
+                            key={device.DeviceTypeId}
+                            align="center"
+                          >
                             {device.DeviceTypeId}
                           </StyledTableCell>
-                        </StyledTableRow>
-                        <StyledTableRow>
-                          <StyledTableCell>
-                            <b>Device Type</b> Name
-                          </StyledTableCell>
-                          <StyledTableCell align="right">
+                        ))}
+                      </StyledTableRow>
+                      <StyledTableRow>
+                        <StyledTableCell>
+                          <b>Device Type</b> Name
+                        </StyledTableCell>
+                        {manufacturerData.DeviceTypes.map((device) => (
+                          <StyledTableCell
+                            key={device.DeviceTypeId}
+                            align="center"
+                          >
                             {device.DeviceType}
                           </StyledTableCell>
-                        </StyledTableRow>
-                        <StyledTableRow>
-                          <StyledTableCell>
-                            <b>Device Type</b> Created At
-                          </StyledTableCell>
-                          <StyledTableCell align="right">
+                        ))}
+                      </StyledTableRow>
+                      <StyledTableRow>
+                        <StyledTableCell>
+                          <b>Device Type</b> Created At
+                        </StyledTableCell>
+                        {manufacturerData.DeviceTypes.map((device) => (
+                          <StyledTableCell
+                            key={device.DeviceTypeId}
+                            align="center"
+                          >
                             {unixInMillisecondsToDateString(
                               device.CreatedAtDeviceType
-                            )}{" "}
+                            )}
                             ({device.CreatedAtDeviceType})
                           </StyledTableCell>
-                        </StyledTableRow>
-                      </>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              ))}
-            </Stack>
+                        ))}
+                      </StyledTableRow>
+                    </>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </>
         </Stack>
       </Paper>

@@ -10,8 +10,8 @@ import { useRouter } from "next/navigation";
 export default function Bar() {
   const router = useRouter();
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+    <Box sx={{ flexGrow: 1, mb: 10 }}>
+      <AppBar position="fixed">
         <Toolbar>
           <IconButton
             size="large"
