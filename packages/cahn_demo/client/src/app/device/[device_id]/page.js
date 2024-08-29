@@ -15,6 +15,7 @@ import axios from "axios";
 import DeviceInfoTable from "../../components/DeviceInfoTable";
 import withAuth from "@/app/utils/withAuth";
 import { v4 as uuidv4 } from "uuid";
+import AppBar from "../../components/AppBar";
 
 const Page = ({ params }) => {
   const [deviceData, setDeviceData] = useState({
@@ -231,100 +232,105 @@ const Page = ({ params }) => {
   };
 
   return (
-    <Box>
-      <Typography
-        variant="h2"
-        sx={{
-          textAlign: "center",
-          color: "primary.main",
-          m: { xs: 1, sm: 3 },
-        }}
-      >
-        Device Information
-      </Typography>
-      <DeviceInfoTable deviceData={deviceData} />
-
-      <Paper
-        sx={{
-          p: { xs: 2, sm: 3 },
-          m: { xs: 1, sm: 3 },
-        }}
-      >
+    <>
+      <AppBar />
+      <Box>
         <Typography
-          variant="h3"
+          variant="h2"
           sx={{
+            textAlign: "center",
             color: "primary.main",
+            m: { xs: 1, sm: 3 },
           }}
-          gutterBottom
         >
-          {"> "}
-          {deviceData.Name} Trust
+          Device Information
         </Typography>
-        <Box
-          component="pre"
+        <DeviceInfoTable deviceData={deviceData} />
+
+        <Paper
           sx={{
-            padding: "16px",
-            borderRadius: "4px",
-            overflowX: "auto",
-            fontFamily: "Monaco, monospace",
-            fontSize: "14px",
-            backgroundColor: "rgba(0, 0, 0, 0.2)",
+            p: { xs: 2, sm: 3 },
+            m: { xs: 1, sm: 3 },
           }}
         >
-          <Typography component="code">
-            {`Some stuff here from the Prolog environment about who trusts this device.
+          <Typography
+            variant="h3"
+            sx={{
+              color: "primary.main",
+            }}
+            gutterBottom
+          >
+            {"> "}
+            {deviceData.Name} Trust
+          </Typography>
+          <Box
+            component="pre"
+            sx={{
+              padding: "16px",
+              borderRadius: "4px",
+              overflowX: "auto",
+              fontFamily: "Monaco, monospace",
+              fontSize: "14px",
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+            }}
+          >
+            <Typography component="code">
+              {`Some stuff here from the Prolog environment about who trusts this device.
 
 assert(device_trust("Henry-id",1723716151033,"HenryTrustPhone-id")).
 assert(device_trust("Henry-id",1723716151033,"HenryVulnerableCamera-id")).
 assert(device_trust("Ash-id",1723716151033,"AshEvilPhone-id")).
 `}
-          </Typography>
-        </Box>
-        <Paper elevation={10} sx={{ p: 2, my: 1 }}>
-          <Typography variant="h4" color="primary" gutterBottom>
-            Trust submissions
-          </Typography>
-          <Stack
-            spacing={{ xs: 1, sm: 2 }}
-            direction="row"
-            useFlexGap
-            sx={{ flexWrap: "wrap" }}
-          >
-            {trustVCs.map((vc) => (
-              <Card key={vc.id} sx={{ maxWidth: 345, marginBottom: 2 }}>
-                <CardContent>
-                  <Stack spacing={2}>
-                    <Typography variant="body2" color="textSecondary">
-                      {new Date(
-                        vc.credentialSubject.fact.created_at
-                      ).toLocaleDateString("en-GB")}
-                    </Typography>
-                    <Typography variant="h5" color="primary">
-                      {vc.credentialSubject.fact.authoriser_id}
-                    </Typography>
-                  </Stack>
-                </CardContent>
-                {vc.credentialSubject.fact.authoriser_id === emailAddress && (
-                  <CardActions>
-                    <Button
-                      variant="contained"
-                      onClick={() => handleRemoveTrust(vc.credentialSubject.id)}
-                    >
-                      Submit retraction
-                    </Button>
-                  </CardActions>
-                )}
-              </Card>
-            ))}
-          </Stack>
+            </Typography>
+          </Box>
+          <Paper elevation={10} sx={{ p: 2, my: 1 }}>
+            <Typography variant="h4" color="primary" gutterBottom>
+              Trust submissions
+            </Typography>
+            <Stack
+              spacing={{ xs: 1, sm: 2 }}
+              direction="row"
+              useFlexGap
+              sx={{ flexWrap: "wrap" }}
+            >
+              {trustVCs.map((vc) => (
+                <Card key={vc.id} sx={{ maxWidth: 345, marginBottom: 2 }}>
+                  <CardContent>
+                    <Stack spacing={2}>
+                      <Typography variant="body2" color="textSecondary">
+                        {new Date(
+                          vc.credentialSubject.fact.created_at
+                        ).toLocaleDateString("en-GB")}
+                      </Typography>
+                      <Typography variant="h5" color="primary">
+                        {vc.credentialSubject.fact.authoriser_id}
+                      </Typography>
+                    </Stack>
+                  </CardContent>
+                  {vc.credentialSubject.fact.authoriser_id === emailAddress && (
+                    <CardActions>
+                      <Button
+                        variant="contained"
+                        onClick={() =>
+                          handleRemoveTrust(vc.credentialSubject.id)
+                        }
+                      >
+                        Submit retraction
+                      </Button>
+                    </CardActions>
+                  )}
+                </Card>
+              ))}
+            </Stack>
+          </Paper>
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+            <Button variant="contained" onClick={handleCreateTrust}>
+              Add trust
+            </Button>
+          </Box>
         </Paper>
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-          <Button variant="contained" onClick={handleCreateTrust}>
-            Add trust
-          </Button>
-        </Box>
-      </Paper>
-    </Box>
+      </Box>
+    </>
   );
 };
 

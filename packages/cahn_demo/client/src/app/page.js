@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import defaultData from "./defaultData";
 import axios from "axios";
 import withAuth from "./utils/withAuth";
+import AppBar from "./components/AppBar";
 
 const Home = () => {
   const [data, setData] = useState(defaultData);
@@ -22,28 +23,31 @@ const Home = () => {
   }, []);
 
   return (
-    <Box>
-      <Typography
-        variant="h2"
-        sx={{
-          textAlign: "center",
-          color: "primary.main",
-          m: { xs: 1, sm: 3 },
-        }}
-      >
-        CAHN Dashboard
-      </Typography>
-      <DeviceSelect
-        devices={data}
-        selectedDevice={selectedDevice}
-        setSelectedDevice={setSelectedDevice}
-        isLoading={isLoading}
-      />
-      <DeviceInformationBoard
-        selectedDevice={selectedDevice}
-        isLoading={isLoading}
-      />
-    </Box>
+    <>
+      <AppBar />
+      <Box>
+        <Typography
+          variant="h2"
+          sx={{
+            textAlign: "center",
+            color: "primary.main",
+            m: { xs: 1, sm: 3 },
+          }}
+        >
+          CAHN Dashboard
+        </Typography>
+        <DeviceSelect
+          devices={data}
+          selectedDevice={selectedDevice}
+          setSelectedDevice={setSelectedDevice}
+          isLoading={isLoading}
+        />
+        <DeviceInformationBoard
+          selectedDevice={selectedDevice}
+          isLoading={isLoading}
+        />
+      </Box>
+    </>
   );
 };
 
