@@ -297,21 +297,23 @@ assert(device_trust("Ash-id",1723716151033,"AshEvilPhone-id")).
                     <Typography variant="body2" color="textSecondary">
                       {new Date(
                         vc.credentialSubject.fact.created_at
-                      ).toLocaleDateString()}
+                      ).toLocaleDateString("en-GB")}
                     </Typography>
                     <Typography variant="h5" color="primary">
                       {vc.credentialSubject.fact.authoriser_id}
                     </Typography>
                   </Stack>
                 </CardContent>
-                <CardActions>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleRemoveTrust(vc.credentialSubject.id)}
-                  >
-                    Submit retraction
-                  </Button>
-                </CardActions>
+                {vc.credentialSubject.fact.authoriser_id === emailAddress && (
+                  <CardActions>
+                    <Button
+                      variant="contained"
+                      onClick={() => handleRemoveTrust(vc.credentialSubject.id)}
+                    >
+                      Submit retraction
+                    </Button>
+                  </CardActions>
+                )}
               </Card>
             ))}
           </Stack>
