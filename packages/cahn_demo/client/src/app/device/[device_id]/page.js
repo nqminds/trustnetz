@@ -322,12 +322,12 @@ assert(device_trust("Ash-id",1723716151033,"AshEvilPhone-id")).
               </Card>
             ))}
           </Stack>
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+            <Button variant="contained" onClick={handleCreateTrust}>
+              Add trust
+            </Button>
+          </Box>
         </Paper>
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-          <Button variant="contained" onClick={handleCreateTrust}>
-            Add trust
-          </Button>
-        </Box>
       </Box>
     </>
   );
