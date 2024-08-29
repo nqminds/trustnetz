@@ -1,12 +1,7 @@
 {
-  "@context": [
-    "https://www.w3.org/ns/credentials/v2"
-  ],
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
   "id": "urn:uuid:dc229e70-4917-4309-811c-805b8074d157",
-  "type": [
-    "VerifiableCredential",
-    "UserCredential"
-  ],
+  "type": ["VerifiableCredential", "UserCredential"],
   "name": null,
   "description": null,
   "issuer": "urn:uuid:213e7336-cbd2-4510-835a-0ba2605b2be4",

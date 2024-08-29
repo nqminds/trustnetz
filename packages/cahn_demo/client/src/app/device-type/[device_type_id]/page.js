@@ -10,9 +10,7 @@ const Page = ({ params }) => {
     CreatedAtDeviceType: "",
     DeviceTypeId: "",
     DeviceType: "",
-    SBOM: {
-      SbomId: "",
-    },
+    SBOM: {},
     Devices: [
       [
         {
@@ -31,7 +29,6 @@ const Page = ({ params }) => {
       .get("http://localhost:3001/deviceType/" + params.device_type_id)
       .then((res) => {
         setDeviceTypeData(res.data);
-        console.log("res.data :>> ", res.data);
       });
   }, []);
 

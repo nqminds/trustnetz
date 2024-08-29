@@ -610,7 +610,7 @@ output_device_type_data(DeviceTypeId, DeviceTypeData) :-
     ), VulnerabilityList),
     format(atom(SbomData), '{"SbomId": "~w", "Details": "~w", "Vulnerabilities": [~w]}', [SbomId, SbomDetails, VulnerabilityList])
   ;
-    SbomData = '{"SbomId": "No SBOM"}'
+    SbomData = '{}'
   ),
   
   % Format the output for the device type
@@ -655,35 +655,32 @@ output_device_data(DeviceId, DeviceData) :-
 
 
 output_manufacturer_data(ManufacturerId, ManufacturerData) :-
-    manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer),
+  manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer),
 
-    % Retrieve device data for devices manufactured by this manufacturer, allowing for missing information
-    findall(DeviceData, (
-        manufactured(_CreatedAtManufactured, DeviceTypeId, ManufacturerId),
+  % Retrieve device type data for devices manufactured by this manufacturer
+  findall(DeviceTypeData, (
+    manufactured(_CreatedAtManufactured, DeviceTypeId, ManufacturerId),
 
-        % Optional device information
-        (device(CreatedAtDevice, DeviceId, Idevid, Name) -> true ; (CreatedAtDevice = unknown, DeviceId = unknown, Idevid = unknown, Name = unknown)),
-
-        % Optional device type information
-        (is_of_device_type(CreatedAtDeviceType, DeviceId, DeviceTypeId) ->
-            (device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType) -> true ; DeviceType = unknown)
-        ;
-            CreatedAtDeviceType = unknown, DeviceTypeId = unknown, DeviceType = unknown
-        ),
-        
-        format(atom(DeviceData), 'DEVICE(DeviceId: ~w, Idevid: ~w, Name: ~w, CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w)', 
-               [DeviceId, Idevid, Name, CreatedAtDeviceType, DeviceTypeId, DeviceType])
-    ), DeviceDataList),
-
-    % Check if there is a user that can issue manufacturer trust
-    (   
-        once((manufacturer_trust(_, ManufacturerId, UserId), user(true, true, _, UserId, _))) ->
-        CanIssueManufacturerTrust = true
-    ;   
-        CanIssueManufacturerTrust = false
+    % Retrieve device type information
+    (device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType) ->
+      true
+    ;
+      (CreatedAtDeviceType = unknown, DeviceType = unknown)
     ),
 
-    % Format the output
-    format(atom(ManufacturerData), 'CreatedAtManufacturer: ~w, ManufacturerId: ~w, Manufacturer: ~w, Devices: ~w, CanIssueManufacturerTrust: ~w', 
-           [CreatedAtManufacturer, ManufacturerId, Manufacturer, DeviceDataList, CanIssueManufacturerTrust]).
+    format(atom(DeviceTypeData), '{"DeviceTypeId": "~w", "CreatedAtDeviceType": "~w", "DeviceType": "~w"}', 
+         [DeviceTypeId, CreatedAtDeviceType, DeviceType])
+  ), DeviceTypeDataList),
+
+  % Check if there is a user that can issue manufacturer trust
+  (   
+    once((manufacturer_trust(_, ManufacturerId, UserId), user(true, true, _, UserId, _))) ->
+    CanIssueManufacturerTrust = true
+  ;   
+    CanIssueManufacturerTrust = false
+  ),
+
+  % Format the output
+  format(atom(ManufacturerData), '{"CreatedAtManufacturer": "~w", "ManufacturerId": "~w", "Manufacturer": "~w", "DeviceTypes": ~w, "CanIssueManufacturerTrust": ~w}', 
+       [CreatedAtManufacturer, ManufacturerId, Manufacturer, DeviceTypeDataList, CanIssueManufacturerTrust]).
 
