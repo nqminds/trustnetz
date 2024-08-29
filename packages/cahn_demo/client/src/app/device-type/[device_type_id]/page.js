@@ -7,17 +7,20 @@ import withAuth from "@/app/utils/withAuth";
 import AppBar from "../../components/AppBar";
 const Page = ({ params }) => {
   const [deviceTypeData, setDeviceTypeData] = useState({
-    CreatedAtDeviceType: 0,
+    CreatedAtDeviceType: "",
     DeviceTypeId: "",
     DeviceType: "",
+    SBOM: {},
     Devices: [
-      {
-        DeviceId: "",
-        Idevid: "",
-        Name: "",
-        ManufacturerId: "",
-        Manufacturer: "",
-      },
+      [
+        {
+          DeviceId: "",
+          Idevid: "",
+          Name: "",
+          ManufacturerId: "",
+          Manufacturer: "",
+        },
+      ],
     ],
   });
 

@@ -1,12 +1,7 @@
 {
-  "@context": [
-    "https://www.w3.org/ns/credentials/v2"
-  ],
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
   "id": "urn:uuid:d3189cc2-ebee-4802-b050-409f0e7094cb",
-  "type": [
-    "VerifiableCredential",
-    "UserCredential"
-  ],
+  "type": ["VerifiableCredential", "UserCredential"],
   "name": null,
   "description": null,
   "issuer": "urn:uuid:bf5061ac-2718-4bbc-8cdb-7f2829250a2c",
@@ -23,7 +18,7 @@
     "id": "38f3600b-a0b4-4949-a76b-6efe9c532de1",
     "timestamp": 1716287268891,
     "fact": {
-      "sbom_id": "VulnerableCameraVulnerability-id",
+      "sbom_id": "VulnerableCameraSBOM-id",
       "device_type_id": "VulnerableCamera-id",
       "created_at": 1723716151033
     }

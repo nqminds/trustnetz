@@ -1,12 +1,7 @@
 {
-  "@context": [
-    "https://www.w3.org/ns/credentials/v2"
-  ],
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
   "id": "urn:uuid:bb0635d5-4c34-446d-b2c1-2d1a52e57209",
-  "type": [
-    "VerifiableCredential",
-    "UserCredential"
-  ],
+  "type": ["VerifiableCredential", "UserCredential"],
   "name": null,
   "description": null,
   "issuer": "urn:uuid:d65584ab-8373-422c-a33d-7fdd60a9a02f",
@@ -24,7 +19,7 @@
     "timestamp": 1716287268891,
     "fact": {
       "id": "VulnerableCameraSBOM-id",
-      "sbom": "VulnerableCamera SBOM (change this later?)",
+      "sbom": "VulnerableCamera SBOM information",
       "created_at": 1723716151033
     }
   },

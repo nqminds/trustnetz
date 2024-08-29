@@ -7,19 +7,22 @@ import withAuth from "@/app/utils/withAuth";
 import AppBar from "../../components/AppBar";
 const Page = ({ params }) => {
   const [manufacturerData, setManufacturerData] = useState({
-    CreatedAtManufacturer: null,
-    ManufacturerId: null,
-    Manufacturer: null,
-    Devices: [
+    CreatedAtManufacturer: "",
+    ManufacturerId: "",
+    Manufacturer: "",
+    DeviceTypes: [
       {
-        DeviceId: null,
-        Idevid: null,
-        Name: null,
-        CreatedAtDeviceType: null,
-        DeviceTypeId: null,
-        DeviceType: null,
+        DeviceTypeId: "",
+        CreatedAtDeviceType: "",
+        DeviceType: "",
+      },
+      {
+        DeviceTypeId: "",
+        CreatedAtDeviceType: "",
+        DeviceType: "",
       },
     ],
+
     CanIssueManufacturerTrust: false,
   });
 

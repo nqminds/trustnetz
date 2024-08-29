@@ -11,9 +11,6 @@ import {
   TableHead,
   TableRow,
   Chip,
-  Button,
-  Container,
-  ButtonGroup,
 } from "@mui/material";
 import { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
@@ -37,7 +34,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 function unixInMillisecondsToDateString(unixInMilliseconds) {
-  return new Date(unixInMilliseconds).toDateString();
+  return new Date(Number(unixInMilliseconds)).toDateString();
 }
 
 export default function DeviceTypeInfoTable({ deviceTypeData }) {
@@ -58,87 +55,181 @@ export default function DeviceTypeInfoTable({ deviceTypeData }) {
         {"> "}
         {deviceTypeData.DeviceType}
       </Typography>
-      <Paper
-        elevation={3}
-        sx={{
-          p: { xs: 2, sm: 3 },
-          margin: "auto",
-          width: "60%",
-        }}
-      >
-        <Stack divider={<Divider />} spacing={2}>
-          <Box>
-            <TableContainer
-              sx={{
-                margin: "auto",
-              }}
-            >
-              <Table
+      <Stack direction="row" spacing={2}>
+        <Paper
+          elevation={3}
+          sx={{
+            p: { xs: 2, sm: 3 },
+            margin: "auto",
+            width: "60%",
+          }}
+        >
+          <Stack divider={<Divider />} spacing={2}>
+            <>
+              <Typography
+                variant="h4"
                 sx={{
-                  [`& .${tableCellClasses.root}`]: {
-                    borderBottom: "none",
-                  },
+                  color: "primary.main",
                 }}
               >
-                <TableHead>
-                  <StyledTableRow>
-                    <StyledTableCell>Field</StyledTableCell>
-                    <StyledTableCell align="right">Value</StyledTableCell>
-                  </StyledTableRow>
-                </TableHead>
+                Device Type Information
+              </Typography>
 
-                <TableBody>
-                  {/* Device Type Fields */}
-                  <StyledTableRow>
-                    <StyledTableCell>
-                      <b>Device Type</b> Created At
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      {unixInMillisecondsToDateString(
-                        deviceTypeData.CreatedAtDeviceType
-                      )}{" "}
-                      ({deviceTypeData.CreatedAtDeviceType})
-                    </StyledTableCell>
-                  </StyledTableRow>
-                  <StyledTableRow>
-                    <StyledTableCell>
-                      <b>Device Type</b> ID
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      {deviceTypeData.DeviceTypeId}
-                    </StyledTableCell>
-                  </StyledTableRow>
-                  <StyledTableRow>
-                    <StyledTableCell>
-                      <b>Device Type</b> Name
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      {deviceTypeData.DeviceType}
-                    </StyledTableCell>
-                  </StyledTableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
+              <TableContainer
+                sx={{
+                  margin: "auto",
+                }}
+              >
+                <Table
+                  sx={{
+                    [`& .${tableCellClasses.root}`]: {
+                      borderBottom: "none",
+                    },
+                  }}
+                >
+                  <TableHead>
+                    <StyledTableRow>
+                      <StyledTableCell>Field</StyledTableCell>
+                      <StyledTableCell align="right">Value</StyledTableCell>
+                    </StyledTableRow>
+                  </TableHead>
 
-          <>
-            <Typography
-              variant="h4"
-              sx={{
-                color: "primary.main",
-              }}
-            >
-              Devices of type {deviceTypeData.DeviceType}
-            </Typography>
+                  <TableBody>
+                    {/* Device Type Fields */}
+                    <StyledTableRow>
+                      <StyledTableCell>
+                        <b>Device Type</b> Created At
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {unixInMillisecondsToDateString(
+                          deviceTypeData.CreatedAtDeviceType
+                        )}{" "}
+                        ({deviceTypeData.CreatedAtDeviceType})
+                      </StyledTableCell>
+                    </StyledTableRow>
+                    <StyledTableRow>
+                      <StyledTableCell>
+                        <b>Device Type</b> ID
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {deviceTypeData.DeviceTypeId}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                    <StyledTableRow>
+                      <StyledTableCell>
+                        <b>Device Type</b> Name
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {deviceTypeData.DeviceType}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
+            <>
+              <Typography
+                variant="h4"
+                sx={{
+                  color: "primary.main",
+                }}
+              >
+                Devices of Type {deviceTypeData.DeviceType}
+              </Typography>
 
-            <Stack
-              direction="row"
-              divider={<Divider orientation="vertical" flexItem />}
-              spacing={2}
-              sx={{ mt: 2 }}
-            >
-              {deviceTypeData.Devices.map((device, index) => (
-                <TableContainer key={index}>
+              <Stack
+                direction="row"
+                divider={<Divider orientation="vertical" flexItem />}
+                spacing={2}
+                sx={{ mt: 2 }}
+              >
+                {deviceTypeData.Devices.map((device, index) => (
+                  <TableContainer key={index}>
+                    <Table
+                      sx={{
+                        [`& .${tableCellClasses.root}`]: {
+                          borderBottom: "none",
+                        },
+                      }}
+                    >
+                      <TableHead>
+                        <StyledTableRow>
+                          <StyledTableCell>{device.Name}</StyledTableCell>
+                          <StyledTableCell align="right"></StyledTableCell>
+                        </StyledTableRow>
+                      </TableHead>
+                      <TableBody>
+                        <>
+                          <StyledTableRow>
+                            <StyledTableCell>
+                              <b>Device</b> ID
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                              {device.DeviceId}
+                            </StyledTableCell>
+                          </StyledTableRow>
+                          <StyledTableRow>
+                            <StyledTableCell>
+                              <b>Device</b> IDevID
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                              {device.Idevid}
+                            </StyledTableCell>
+                          </StyledTableRow>
+                          <StyledTableRow>
+                            <StyledTableCell>
+                              <b>Device</b> Name
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                              {device.Name}
+                            </StyledTableCell>
+                          </StyledTableRow>
+                          <StyledTableRow>
+                            <StyledTableCell>
+                              <b>Manufacturer</b> ID
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                              {device.ManufacturerId}
+                            </StyledTableCell>
+                          </StyledTableRow>
+                          <StyledTableRow>
+                            <StyledTableCell>
+                              <b>Manufacturer</b> Name
+                            </StyledTableCell>
+                            <StyledTableCell align="right">
+                              {device.Manufacturer}
+                            </StyledTableCell>
+                          </StyledTableRow>
+                        </>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                ))}
+              </Stack>
+            </>
+          </Stack>
+        </Paper>
+        <Paper
+          elevation={3}
+          sx={{
+            p: { xs: 2, sm: 3 },
+            margin: "auto",
+            width: "60%",
+          }}
+        >
+          <Stack divider={<Divider />} spacing={2}>
+            {Object.keys(deviceTypeData.SBOM).length > 0 ? (
+              <>
+                <Typography
+                  variant="h4"
+                  sx={{
+                    color: "primary.main",
+                  }}
+                >
+                  SBOM Information
+                </Typography>
+
+                <TableContainer>
                   <Table
                     sx={{
                       [`& .${tableCellClasses.root}`]: {
@@ -148,61 +239,102 @@ export default function DeviceTypeInfoTable({ deviceTypeData }) {
                   >
                     <TableHead>
                       <StyledTableRow>
-                        <StyledTableCell>{device.Name}</StyledTableCell>
-                        <StyledTableCell align="right"></StyledTableCell>
+                        <StyledTableCell>Field</StyledTableCell>
+                        <StyledTableCell align="right">Value</StyledTableCell>
                       </StyledTableRow>
                     </TableHead>
                     <TableBody>
-                      <>
-                        <StyledTableRow>
-                          <StyledTableCell>
-                            <b>Device</b> ID
-                          </StyledTableCell>
-                          <StyledTableCell align="right">
-                            {device.DeviceId}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                        <StyledTableRow>
-                          <StyledTableCell>
-                            <b>Device</b> IDevID
-                          </StyledTableCell>
-                          <StyledTableCell align="right">
-                            {device.Idevid}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                        <StyledTableRow>
-                          <StyledTableCell>
-                            <b>Device</b> Name
-                          </StyledTableCell>
-                          <StyledTableCell align="right">
-                            {device.Name}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                        <StyledTableRow>
-                          <StyledTableCell>
-                            <b>Manufacturer</b> ID
-                          </StyledTableCell>
-                          <StyledTableCell align="right">
-                            {device.ManufacturerId}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                        <StyledTableRow>
-                          <StyledTableCell>
-                            <b>Manufacturer</b> Name
-                          </StyledTableCell>
-                          <StyledTableCell align="right">
-                            {device.Manufacturer}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                      </>
+                      <StyledTableRow>
+                        <StyledTableCell>
+                          <b>SBOM</b> ID
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {deviceTypeData.SBOM.SbomId}
+                        </StyledTableCell>
+                      </StyledTableRow>
+                      <StyledTableRow>
+                        <StyledTableCell>
+                          <b>SBOM</b> Details
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          {deviceTypeData.SBOM.Details}
+                        </StyledTableCell>
+                      </StyledTableRow>
                     </TableBody>
                   </Table>
                 </TableContainer>
-              ))}
-            </Stack>
-          </>
-        </Stack>
-      </Paper>
+              </>
+            ) : (
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "text.secondary",
+                }}
+              >
+                No SBOM information available.
+              </Typography>
+            )}
+            {/* Vulnerabilities */}
+            {deviceTypeData.SBOM.Vulnerabilities &&
+            deviceTypeData.SBOM.Vulnerabilities.length > 0 ? (
+              <>
+                <Typography
+                  variant="h4"
+                  sx={{
+                    color: "primary.main",
+                  }}
+                >
+                  Vulnerabilities
+                </Typography>
+
+                {deviceTypeData.SBOM.Vulnerabilities.map(
+                  (vulnList, listIndex) => (
+                    <TableContainer key={listIndex}>
+                      <Table
+                        sx={{
+                          [`& .${tableCellClasses.root}`]: {
+                            borderBottom: "none",
+                          },
+                        }}
+                      >
+                        <TableHead>
+                          <StyledTableRow>
+                            <StyledTableCell>Vulnerability ID</StyledTableCell>
+                            <StyledTableCell align="right">
+                              Severity
+                            </StyledTableCell>
+                          </StyledTableRow>
+                        </TableHead>
+                        <TableBody>
+                          {vulnList.map((vulnerability, vulnIndex) => (
+                            <StyledTableRow key={vulnIndex}>
+                              <StyledTableCell>
+                                {vulnerability.VulnerabilityId}
+                              </StyledTableCell>
+                              <StyledTableCell align="right">
+                                {vulnerability.Severity}
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  )
+                )}
+              </>
+            ) : (
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "text.secondary",
+                }}
+              >
+                No vulnerability information available.
+              </Typography>
+            )}
+          </Stack>
+        </Paper>
+      </Stack>
     </Paper>
   );
 }

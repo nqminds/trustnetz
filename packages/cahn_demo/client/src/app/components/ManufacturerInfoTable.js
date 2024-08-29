@@ -39,7 +39,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 function unixInMillisecondsToDateString(unixInMilliseconds) {
-  return new Date(unixInMilliseconds).toDateString();
+  return new Date(Number(unixInMilliseconds)).toDateString();
 }
 
 export default function ManufacturerInfoTable({ manufacturerData }) {
@@ -153,7 +153,7 @@ export default function ManufacturerInfoTable({ manufacturerData }) {
                 color: "primary.main",
               }}
             >
-              Devices made by {manufacturerData.Manufacturer}
+              Device Types Made by {manufacturerData.Manufacturer}
             </Typography>
 
             <Stack
@@ -162,7 +162,7 @@ export default function ManufacturerInfoTable({ manufacturerData }) {
               spacing={2}
               sx={{ mt: 2 }}
             >
-              {manufacturerData.Devices.map((device, index) => (
+              {manufacturerData.DeviceTypes.map((device, index) => (
                 <TableContainer>
                   <Table
                     sx={{
@@ -173,47 +173,12 @@ export default function ManufacturerInfoTable({ manufacturerData }) {
                   >
                     <TableHead>
                       <StyledTableRow>
-                        <StyledTableCell>{device.Name}</StyledTableCell>
+                        <StyledTableCell>{device.DeviceType}</StyledTableCell>
                         <StyledTableCell align="right"></StyledTableCell>
                       </StyledTableRow>
                     </TableHead>
                     <TableBody>
                       <>
-                        <StyledTableRow>
-                          <StyledTableCell>
-                            <b>Device</b> ID
-                          </StyledTableCell>
-                          <StyledTableCell align="right">
-                            {device.DeviceId}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                        <StyledTableRow>
-                          <StyledTableCell>
-                            <b>Device</b> IDevID
-                          </StyledTableCell>
-                          <StyledTableCell align="right">
-                            {device.Idevid}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                        <StyledTableRow>
-                          <StyledTableCell>
-                            <b>Device</b> Name
-                          </StyledTableCell>
-                          <StyledTableCell align="right">
-                            {device.Name}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                        <StyledTableRow>
-                          <StyledTableCell>
-                            <b>Device Type</b> Created At
-                          </StyledTableCell>
-                          <StyledTableCell align="right">
-                            {unixInMillisecondsToDateString(
-                              device.CreatedAtDeviceType
-                            )}{" "}
-                            ({device.CreatedAtDeviceType})
-                          </StyledTableCell>
-                        </StyledTableRow>
                         <StyledTableRow>
                           <StyledTableCell>
                             <b>Device Type</b> ID
@@ -228,6 +193,17 @@ export default function ManufacturerInfoTable({ manufacturerData }) {
                           </StyledTableCell>
                           <StyledTableCell align="right">
                             {device.DeviceType}
+                          </StyledTableCell>
+                        </StyledTableRow>
+                        <StyledTableRow>
+                          <StyledTableCell>
+                            <b>Device Type</b> Created At
+                          </StyledTableCell>
+                          <StyledTableCell align="right">
+                            {unixInMillisecondsToDateString(
+                              device.CreatedAtDeviceType
+                            )}{" "}
+                            ({device.CreatedAtDeviceType})
                           </StyledTableCell>
                         </StyledTableRow>
                       </>

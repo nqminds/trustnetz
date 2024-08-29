@@ -305,42 +305,13 @@ app.get("/manufacturer/:manufacturerId", (req, res) => {
       console.error(`Standard error: ${stderr}`);
       return res.status(400).json({ error: "Bad request" });
     }
-    // Function to format string to valid JSON
-    function formatToJSON(str) {
-      // Add quotes around keys and values
-      return str
-        .replace(/(\w+):/g, '"$1":') // Add quotes around keys
-        .replace(/: (\w+(-\w+)?)/g, (match, p1) => {
-          // Check if the value is a number or null
-          if (/^\d+$/.test(p1)) {
-            return `: ${p1}`; // Number values remain unquoted
-          }
-          if (p1 === "true" || p1 === "false") {
-            return `: ${p1}`; // Boolean values remain unquoted
-          }
-          return `: "${p1}"`; // String values get quoted
-        })
-        .replace(/: "null"/g, ": null") // Handle "null" as null
-        .replace(/DEVICE\(/g, "{") // Replace DEVICE( with {
-        .replace(/\)/g, "}"); // Parse the JSON string
-    }
-    // Convert string to JSON object
-    let jsonStr = "{" + formatToJSON(stdout) + "}";
 
-    // Parse the JSON string
-    let jsonObject;
-    try {
-      jsonObject = JSON.parse(jsonStr);
-    } catch (e) {
-      console.error("Error parsing JSON:", e);
-    }
-
-    res.status(200).json(jsonObject);
+    res.status(200).json(JSON.parse(stdout));
   });
 });
 
 app.get("/deviceType/:deviceTypeId", (req, res) => {
-  // Device specific data
+  // Device type specific data
   const deviceTypeId = req.params.deviceTypeId;
 
   // Command to run Prolog query and retrieve data for a specific device
@@ -357,31 +328,10 @@ app.get("/deviceType/:deviceTypeId", (req, res) => {
       console.error(`Standard error: ${stderr}`);
       return res.status(400).json({ error: "Bad request" });
     }
-    function formatToJSON(str) {
-      // Add quotes around keys and values
-      return str
-        .replace(/(\w+):/g, '"$1":') // Add quotes around keys
-        .replace(/: (\w+(-\w+)?)/g, (match, p1) => {
-          // Check if the value is a number or null
-          if (/^\d+$/.test(p1)) {
-            return `: ${p1}`; // Number values remain unquoted
-          }
-          if (p1 === "true" || p1 === "false") {
-            return `: ${p1}`; // Boolean values remain unquoted
-          }
-          return `: "${p1}"`; // String values get quoted
-        })
-        .replace(/: "null"/g, ": null") // Handle "null" as null
-        .replace(/DEVICE\(/g, "{") // Replace DEVICE( with {
-        .replace(/\)/g, "}"); // Parse the JSON string
-    }
-    let jsonStr = "{" + formatToJSON(stdout) + "}";
-    try {
-      jsonObject = JSON.parse(jsonStr);
-    } catch (e) {
-      console.error("Error parsing JSON:", e);
-    }
-    res.status(200).json(jsonObject);
+
+    res.status(200).json(JSON.parse(stdout));
+
+    // res.status(200).json(jsonObject);
   });
 });
 

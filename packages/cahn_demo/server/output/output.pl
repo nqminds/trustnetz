@@ -581,27 +581,41 @@ allowed_to_connect(DeviceId) :-
 
 
 output_device_type_data(DeviceTypeId, DeviceTypeData) :-
-    device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType),
+  device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType),
+  
+  % Retrieve device data for devices of this type, allowing for missing information
+  findall(DeviceData, (
+    is_of_device_type(_, DeviceId, DeviceTypeId),
+    device(_, DeviceId, Idevid, Name),
     
-    % Retrieve device data for devices of this type, allowing for missing information
-    findall(DeviceData, (
-        is_of_device_type(_, DeviceId, DeviceTypeId),
-        device(_, DeviceId, Idevid, Name),
-        
-        % Optional manufacturer information
-        (manufactured(CreatedAtManufactured, DeviceTypeId, ManufacturerId) ->
-            (manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer) -> true ; Manufacturer = unknown)
-        ;
-            CreatedAtManufactured = unknown, ManufacturerId = unknown, CreatedAtManufacturer = unknown, Manufacturer = unknown
-        ),
-        
-        format(atom(DeviceData), 'DEVICE(DeviceId: ~w, Idevid: ~w, Name: ~w, ManufacturerId: ~w, Manufacturer: ~w)', 
-               [DeviceId, Idevid, Name, ManufacturerId, Manufacturer])
-    ), DeviceDataList),
+    % Optional manufacturer information
+    (manufactured(CreatedAtManufactured, DeviceTypeId, ManufacturerId) ->
+      (manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer) -> true ; Manufacturer = unknown)
+    ;
+      CreatedAtManufactured = unknown, ManufacturerId = unknown, CreatedAtManufacturer = unknown, Manufacturer = unknown
+    ),
     
-    % Format the output
-    format(atom(DeviceTypeData), 'CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w, Devices: ~w', 
-           [CreatedAtDeviceType, DeviceTypeId, DeviceType, DeviceDataList]).
+    % Format device data
+    format(atom(DeviceData), '{"DeviceId": "~w", "Idevid": "~w", "Name": "~w", "ManufacturerId": "~w", "Manufacturer": "~w"}', 
+         [DeviceId, Idevid, Name, ManufacturerId, Manufacturer])
+  ), DeviceDataList),
+  
+  % Retrieve SBOM information for the device type
+  (has_sbom(_, DeviceTypeId, SbomId) ->
+    sbom(_, SbomId, SbomDetails),
+    findall(VulnData, (
+      has_vulnerability(_, SbomId, VulnerabilityId),
+      sbom_vulnerability(_, VulnerabilityId, Severity),
+      format(atom(VulnData), '{"VulnerabilityId": "~w", "Severity": "~w"}', [VulnerabilityId, Severity])
+    ), VulnerabilityList),
+    format(atom(SbomData), '{"SbomId": "~w", "Details": "~w", "Vulnerabilities": [~w]}', [SbomId, SbomDetails, VulnerabilityList])
+  ;
+    SbomData = '{}'
+  ),
+  
+  % Format the output for the device type
+  format(atom(DeviceTypeData), '{"CreatedAtDeviceType": "~w", "DeviceTypeId": "~w", "DeviceType": "~w", "SBOM": ~w, "Devices": ~w}', 
+       [CreatedAtDeviceType, DeviceTypeId, DeviceType, SbomData, DeviceDataList]).
 
 
 output_all_device_data(DeviceDataList) :- 
@@ -641,35 +655,32 @@ output_device_data(DeviceId, DeviceData) :-
 
 
 output_manufacturer_data(ManufacturerId, ManufacturerData) :-
-    manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer),
+  manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer),
 
-    % Retrieve device data for devices manufactured by this manufacturer, allowing for missing information
-    findall(DeviceData, (
-        manufactured(_CreatedAtManufactured, DeviceTypeId, ManufacturerId),
+  % Retrieve device type data for devices manufactured by this manufacturer
+  findall(DeviceTypeData, (
+    manufactured(_CreatedAtManufactured, DeviceTypeId, ManufacturerId),
 
-        % Optional device information
-        (device(CreatedAtDevice, DeviceId, Idevid, Name) -> true ; (CreatedAtDevice = unknown, DeviceId = unknown, Idevid = unknown, Name = unknown)),
-
-        % Optional device type information
-        (is_of_device_type(CreatedAtDeviceType, DeviceId, DeviceTypeId) ->
-            (device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType) -> true ; DeviceType = unknown)
-        ;
-            CreatedAtDeviceType = unknown, DeviceTypeId = unknown, DeviceType = unknown
-        ),
-        
-        format(atom(DeviceData), 'DEVICE(DeviceId: ~w, Idevid: ~w, Name: ~w, CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w)', 
-               [DeviceId, Idevid, Name, CreatedAtDeviceType, DeviceTypeId, DeviceType])
-    ), DeviceDataList),
-
-    % Check if there is a user that can issue manufacturer trust
-    (   
-        once((manufacturer_trust(_, ManufacturerId, UserId), user(true, true, _, UserId, _))) ->
-        CanIssueManufacturerTrust = true
-    ;   
-        CanIssueManufacturerTrust = false
+    % Retrieve device type information
+    (device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType) ->
+      true
+    ;
+      (CreatedAtDeviceType = unknown, DeviceType = unknown)
     ),
 
-    % Format the output
-    format(atom(ManufacturerData), 'CreatedAtManufacturer: ~w, ManufacturerId: ~w, Manufacturer: ~w, Devices: ~w, CanIssueManufacturerTrust: ~w', 
-           [CreatedAtManufacturer, ManufacturerId, Manufacturer, DeviceDataList, CanIssueManufacturerTrust]).
+    format(atom(DeviceTypeData), '{"DeviceTypeId": "~w", "CreatedAtDeviceType": "~w", "DeviceType": "~w"}', 
+         [DeviceTypeId, CreatedAtDeviceType, DeviceType])
+  ), DeviceTypeDataList),
+
+  % Check if there is a user that can issue manufacturer trust
+  (   
+    once((manufacturer_trust(_, ManufacturerId, UserId), user(true, true, _, UserId, _))) ->
+    CanIssueManufacturerTrust = true
+  ;   
+    CanIssueManufacturerTrust = false
+  ),
+
+  % Format the output
+  format(atom(ManufacturerData), '{"CreatedAtManufacturer": "~w", "ManufacturerId": "~w", "Manufacturer": "~w", "DeviceTypes": ~w, "CanIssueManufacturerTrust": ~w}', 
+       [CreatedAtManufacturer, ManufacturerId, Manufacturer, DeviceTypeDataList, CanIssueManufacturerTrust]).
 
