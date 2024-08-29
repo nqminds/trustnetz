@@ -7,17 +7,22 @@ import withAuth from "@/app/utils/withAuth";
 import AppBar from "../../components/AppBar";
 const Page = ({ params }) => {
   const [deviceTypeData, setDeviceTypeData] = useState({
-    CreatedAtDeviceType: 0,
+    CreatedAtDeviceType: "",
     DeviceTypeId: "",
     DeviceType: "",
+    SBOM: {
+      SbomId: "",
+    },
     Devices: [
-      {
-        DeviceId: "",
-        Idevid: "",
-        Name: "",
-        ManufacturerId: "",
-        Manufacturer: "",
-      },
+      [
+        {
+          DeviceId: "",
+          Idevid: "",
+          Name: "",
+          ManufacturerId: "",
+          Manufacturer: "",
+        },
+      ],
     ],
   });
 
@@ -26,6 +31,7 @@ const Page = ({ params }) => {
       .get("http://localhost:3001/deviceType/" + params.device_type_id)
       .then((res) => {
         setDeviceTypeData(res.data);
+        console.log("res.data :>> ", res.data);
       });
   }, []);
 

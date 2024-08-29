@@ -11,9 +11,6 @@ import {
   TableHead,
   TableRow,
   Chip,
-  Button,
-  Container,
-  ButtonGroup,
 } from "@mui/material";
 import { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
@@ -37,7 +34,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 function unixInMillisecondsToDateString(unixInMilliseconds) {
-  return new Date(unixInMilliseconds).toDateString();
+  return new Date(Number(unixInMilliseconds)).toDateString();
 }
 
 export default function DeviceTypeInfoTable({ deviceTypeData }) {
@@ -67,7 +64,16 @@ export default function DeviceTypeInfoTable({ deviceTypeData }) {
         }}
       >
         <Stack divider={<Divider />} spacing={2}>
-          <Box>
+          <>
+            <Typography
+              variant="h4"
+              sx={{
+                color: "primary.main",
+              }}
+            >
+              Device Type Information
+            </Typography>
+
             <TableContainer
               sx={{
                 margin: "auto",
@@ -119,8 +125,7 @@ export default function DeviceTypeInfoTable({ deviceTypeData }) {
                 </TableBody>
               </Table>
             </TableContainer>
-          </Box>
-
+          </>
           <>
             <Typography
               variant="h4"
@@ -201,6 +206,125 @@ export default function DeviceTypeInfoTable({ deviceTypeData }) {
               ))}
             </Stack>
           </>
+
+          {/* SBOM Information */}
+          {deviceTypeData.SBOM ? (
+            <>
+              <Typography
+                variant="h4"
+                sx={{
+                  color: "primary.main",
+                }}
+              >
+                SBOM Information
+              </Typography>
+
+              <TableContainer>
+                <Table
+                  sx={{
+                    [`& .${tableCellClasses.root}`]: {
+                      borderBottom: "none",
+                    },
+                  }}
+                >
+                  <TableHead>
+                    <StyledTableRow>
+                      <StyledTableCell>Field</StyledTableCell>
+                      <StyledTableCell align="right">Value</StyledTableCell>
+                    </StyledTableRow>
+                  </TableHead>
+                  <TableBody>
+                    <StyledTableRow>
+                      <StyledTableCell>
+                        <b>SBOM</b> ID
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {deviceTypeData.SBOM.SbomId}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                    <StyledTableRow>
+                      <StyledTableCell>
+                        <b>SBOM</b> Details
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {deviceTypeData.SBOM.Details}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+
+              {/* Vulnerabilities */}
+              {deviceTypeData.SBOM.Vulnerabilities &&
+              deviceTypeData.SBOM.Vulnerabilities.length > 0 ? (
+                <>
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      color: "primary.main",
+                    }}
+                  >
+                    Vulnerabilities
+                  </Typography>
+
+                  {deviceTypeData.SBOM.Vulnerabilities.map(
+                    (vulnList, listIndex) => (
+                      <TableContainer key={listIndex}>
+                        <Table
+                          sx={{
+                            [`& .${tableCellClasses.root}`]: {
+                              borderBottom: "none",
+                            },
+                          }}
+                        >
+                          <TableHead>
+                            <StyledTableRow>
+                              <StyledTableCell>
+                                Vulnerability ID
+                              </StyledTableCell>
+                              <StyledTableCell align="right">
+                                Severity
+                              </StyledTableCell>
+                            </StyledTableRow>
+                          </TableHead>
+                          <TableBody>
+                            {vulnList.map((vulnerability, vulnIndex) => (
+                              <StyledTableRow key={vulnIndex}>
+                                <StyledTableCell>
+                                  {vulnerability.VulnerabilityId}
+                                </StyledTableCell>
+                                <StyledTableCell align="right">
+                                  {vulnerability.Severity}
+                                </StyledTableCell>
+                              </StyledTableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    )
+                  )}
+                </>
+              ) : (
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "text.secondary",
+                  }}
+                >
+                  No vulnerability information available.
+                </Typography>
+              )}
+            </>
+          ) : (
+            <Typography
+              variant="h6"
+              sx={{
+                color: "text.secondary",
+              }}
+            >
+              No SBOM information available.
+            </Typography>
+          )}
         </Stack>
       </Paper>
     </Paper>

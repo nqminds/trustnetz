@@ -581,27 +581,41 @@ allowed_to_connect(DeviceId) :-
 
 
 output_device_type_data(DeviceTypeId, DeviceTypeData) :-
-    device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType),
+  device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType),
+  
+  % Retrieve device data for devices of this type, allowing for missing information
+  findall(DeviceData, (
+    is_of_device_type(_, DeviceId, DeviceTypeId),
+    device(_, DeviceId, Idevid, Name),
     
-    % Retrieve device data for devices of this type, allowing for missing information
-    findall(DeviceData, (
-        is_of_device_type(_, DeviceId, DeviceTypeId),
-        device(_, DeviceId, Idevid, Name),
-        
-        % Optional manufacturer information
-        (manufactured(CreatedAtManufactured, DeviceTypeId, ManufacturerId) ->
-            (manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer) -> true ; Manufacturer = unknown)
-        ;
-            CreatedAtManufactured = unknown, ManufacturerId = unknown, CreatedAtManufacturer = unknown, Manufacturer = unknown
-        ),
-        
-        format(atom(DeviceData), 'DEVICE(DeviceId: ~w, Idevid: ~w, Name: ~w, ManufacturerId: ~w, Manufacturer: ~w)', 
-               [DeviceId, Idevid, Name, ManufacturerId, Manufacturer])
-    ), DeviceDataList),
+    % Optional manufacturer information
+    (manufactured(CreatedAtManufactured, DeviceTypeId, ManufacturerId) ->
+      (manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer) -> true ; Manufacturer = unknown)
+    ;
+      CreatedAtManufactured = unknown, ManufacturerId = unknown, CreatedAtManufacturer = unknown, Manufacturer = unknown
+    ),
     
-    % Format the output
-    format(atom(DeviceTypeData), 'CreatedAtDeviceType: ~w, DeviceTypeId: ~w, DeviceType: ~w, Devices: ~w', 
-           [CreatedAtDeviceType, DeviceTypeId, DeviceType, DeviceDataList]).
+    % Format device data
+    format(atom(DeviceData), '{"DeviceId": "~w", "Idevid": "~w", "Name": "~w", "ManufacturerId": "~w", "Manufacturer": "~w"}', 
+         [DeviceId, Idevid, Name, ManufacturerId, Manufacturer])
+  ), DeviceDataList),
+  
+  % Retrieve SBOM information for the device type
+  (has_sbom(_, DeviceTypeId, SbomId) ->
+    sbom(_, SbomId, SbomDetails),
+    findall(VulnData, (
+      has_vulnerability(_, SbomId, VulnerabilityId),
+      sbom_vulnerability(_, VulnerabilityId, Severity),
+      format(atom(VulnData), '{"VulnerabilityId": "~w", "Severity": "~w"}', [VulnerabilityId, Severity])
+    ), VulnerabilityList),
+    format(atom(SbomData), '{"SbomId": "~w", "Details": "~w", "Vulnerabilities": [~w]}', [SbomId, SbomDetails, VulnerabilityList])
+  ;
+    SbomData = '{"SbomId": "No SBOM"}'
+  ),
+  
+  % Format the output for the device type
+  format(atom(DeviceTypeData), '{"CreatedAtDeviceType": "~w", "DeviceTypeId": "~w", "DeviceType": "~w", "SBOM": ~w, "Devices": ~w}', 
+       [CreatedAtDeviceType, DeviceTypeId, DeviceType, SbomData, DeviceDataList]).
 
 
 output_all_device_data(DeviceDataList) :- 
