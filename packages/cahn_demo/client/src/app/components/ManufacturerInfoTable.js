@@ -153,7 +153,7 @@ export default function ManufacturerInfoTable({ manufacturerData }) {
                 color: "primary.main",
               }}
             >
-              Devices made by {manufacturerData.Manufacturer}
+              Device Types Made by {manufacturerData.Manufacturer}
             </Typography>
 
             <Stack

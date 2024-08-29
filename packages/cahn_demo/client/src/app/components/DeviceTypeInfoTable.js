@@ -134,7 +134,7 @@ export default function DeviceTypeInfoTable({ deviceTypeData }) {
                   color: "primary.main",
                 }}
               >
-                Devices of type {deviceTypeData.DeviceType}
+                Devices of Type {deviceTypeData.DeviceType}
               </Typography>
 
               <Stack
