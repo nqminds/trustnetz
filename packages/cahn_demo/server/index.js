@@ -6,6 +6,7 @@ const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 require("dotenv").config();
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 const port = 3001;
@@ -384,38 +385,81 @@ app.get("/deviceType/:deviceTypeId", (req, res) => {
   });
 });
 
-app.get("/trust_vc/:deviceId/:authoriser_id", (req, res) => {
+app.get("/trust_vc/:deviceId", (req, res) => {
   const deviceId = req.params.deviceId;
-  const authoriserId = req.params.authoriser_id;
+  const trustVcs = [];
+  const retractions = new Set();
+  const vcsDir = path.join(__dirname, "uploads/vcs");
 
-  // Search through /uploads/vcs/custom/ for every VC that has the authoriser_id and deviceId
+  // Function to recursively collect retractions
+  const collectRetractions = (dirPath) => {
+    const files = fs.readdirSync(dirPath);
 
-  // Read all files in the directory
+    files.forEach((file) => {
+      const filePath = path.join(dirPath, file);
+      const stat = fs.statSync(filePath);
 
-  const directory = "./uploads/vcs/custom/";
+      if (stat.isDirectory()) {
+        // If it's a directory, recurse into it
+        collectRetractions(filePath);
+      } else if (stat.isFile() && path.extname(file) === ".json") {
+        // If it's a JSON file, try to parse it
+        try {
+          const jsonData = JSON.parse(fs.readFileSync(filePath, "utf8"));
 
-  fs.readdir(directory, (err, files) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: "Internal server error" });
-    }
-
-    // Filter files that contain the authoriser_id and deviceId
-    const filteredFiles = files.filter((file) => {
-      console.log("file :>> ", file);
-      const fileContents = fs.readFileSync(directory + file, "utf8");
-      return (
-        fileContents.includes(authoriserId) && fileContents.includes(deviceId)
-      );
+          if (
+            jsonData.credentialSubject &&
+            jsonData.credentialSubject.type === "rule_retraction"
+          ) {
+            // If the file is a retraction, store the claim_id
+            retractions.add(jsonData.credentialSubject.claim_id);
+          }
+        } catch (error) {
+          console.error(`Failed to parse ${filePath}: ${error.message}`);
+        }
+      }
     });
+  };
 
-    // Read the contents of the filtered files
-    const vcs = filteredFiles.map((file) => {
-      return JSON.parse(fs.readFileSync(directory + file, "utf8"));
+  // Function to recursively collect and filter VCs
+  const collectTrustVCs = (dirPath) => {
+    const files = fs.readdirSync(dirPath);
+
+    files.forEach((file) => {
+      const filePath = path.join(dirPath, file);
+      const stat = fs.statSync(filePath);
+
+      if (stat.isDirectory()) {
+        // If it's a directory, recurse into it
+        collectTrustVCs(filePath);
+      } else if (stat.isFile() && path.extname(file) === ".json") {
+        // If it's a JSON file, try to parse it
+        try {
+          const vc = JSON.parse(fs.readFileSync(filePath, "utf8"));
+
+          if (
+            vc.credentialSubject &&
+            vc.credentialSubject.schemaName === "device_trust" &&
+            vc.credentialSubject.fact &&
+            vc.credentialSubject.fact.device_id === deviceId &&
+            !retractions.has(vc.credentialSubject.id) // Check if the VC is not retracted
+          ) {
+            trustVcs.push(vc);
+          }
+        } catch (error) {
+          console.error(`Failed to parse ${filePath}: ${error.message}`);
+        }
+      }
     });
+  };
 
-    res.status(200).json(vcs);
-  });
+  // First pass: collect all retractions
+  collectRetractions(vcsDir);
+
+  // Second pass: collect and filter VCs
+  collectTrustVCs(vcsDir);
+
+  res.json(trustVcs);
 });
 
 app.get("/", (req, res) => {

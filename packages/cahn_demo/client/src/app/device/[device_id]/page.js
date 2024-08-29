@@ -6,11 +6,15 @@ import {
   ButtonGroup,
   Paper,
   Stack,
+  Card,
+  CardContent,
+  CardActions,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import DeviceInfoTable from "../../components/DeviceInfoTable";
 import withAuth from "@/app/utils/withAuth";
+import { v4 as uuidv4 } from "uuid";
 
 const Page = ({ params }) => {
   const [deviceData, setDeviceData] = useState({
@@ -36,11 +40,37 @@ const Page = ({ params }) => {
   const privateKey = localStorage.getItem("privateKey");
   const emailAddress = localStorage.getItem("emailAddress");
 
+  const [trustVCs, setTrustVCs] = useState([
+    {
+      id: "",
+      credentialSubject: {
+        fact: {
+          device_id: "",
+          authoriser_id: "",
+          created_at: 0,
+        },
+      },
+    },
+  ]);
+
   useEffect(() => {
     axios
       .get("http://localhost:3001/device/" + params.device_id)
       .then((res) => {
         setDeviceData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    axios
+      .get("http://localhost:3001/trust_vc/" + params.device_id)
+      .then((res) => {
+        setTrustVCs(res.data);
+        console.log("res.data :>> ", res.data);
+      })
+      .catch((err) => {
+        console.log(err);
       });
 
     async function initializeWasm() {
@@ -76,7 +106,7 @@ const Page = ({ params }) => {
       credentialSubject: {
         type: "fact",
         schemaName: "device_trust",
-        id: "2ed6bd67-d40e-402e-aff9-1aa6092eb43d",
+        id: uuidv4(),
         timestamp: 1716287268891,
         fact: {
           device_id: params.device_id,
@@ -143,11 +173,61 @@ const Page = ({ params }) => {
       })
       .then((res) => {
         console.log(res.data);
+        refreshTrustVCs();
       });
   };
 
-  const handleRemoveTrust = () => {
-    console.log("Remove trust");
+  const handleRemoveTrust = (id) => {
+    const retractionClaim = {
+      type: "rule_retraction",
+      id: `urn:uuid:${uuidv4()}`,
+      timestamp: Date.now(),
+      claim_id: id,
+    };
+
+    const retractionVC = {
+      "@context": ["https://www.w3.org/ns/credentials/v2"],
+      id: `urn:uuid:${uuidv4()}`,
+      type: ["VerifiableCredential", "UserCredential"],
+      issuer: `urn:uuid:${uuidv4()}`, // TODO: Use an actual issuer ID?
+      validFrom: new Date().toISOString(),
+      credentialSchema: {
+        id: "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/user.yaml",
+        type: "JsonSchema",
+      },
+      credentialSubject: retractionClaim,
+    };
+
+    const VC = new window.VerifiableCredential(
+      retractionVC,
+      "retraction_schema"
+    );
+
+    const privateKeyAsUint8Array = new Uint8Array(
+      Buffer.from(privateKey, "base64")
+    );
+
+    const signedVc = VC.sign(privateKeyAsUint8Array).to_object();
+
+    axios
+      .post("http://localhost:3001/upload/verifiable_credential", {
+        vc: signedVc,
+      })
+      .then((res) => {
+        console.log(res.data);
+        refreshTrustVCs();
+      });
+  };
+
+  const refreshTrustVCs = () => {
+    axios
+      .get("http://localhost:3001/trust_vc/" + params.device_id)
+      .then((res) => {
+        setTrustVCs(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -200,17 +280,46 @@ assert(device_trust("Ash-id",1723716151033,"AshEvilPhone-id")).
 `}
           </Typography>
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            mt: 3,
-          }}
-        >
-          <ButtonGroup variant="contained" size="large">
-            <Button onClick={handleCreateTrust}>Add trust</Button>
-            <Button onClick={handleRemoveTrust}>Remove Trust</Button>
-          </ButtonGroup>
+        <Paper elevation={10} sx={{ p: 2, my: 1 }}>
+          <Typography variant="h4" color="primary" gutterBottom>
+            Trust submissions
+          </Typography>
+          <Stack
+            spacing={{ xs: 1, sm: 2 }}
+            direction="row"
+            useFlexGap
+            sx={{ flexWrap: "wrap" }}
+          >
+            {trustVCs.map((vc) => (
+              <Card key={vc.id} sx={{ maxWidth: 345, marginBottom: 2 }}>
+                <CardContent>
+                  <Stack spacing={2}>
+                    <Typography variant="body2" color="textSecondary">
+                      {new Date(
+                        vc.credentialSubject.fact.created_at
+                      ).toLocaleDateString()}
+                    </Typography>
+                    <Typography variant="h5" color="primary">
+                      {vc.credentialSubject.fact.authoriser_id}
+                    </Typography>
+                  </Stack>
+                </CardContent>
+                <CardActions>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleRemoveTrust(vc.credentialSubject.id)}
+                  >
+                    Submit retraction
+                  </Button>
+                </CardActions>
+              </Card>
+            ))}
+          </Stack>
+        </Paper>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+          <Button variant="contained" onClick={handleCreateTrust}>
+            Add trust
+          </Button>
         </Box>
       </Paper>
     </Box>
