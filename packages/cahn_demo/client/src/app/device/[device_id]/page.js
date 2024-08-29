@@ -283,52 +283,51 @@ assert(device_trust("Ash-id",1723716151033,"AshEvilPhone-id")).
 `}
             </Typography>
           </Box>
-          <Paper elevation={10} sx={{ p: 2, my: 1 }}>
-            <Typography variant="h4" color="primary" gutterBottom>
-              Trust submissions
-            </Typography>
-            <Stack
-              spacing={{ xs: 1, sm: 2 }}
-              direction="row"
-              useFlexGap
-              sx={{ flexWrap: "wrap" }}
-            >
-              {trustVCs.map((vc) => (
-                <Card key={vc.id} sx={{ maxWidth: 345, marginBottom: 2 }}>
-                  <CardContent>
-                    <Stack spacing={2}>
-                      <Typography variant="body2" color="textSecondary">
-                        {new Date(
-                          vc.credentialSubject.fact.created_at
-                        ).toLocaleDateString("en-GB")}
-                      </Typography>
-                      <Typography variant="h5" color="primary">
-                        {vc.credentialSubject.fact.authoriser_id}
-                      </Typography>
-                    </Stack>
-                  </CardContent>
-                  {vc.credentialSubject.fact.authoriser_id === emailAddress && (
-                    <CardActions>
-                      <Button
-                        variant="contained"
-                        onClick={() =>
-                          handleRemoveTrust(vc.credentialSubject.id)
-                        }
-                      >
-                        Submit retraction
-                      </Button>
-                    </CardActions>
-                  )}
-                </Card>
-              ))}
-            </Stack>
-          </Paper>
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-            <Button variant="contained" onClick={handleCreateTrust}>
-              Add trust
-            </Button>
-          </Box>
+          <Typography variant="h4" color="primary" gutterBottom>
+            Trust submissions
+          </Typography>
+          <Stack
+            spacing={{ xs: 1, sm: 2 }}
+            direction="row"
+            useFlexGap
+            sx={{ flexWrap: "wrap" }}
+          >
+            {trustVCs.map((vc) => (
+              <Card raised key={vc.id} sx={{ maxWidth: 345, marginBottom: 2 }}>
+                <CardContent>
+                  <Stack spacing={0.4}>
+                    <Typography variant="body2" color="textSecondary">
+                      {new Date(
+                        vc.credentialSubject.fact.created_at
+                      ).toLocaleDateString("en-GB")}
+                    </Typography>
+                    <Typography variant="h6" color="primary">
+                      {vc.credentialSubject.fact.authoriser_id}
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      {vc.credentialSubject.id}
+                    </Typography>
+                  </Stack>
+                </CardContent>
+                {vc.credentialSubject.fact.authoriser_id === emailAddress && (
+                  <CardActions>
+                    <Button
+                      variant="contained"
+                      onClick={() => handleRemoveTrust(vc.credentialSubject.id)}
+                    >
+                      Submit retraction
+                    </Button>
+                  </CardActions>
+                )}
+              </Card>
+            ))}
+          </Stack>
         </Paper>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+          <Button variant="contained" onClick={handleCreateTrust}>
+            Add trust
+          </Button>
+        </Box>
       </Box>
     </>
   );
