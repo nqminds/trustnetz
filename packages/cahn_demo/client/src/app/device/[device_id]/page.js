@@ -68,7 +68,6 @@ const Page = ({ params }) => {
       .get("http://localhost:3001/trust_vc/" + params.device_id)
       .then((res) => {
         setTrustVCs(res.data);
-        console.log("res.data :>> ", res.data);
       })
       .catch((err) => {
         console.log(err);
