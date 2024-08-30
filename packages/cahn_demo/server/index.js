@@ -13,6 +13,8 @@ const port = 3001;
 
 const tokenToEmail = {};
 
+var claimCascadeInProgress = false;
+
 // Load emailToPublicKeys.json
 let emailToPublicKeys = {};
 try {
@@ -98,10 +100,23 @@ app.get("/prolog_query", (req, res) => {
     res.json(result);
   });
 });
-
 // Trigger bash script to run claim cascade
-app.get("/claim_cascade", (_req, res) => {
+app.get("/claim_cascade", async (_req, res) => {
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 1000);
+    });
+  }
+
+  claimCascadeInProgress = true;
+
   exec("sh run_claim_cascade.sh", (err, _stdout, _stderr) => {
+    claimCascadeInProgress = false;
     if (err) {
       logger.error(err);
       res.status(500).send(err);
@@ -235,8 +250,9 @@ app.get("/device/:deviceId", (req, res) => {
   const deviceId = req.params.deviceId;
 
   // Command to run Prolog query and retrieve data for a specific device
-  const command = `
-    swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_device_data(\\"${deviceId}\\", DeviceData), write(current_output, DeviceData), halt."`;
+  const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_device_data(\\"${deviceId}\\", DeviceData), write(current_output, DeviceData), halt."`;
+
+  console.log("command :>> ", command);
 
   exec(command, (error, stdout, stderr) => {
     if (error) {
@@ -334,82 +350,170 @@ app.get("/deviceType/:deviceTypeId", (req, res) => {
     // res.status(200).json(jsonObject);
   });
 });
-
-app.get("/trust_vc/:deviceId", (req, res) => {
+app.get("/trust_vc/device/:deviceId", async (req, res) => {
   const deviceId = req.params.deviceId;
-  const trustVcs = [];
-  const retractions = new Set();
-  const vcsDir = path.join(__dirname, "uploads/vcs");
 
-  // Function to recursively collect retractions
-  const collectRetractions = (dirPath) => {
-    const files = fs.readdirSync(dirPath);
-
-    files.forEach((file) => {
-      const filePath = path.join(dirPath, file);
-      const stat = fs.statSync(filePath);
-
-      if (stat.isDirectory()) {
-        // If it's a directory, recurse into it
-        collectRetractions(filePath);
-      } else if (stat.isFile() && path.extname(file) === ".json") {
-        // If it's a JSON file, try to parse it
-        try {
-          const jsonData = JSON.parse(fs.readFileSync(filePath, "utf8"));
-
-          if (
-            jsonData.credentialSubject &&
-            jsonData.credentialSubject.type === "rule_retraction"
-          ) {
-            // If the file is a retraction, store the claim_id
-            retractions.add(jsonData.credentialSubject.claim_id);
-          }
-        } catch (error) {
-          console.error(`Failed to parse ${filePath}: ${error.message}`);
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
         }
+      }, 1000);
+    });
+  }
+
+  claimCascadeInProgress = true;
+
+  // Run claim cascade
+  exec("sh run_claim_cascade.sh", (err) => {
+    claimCascadeInProgress = false;
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error running claim cascade");
+    }
+
+    // Define the file path
+    const filePath = path.join(__dirname, "output", "output_db.pl");
+
+    // Read and process the file
+    fs.readFile(filePath, "utf8", (err, data) => {
+      if (err) {
+        console.error(`File read error: ${err}`);
+        return res.status(500).json({ error: "Internal server error" });
       }
+
+      // Extract the relevant lines with device_trust
+      const trustVCs = data
+        .split("\n")
+        .filter(
+          (line) =>
+            line.includes("assert(device_trust(") && line.includes(deviceId)
+        )
+        .map((line) => {
+          const [authoriserId, timestamp, device_id] = line
+            .replace("assert(device_trust(", "")
+            .replace(")).", "")
+            .split(",");
+
+          // Clean up extra characters and return an object
+          return {
+            authoriserId: authoriserId.trim().replace(/['"]/g, ""),
+            timestamp: timestamp.trim(),
+            deviceId: device_id.trim().replace(/['"]/g, "").replace(")", ""),
+          };
+        });
+
+      // Ensure each object in trustVCs is unique, based on username, and timestamp
+      const uniqueTrustVCs = [];
+      trustVCs.forEach((vc) => {
+        const existingVC = uniqueTrustVCs.find(
+          (existing) =>
+            existing.username === vc.username &&
+            existing.timestamp === vc.timestamp
+        );
+        if (!existingVC) {
+          uniqueTrustVCs.push(vc);
+        }
+      });
+
+      // Sort by username, then timestamp
+      uniqueTrustVCs.sort((a, b) => {
+        if (a.username < b.username) {
+          return -1;
+        }
+        if (a.username > b.username) {
+          return 1;
+        }
+        return a.timestamp - b.timestamp;
+      });
+
+      res.status(200).json(uniqueTrustVCs);
+    });
+  });
+});
+
+// Given the {authoriserId, timestamp, deviceId} return the id of the vc in the filesystem that has a matching credentialSubject
+// Search /uploads/vcs/custom and /uploads/vcs/device_trust
+app.get("/VC_ID/device_trust", (req, res) => {
+  const { authoriserId, timestamp, deviceId } = req.query;
+  console.log("authoriserId :>> ", authoriserId);
+  console.log("timestamp :>> ", timestamp);
+  console.log("deviceId :>> ", deviceId);
+  // Define the file paths
+  const customVCPath = path.join(__dirname, "uploads", "vcs", "custom");
+  const deviceTrustVCPath = path.join(
+    __dirname,
+    "uploads",
+    "vcs",
+    "claims",
+    "device_trust"
+  );
+
+  const searchVCs = (dirPath) => {
+    return new Promise((resolve, reject) => {
+      fs.readdir(dirPath, (err, files) => {
+        if (err) {
+          console.error(`File read error: ${err}`);
+          reject(err);
+          return;
+        }
+
+        const vcFiles = files.filter((file) => file.endsWith(".json"));
+        const filePromises = vcFiles.map((file) => {
+          return new Promise((resolveFile) => {
+            fs.readFile(path.join(dirPath, file), "utf8", (err, data) => {
+              if (err) {
+                console.error(`File read error: ${err}`);
+                resolveFile(null);
+                return;
+              }
+
+              try {
+                console.log("file :>> ", file);
+                const vc = JSON.parse(data);
+                console.log("vc :>> ", vc);
+                if (
+                  vc.credentialSubject &&
+                  vc.credentialSubject.fact &&
+                  vc.credentialSubject.fact.authoriser_id === authoriserId &&
+                  vc.credentialSubject.fact.created_at === Number(timestamp) &&
+                  vc.credentialSubject.fact.device_id === deviceId
+                ) {
+                  resolveFile(vc.credentialSubject.id);
+                } else {
+                  resolveFile(null);
+                }
+              } catch (parseError) {
+                console.error(`JSON parse error: ${parseError}`);
+                resolveFile(null);
+              }
+            });
+          });
+        });
+
+        Promise.all(filePromises).then((results) => {
+          const foundId = results.find((id) => id !== null);
+          resolve(foundId || null);
+        });
+      });
     });
   };
 
-  // Function to recursively collect and filter VCs
-  const collectTrustVCs = (dirPath) => {
-    const files = fs.readdirSync(dirPath);
-
-    files.forEach((file) => {
-      const filePath = path.join(dirPath, file);
-      const stat = fs.statSync(filePath);
-
-      if (stat.isDirectory()) {
-        // If it's a directory, recurse into it
-        collectTrustVCs(filePath);
-      } else if (stat.isFile() && path.extname(file) === ".json") {
-        // If it's a JSON file, try to parse it
-        try {
-          const vc = JSON.parse(fs.readFileSync(filePath, "utf8"));
-
-          if (
-            vc.credentialSubject &&
-            vc.credentialSubject.schemaName === "device_trust" &&
-            vc.credentialSubject.fact &&
-            vc.credentialSubject.fact.device_id === deviceId &&
-            !retractions.has(vc.credentialSubject.id) // Check if the VC is not retracted
-          ) {
-            trustVcs.push(vc);
-          }
-        } catch (error) {
-          console.error(`Failed to parse ${filePath}: ${error.message}`);
-        }
+  Promise.all([searchVCs(customVCPath), searchVCs(deviceTrustVCPath)])
+    .then(([customVCId, deviceTrustVCId]) => {
+      const foundId = customVCId || deviceTrustVCId;
+      if (foundId) {
+        res.status(200).json({ id: foundId });
+      } else {
+        res.status(404).json({ error: "VC not found" });
       }
+    })
+    .catch((error) => {
+      console.error(`Error searching VCs: ${error}`);
+      res.status(500).json({ error: "Internal server error" });
     });
-  };
-
-  // First pass: collect all retractions
-  collectRetractions(vcsDir);
-
-  // Second pass: collect and filter VCs
-  collectTrustVCs(vcsDir);
-
-  res.json(trustVcs);
 });
 
 app.get("/", (req, res) => {
