@@ -138,7 +138,7 @@ const Page = ({ params }) => {
 
   const handleRemoveTrust = async (vc) => {
     try {
-      // Get id from API by pinging /VC_ID/device_trust
+      // Get id from API by pinging /VC_ID/device_type_trust
       const response = await axios.get(
         "http://localhost:3001/VC_ID/device_type_trust",
         { params: vc }

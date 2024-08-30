@@ -681,6 +681,170 @@ app.get("/trust_vc/device_type/:deviceTypeId", async (req, res) => {
   });
 });
 
+app.get("/trust_vc/manufacturer/:manufacturerId", async (req, res) => {
+  const manufacturerId = req.params.manufacturerId;
+
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 1000);
+    });
+  }
+
+  claimCascadeInProgress = true;
+
+  // Run claim cascade
+  exec("sh run_claim_cascade.sh", (err) => {
+    claimCascadeInProgress = false;
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error running claim cascade");
+    }
+
+    // Define the file path
+    const filePath = path.join(__dirname, "output", "output_db.pl");
+
+    // Read and process the file
+    fs.readFile(filePath, "utf8", (err, data) => {
+      if (err) {
+        console.error(`File read error: ${err}`);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      // Extract the relevant lines with manufacturer_trust
+      const trustVCs = data
+        .split("\n")
+        .filter(
+          (line) =>
+            line.includes("assert(manufacturer_trust(") &&
+            line
+              .replace("assert(manufacturer_trust(", "")
+              .replace(")).", "")
+              .includes(manufacturerId)
+        )
+        .map((line) => {
+          const [timestamp, manufacturer_id, userId] = line
+            .replace("assert(manufacturer_trust(", "")
+            .replace(")).", "")
+            .split(",");
+
+          // Clean up extra characters and return an object
+          return {
+            userId: userId.trim().replace(/['"]/g, ""),
+            timestamp: timestamp.trim().replace(/['"]/g, ""),
+            manufacturerId: manufacturer_id
+              .trim()
+              .replace(/['"]/g, "")
+              .replace(")", ""),
+          };
+        });
+
+      // Ensure each object in trustVCs is unique, based on username, and timestamp
+      const uniqueTrustVCs = [];
+      trustVCs.forEach((vc) => {
+        const existingVC = uniqueTrustVCs.find(
+          (existing) =>
+            existing.username === vc.username &&
+            existing.timestamp === vc.timestamp
+        );
+        if (!existingVC) {
+          uniqueTrustVCs.push(vc);
+        }
+      });
+
+      // Sort by username, then timestamp
+      uniqueTrustVCs.sort((a, b) => {
+        if (a.username < b.username) {
+          return -1;
+        }
+        if (a.username > b.username) {
+          return 1;
+        }
+        return a.timestamp - b.timestamp;
+      });
+
+      res.status(200).json(uniqueTrustVCs);
+    });
+  });
+});
+
+app.get("/VC_ID/manufacturer_trust", (req, res) => {
+  const { userId, timestamp, manufacturerId } = req.query;
+
+  // Define the file paths
+  const customVCPath = path.join(__dirname, "uploads", "vcs", "custom");
+  const manufacturerTrustVCPath = path.join(
+    __dirname,
+    "uploads",
+    "vcs",
+    "claims",
+    "manufacturer_trust"
+  );
+
+  const searchVCs = (dirPath) => {
+    return new Promise((resolve, reject) => {
+      fs.readdir(dirPath, (err, files) => {
+        if (err) {
+          console.error(`File read error: ${err}`);
+          reject(err);
+          return;
+        }
+
+        const vcFiles = files.filter((file) => file.endsWith(".json"));
+        const filePromises = vcFiles.map((file) => {
+          return new Promise((resolveFile) => {
+            fs.readFile(path.join(dirPath, file), "utf8", (err, data) => {
+              if (err) {
+                console.error(`File read error: ${err}`);
+                resolveFile(null);
+                return;
+              }
+
+              try {
+                const vc = JSON.parse(data);
+                if (
+                  vc.credentialSubject &&
+                  vc.credentialSubject.fact &&
+                  vc.credentialSubject.fact.user_id === userId &&
+                  vc.credentialSubject.fact.created_at === Number(timestamp) &&
+                  vc.credentialSubject.fact.manufacturer_id === manufacturerId
+                ) {
+                  resolveFile(vc.credentialSubject.id);
+                } else {
+                  resolveFile(null);
+                }
+              } catch (parseError) {
+                console.error(`JSON parse error: ${parseError}`);
+                resolveFile(null);
+              }
+            });
+          });
+        });
+
+        Promise.all(filePromises).then((results) => {
+          const foundId = results.find((id) => id !== null);
+          resolve(foundId || null);
+        });
+      });
+    });
+  };
+
+  Promise.all([searchVCs(customVCPath), searchVCs(manufacturerTrustVCPath)])
+    .then(([customVCId, manufacturerTrustVCId]) => {
+      const foundId = customVCId || manufacturerTrustVCId;
+      if (foundId) {
+        res.status(200).json({ id: foundId });
+      } else {
+        res.status(404).json({ error: "VC not found" });
+      }
+    })
+    .catch((error) => res.status(500).json({ error: "Internal server error" }));
+});
+
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
