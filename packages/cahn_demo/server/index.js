@@ -350,6 +350,7 @@ app.get("/deviceType/:deviceTypeId", (req, res) => {
     // res.status(200).json(jsonObject);
   });
 });
+
 app.get("/trust_vc/device/:deviceId", async (req, res) => {
   const deviceId = req.params.deviceId;
 
@@ -514,6 +515,170 @@ app.get("/VC_ID/device_trust", (req, res) => {
       console.error(`Error searching VCs: ${error}`);
       res.status(500).json({ error: "Internal server error" });
     });
+});
+
+app.get("/VC_ID/device_type_trust", (req, res) => {
+  const { authoriserId, timestamp, deviceTypeId } = req.query;
+
+  // Define the file paths
+  const customVCPath = path.join(__dirname, "uploads", "vcs", "custom");
+  const deviceTypeTrustVCPath = path.join(
+    __dirname,
+    "uploads",
+    "vcs",
+    "claims",
+    "device_type_trust"
+  );
+
+  const searchVCs = (dirPath) => {
+    return new Promise((resolve, reject) => {
+      fs.readdir(dirPath, (err, files) => {
+        if (err) {
+          console.error(`File read error: ${err}`);
+          reject(err);
+          return;
+        }
+
+        const vcFiles = files.filter((file) => file.endsWith(".json"));
+        const filePromises = vcFiles.map((file) => {
+          return new Promise((resolveFile) => {
+            fs.readFile(path.join(dirPath, file), "utf8", (err, data) => {
+              if (err) {
+                console.error(`File read error: ${err}`);
+                resolveFile(null);
+                return;
+              }
+
+              try {
+                const vc = JSON.parse(data);
+                if (
+                  vc.credentialSubject &&
+                  vc.credentialSubject.fact &&
+                  vc.credentialSubject.fact.authoriser_id === authoriserId &&
+                  vc.credentialSubject.fact.created_at === Number(timestamp) &&
+                  vc.credentialSubject.fact.device_type_id === deviceTypeId
+                ) {
+                  resolveFile(vc.credentialSubject.id);
+                } else {
+                  resolveFile(null);
+                }
+              } catch (parseError) {
+                console.error(`JSON parse error: ${parseError}`);
+                resolveFile(null);
+              }
+            });
+          });
+        });
+
+        Promise.all(filePromises).then((results) => {
+          const foundId = results.find((id) => id !== null);
+          resolve(foundId || null);
+        });
+      });
+    });
+  };
+
+  Promise.all([searchVCs(customVCPath), searchVCs(deviceTypeTrustVCPath)])
+    .then(([customVCId, deviceTypeTrustVCId]) => {
+      const foundId = customVCId || deviceTypeTrustVCId;
+      if (foundId) {
+        res.status(200).json({ id: foundId });
+      } else {
+        res.status(404).json({ error: "VC not found" });
+      }
+    })
+    .catch((error) => {
+      console.error(`Error searching VCs: ${error}`);
+      res.status(500).json({ error: "Internal server error" });
+    });
+});
+
+app.get("/trust_vc/device_type/:deviceTypeId", async (req, res) => {
+  const deviceTypeId = req.params.deviceTypeId;
+
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 1000);
+    });
+  }
+
+  claimCascadeInProgress = true;
+
+  // Run claim cascade
+  exec("sh run_claim_cascade.sh", (err) => {
+    claimCascadeInProgress = false;
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error running claim cascade");
+    }
+
+    // Define the file path
+    const filePath = path.join(__dirname, "output", "output_db.pl");
+
+    // Read and process the file
+    fs.readFile(filePath, "utf8", (err, data) => {
+      if (err) {
+        console.error(`File read error: ${err}`);
+        return res.status(500).json({ error: "Internal server error" });
+      }
+
+      // Extract the relevant lines with device_type_trust
+      const trustVCs = data
+        .split("\n")
+        .filter(
+          (line) =>
+            line.includes("assert(device_type_trust(") &&
+            line.includes(deviceTypeId)
+        )
+        .map((line) => {
+          const [authoriserId, timestamp, device_type_id] = line
+            .replace("assert(device_type_trust(", "")
+            .replace(")).", "")
+            .split(",");
+
+          // Clean up extra characters and return an object
+          return {
+            authoriserId: authoriserId.trim().replace(/['"]/g, ""),
+            timestamp: timestamp.trim(),
+            deviceTypeId: device_type_id
+              .trim()
+              .replace(/['"]/g, "")
+              .replace(")", ""),
+          };
+        });
+
+      // Ensure each object in trustVCs is unique, based on username, and timestamp
+      const uniqueTrustVCs = [];
+      trustVCs.forEach((vc) => {
+        const existingVC = uniqueTrustVCs.find(
+          (existing) =>
+            existing.username === vc.username &&
+            existing.timestamp === vc.timestamp
+        );
+        if (!existingVC) {
+          uniqueTrustVCs.push(vc);
+        }
+      });
+
+      // Sort by username, then timestamp
+      uniqueTrustVCs.sort((a, b) => {
+        if (a.username < b.username) {
+          return -1;
+        }
+        if (a.username > b.username) {
+          return 1;
+        }
+        return a.timestamp - b.timestamp;
+      });
+
+      res.status(200).json(uniqueTrustVCs);
+    });
+  });
 });
 
 app.get("/", (req, res) => {
