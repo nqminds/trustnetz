@@ -55,24 +55,25 @@ const Page = ({ params }) => {
   ]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/device/" + params.device_id)
-      .then((res) => {
-        setDeviceData(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (deviceData.DeviceId !== params.device_id) {
+      axios
+        .get("http://localhost:3001/device/" + params.device_id)
+        .then((res) => {
+          setDeviceData(res.data);
+          return axios.get(
+            "http://localhost:3001/trust_vc/device/" + params.device_id
+          );
+        })
+        .then((res) => {
+          setTrustVCs(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [params.device_id, deviceData.DeviceId]);
 
-    axios
-      .get("http://localhost:3001/trust_vc/" + params.device_id)
-      .then((res) => {
-        setTrustVCs(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
+  useEffect(() => {
     async function initializeWasm() {
       const {
         default: init,
@@ -81,15 +82,15 @@ const Page = ({ params }) => {
       } = await import("../../wasm/vc_signing");
       await init();
       console.log("WASM Module initialized");
-
       // Store functions for later use
+
       window.gen_keys = gen_keys;
       window.VerifiableCredential = VerifiableCredential;
     }
-
     // If functions aren't already stored on the window object, initialize them
     // TODO: Extract initializeWasm to a separate file
-    if (!window.genkeys || !window.sign || !window.verify) initializeWasm();
+
+    if (!window.gen_keys || !window.VerifiableCredential) initializeWasm();
   }, []);
 
   const handleCreateTrust = () => {
@@ -177,51 +178,63 @@ const Page = ({ params }) => {
       });
   };
 
-  const handleRemoveTrust = (id) => {
-    const retractionClaim = {
-      type: "rule_retraction",
-      id: `urn:uuid:${uuidv4()}`,
-      timestamp: Date.now(),
-      claim_id: id,
-    };
+  const handleRemoveTrust = async (vc) => {
+    try {
+      // Get id from API by pinging /VC_ID/device_trust
+      const response = await axios.get(
+        "http://localhost:3001/VC_ID/device_trust",
+        { params: vc }
+      );
+      const idToRevoke = response.data.id; // Assuming the API returns an object with an 'id' field
 
-    const retractionVC = {
-      "@context": ["https://www.w3.org/ns/credentials/v2"],
-      id: `urn:uuid:${uuidv4()}`,
-      type: ["VerifiableCredential", "UserCredential"],
-      issuer: `urn:uuid:${uuidv4()}`, // TODO: Use an actual issuer ID?
-      validFrom: new Date().toISOString(),
-      credentialSchema: {
-        id: "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/user.yaml",
-        type: "JsonSchema",
-      },
-      credentialSubject: retractionClaim,
-    };
+      const retractionClaim = {
+        type: "retraction",
+        id: `urn:uuid:${uuidv4()}`,
+        timestamp: Date.now(),
+        claim_id: idToRevoke,
+      };
 
-    const VC = new window.VerifiableCredential(
-      retractionVC,
-      "retraction_schema"
-    );
+      const retractionVC = {
+        "@context": ["https://www.w3.org/ns/credentials/v2"],
+        id: `urn:uuid:${uuidv4()}`,
+        type: ["VerifiableCredential", "UserCredential"],
+        issuer: `urn:uuid:${uuidv4()}`, // TODO: Use an actual issuer ID?
+        validFrom: new Date().toISOString(),
+        credentialSchema: {
+          id: "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/user.yaml",
+          type: "JsonSchema",
+        },
+        credentialSubject: retractionClaim,
+      };
 
-    const privateKeyAsUint8Array = new Uint8Array(
-      Buffer.from(privateKey, "base64")
-    );
+      const VC = new window.VerifiableCredential(
+        retractionVC,
+        "retraction_schema"
+      );
 
-    const signedVc = VC.sign(privateKeyAsUint8Array).to_object();
+      const privateKeyAsUint8Array = new Uint8Array(
+        Buffer.from(privateKey, "base64")
+      );
 
-    axios
-      .post("http://localhost:3001/upload/verifiable_credential", {
-        vc: signedVc,
-      })
-      .then((res) => {
-        console.log(res.data);
-        refreshTrustVCs();
-      });
+      const signedVc = VC.sign(privateKeyAsUint8Array).to_object();
+
+      const uploadResponse = await axios.post(
+        "http://localhost:3001/upload/verifiable_credential",
+        {
+          vc: signedVc,
+        }
+      );
+
+      console.log(uploadResponse.data);
+      refreshTrustVCs();
+    } catch (error) {
+      console.error("Error in handleRemoveTrust:", error);
+      // Handle the error appropriately
+    }
   };
-
   const refreshTrustVCs = () => {
     axios
-      .get("http://localhost:3001/trust_vc/" + params.device_id)
+      .get("http://localhost:3001/trust_vc/device/" + params.device_id)
       .then((res) => {
         setTrustVCs(res.data);
       })
@@ -296,23 +309,18 @@ assert(device_trust("Ash-id",1723716151033,"AshEvilPhone-id")).
                 <CardContent>
                   <Stack spacing={0.4}>
                     <Typography variant="body2" color="textSecondary">
-                      {new Date(
-                        vc.credentialSubject.fact.created_at
-                      ).toLocaleDateString("en-GB")}
+                      {new Date(Number(vc.timestamp)).toLocaleString("en-GB")}
                     </Typography>
                     <Typography variant="h6" color="primary">
-                      {vc.credentialSubject.fact.authoriser_id}
-                    </Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      {vc.credentialSubject.id}
+                      {vc.authoriserId}
                     </Typography>
                   </Stack>
                 </CardContent>
-                {vc.credentialSubject.fact.authoriser_id === emailAddress && (
+                {vc.authoriserId === emailAddress && (
                   <CardActions>
                     <Button
                       variant="contained"
-                      onClick={() => handleRemoveTrust(vc.credentialSubject.id)}
+                      onClick={() => handleRemoveTrust(vc)}
                     >
                       Submit retraction
                     </Button>
