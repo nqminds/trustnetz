@@ -579,12 +579,16 @@ allowed_to_connect(DeviceId) :-
     % Check if the user has the permissions to issue device trust
     user(true, _, _, _, UserIdDT, _),
     user(_, true, _, _, UserIdDTT, _),
-    user(_, _, true,_, UserIdMT, _),
+    user(_, _, true, _, UserIdMT, _),
     
-    % Check if the device has any vulnerabilities and if its type matches
-    has_sbom(_, DeviceTypeId, VulnerabilityId),
-    sbom_vulnerability(_, VulnerabilityId, Severity),
-    Severity > 5,
+    % Check if the device has vulnerabilities with high severity if SBOM is present, or if SBOM is not present
+    (   has_sbom(_, DeviceTypeId, VulnerabilityId),
+        sbom_vulnerability(_, VulnerabilityId, Severity),
+        Severity > 5
+    ;   \+ has_sbom(_, DeviceTypeId, _)
+    ),
+    
+    % Ensure the device type matches
     is_of_device_type(_, DeviceId, DeviceTypeId).
 
 
@@ -690,7 +694,7 @@ output_manufacturer_data(ManufacturerId, ManufacturerData) :-
 
   % Check if there is a user that can issue manufacturer trust
   (   
-    once((manufacturer_trust(_, ManufacturerId, UserId), user(_, true, _, UserId, _))) ->
+    once((manufacturer_trust(_, ManufacturerId, UserId), user(_, true, _, _, UserId, _))) ->
     CanIssueManufacturerTrust = true
   ;   
     CanIssueManufacturerTrust = false
