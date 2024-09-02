@@ -690,7 +690,7 @@ output_manufacturer_data(ManufacturerId, ManufacturerData) :-
 
   % Check if there is a user that can issue manufacturer trust
   (   
-    once((manufacturer_trust(_, ManufacturerId, UserId), user(_, true, _, UserId, _))) ->
+    once((manufacturer_trust(_, ManufacturerId, UserId), user(_, true, _, _, UserId, _))) ->
     CanIssueManufacturerTrust = true
   ;   
     CanIssueManufacturerTrust = false
