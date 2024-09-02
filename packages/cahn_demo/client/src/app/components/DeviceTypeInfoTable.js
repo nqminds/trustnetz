@@ -91,7 +91,7 @@ export default function DeviceTypeInfoTable({ deviceTypeData }) {
                 >
                   <TableHead>
                     <StyledTableRow>
-                      <StyledTableCell>Field</StyledTableCell>
+                      <StyledTableCell>Device Type Attribute</StyledTableCell>
                       <StyledTableCell align="right">Value</StyledTableCell>
                     </StyledTableRow>
                   </TableHead>
@@ -99,9 +99,7 @@ export default function DeviceTypeInfoTable({ deviceTypeData }) {
                   <TableBody>
                     {/* Device Type Fields */}
                     <StyledTableRow>
-                      <StyledTableCell>
-                        <b>Device Type</b> Created At
-                      </StyledTableCell>
+                      <StyledTableCell>Created At</StyledTableCell>
                       <StyledTableCell align="right">
                         {unixInMillisecondsToDateString(
                           deviceTypeData.CreatedAtDeviceType
@@ -110,17 +108,13 @@ export default function DeviceTypeInfoTable({ deviceTypeData }) {
                       </StyledTableCell>
                     </StyledTableRow>
                     <StyledTableRow>
-                      <StyledTableCell>
-                        <b>Device Type</b> ID
-                      </StyledTableCell>
+                      <StyledTableCell>ID</StyledTableCell>
                       <StyledTableCell align="right">
                         {deviceTypeData.DeviceTypeId}
                       </StyledTableCell>
                     </StyledTableRow>
                     <StyledTableRow>
-                      <StyledTableCell>
-                        <b>Device Type</b> Name
-                      </StyledTableCell>
+                      <StyledTableCell>Name</StyledTableCell>
                       <StyledTableCell align="right">
                         {deviceTypeData.DeviceType}
                       </StyledTableCell>
@@ -176,32 +170,28 @@ export default function DeviceTypeInfoTable({ deviceTypeData }) {
                     >
                       <TableHead>
                         <StyledTableRow>
-                          <StyledTableCell>{device.Name}</StyledTableCell>
+                          <StyledTableCell>
+                            {device.Name} attribute
+                          </StyledTableCell>
                           <StyledTableCell align="right"></StyledTableCell>
                         </StyledTableRow>
                       </TableHead>
                       <TableBody>
                         <>
                           <StyledTableRow>
-                            <StyledTableCell>
-                              <b>Device</b> ID
-                            </StyledTableCell>
+                            <StyledTableCell>ID</StyledTableCell>
                             <StyledTableCell align="right">
                               {device.DeviceId}
                             </StyledTableCell>
                           </StyledTableRow>
                           <StyledTableRow>
-                            <StyledTableCell>
-                              <b>Device</b> IDevID
-                            </StyledTableCell>
+                            <StyledTableCell>IDevID</StyledTableCell>
                             <StyledTableCell align="right">
                               {device.Idevid}
                             </StyledTableCell>
                           </StyledTableRow>
                           <StyledTableRow>
-                            <StyledTableCell>
-                              <b>Device</b> Name
-                            </StyledTableCell>
+                            <StyledTableCell>Name</StyledTableCell>
                             <StyledTableCell align="right">
                               {device.Name}
                             </StyledTableCell>

@@ -67,7 +67,15 @@ export default function ManufacturerInfoTable({ manufacturerData }) {
         }}
       >
         <Stack divider={<Divider />} spacing={2}>
-          <Box>
+          <>
+            <Typography
+              variant="h4"
+              sx={{
+                color: "primary.main",
+              }}
+            >
+              Manufacturer Information
+            </Typography>
             <TableContainer
               sx={{
                 margin: "auto",
@@ -82,7 +90,7 @@ export default function ManufacturerInfoTable({ manufacturerData }) {
               >
                 <TableHead>
                   <StyledTableRow>
-                    <StyledTableCell>Field</StyledTableCell>
+                    <StyledTableCell>Manufacturer Attribute</StyledTableCell>
                     <StyledTableCell align="right">Value</StyledTableCell>
                   </StyledTableRow>
                 </TableHead>
@@ -90,9 +98,7 @@ export default function ManufacturerInfoTable({ manufacturerData }) {
                 <TableBody>
                   {/* Manufacturer Fields */}
                   <StyledTableRow>
-                    <StyledTableCell>
-                      <b>Manufacturer</b> Created At
-                    </StyledTableCell>
+                    <StyledTableCell>Created At</StyledTableCell>
                     <StyledTableCell align="right">
                       {unixInMillisecondsToDateString(
                         manufacturerData.CreatedAtManufacturer
@@ -101,17 +107,13 @@ export default function ManufacturerInfoTable({ manufacturerData }) {
                     </StyledTableCell>
                   </StyledTableRow>
                   <StyledTableRow>
-                    <StyledTableCell>
-                      <b>Manufacturer</b> ID
-                    </StyledTableCell>
+                    <StyledTableCell>ID</StyledTableCell>
                     <StyledTableCell align="right">
                       {manufacturerData.ManufacturerId}
                     </StyledTableCell>
                   </StyledTableRow>
                   <StyledTableRow>
-                    <StyledTableCell>
-                      <b>Manufacturer</b> Name
-                    </StyledTableCell>
+                    <StyledTableCell>Name</StyledTableCell>
                     <StyledTableCell align="right">
                       {manufacturerData.Manufacturer}
                     </StyledTableCell>
@@ -142,7 +144,7 @@ export default function ManufacturerInfoTable({ manufacturerData }) {
                 </TableBody>
               </Table>
             </TableContainer>
-          </Box>
+          </>
 
           <>
             <Typography
@@ -167,61 +169,29 @@ export default function ManufacturerInfoTable({ manufacturerData }) {
               >
                 <TableHead>
                   <StyledTableRow>
-                    <StyledTableCell>Attribute</StyledTableCell>
-                    {manufacturerData.DeviceTypes.map((device) => (
-                      <StyledTableCell key={device.DeviceTypeId} align="center">
-                        {device.DeviceType}
-                      </StyledTableCell>
-                    ))}
+                    <StyledTableCell align="center">ID</StyledTableCell>
+                    <StyledTableCell align="center">Name</StyledTableCell>
+                    <StyledTableCell align="center">Created At</StyledTableCell>
                   </StyledTableRow>
                 </TableHead>
                 <TableBody>
-                  {manufacturerData.DeviceTypes.length > 0 && (
-                    <>
-                      <StyledTableRow>
-                        <StyledTableCell>
-                          <b>Device Type</b> ID
+                  {manufacturerData.DeviceTypes.length > 0 &&
+                    manufacturerData.DeviceTypes.map((device) => (
+                      <StyledTableRow key={device.DeviceTypeId}>
+                        <StyledTableCell align="center">
+                          {device.DeviceTypeId}
                         </StyledTableCell>
-                        {manufacturerData.DeviceTypes.map((device) => (
-                          <StyledTableCell
-                            key={device.DeviceTypeId}
-                            align="center"
-                          >
-                            {device.DeviceTypeId}
-                          </StyledTableCell>
-                        ))}
-                      </StyledTableRow>
-                      <StyledTableRow>
-                        <StyledTableCell>
-                          <b>Device Type</b> Name
+                        <StyledTableCell align="center">
+                          {device.DeviceType}
                         </StyledTableCell>
-                        {manufacturerData.DeviceTypes.map((device) => (
-                          <StyledTableCell
-                            key={device.DeviceTypeId}
-                            align="center"
-                          >
-                            {device.DeviceType}
-                          </StyledTableCell>
-                        ))}
-                      </StyledTableRow>
-                      <StyledTableRow>
-                        <StyledTableCell>
-                          <b>Device Type</b> Created At
+                        <StyledTableCell align="center">
+                          {unixInMillisecondsToDateString(
+                            device.CreatedAtDeviceType
+                          )}{" "}
+                          ({device.CreatedAtDeviceType})
                         </StyledTableCell>
-                        {manufacturerData.DeviceTypes.map((device) => (
-                          <StyledTableCell
-                            key={device.DeviceTypeId}
-                            align="center"
-                          >
-                            {unixInMillisecondsToDateString(
-                              device.CreatedAtDeviceType
-                            )}
-                            ({device.CreatedAtDeviceType})
-                          </StyledTableCell>
-                        ))}
                       </StyledTableRow>
-                    </>
-                  )}
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>

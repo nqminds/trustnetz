@@ -1,18 +1,15 @@
 import {
   Typography,
   Paper,
-  Stack,
-  Divider,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  Box,
   TableHead,
   TableRow,
   Chip,
-  Button,
-  ButtonGroup,
+  Stack,
+  Divider,
 } from "@mui/material";
 import { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
@@ -65,119 +62,177 @@ export default function DeviceInfoTable({ deviceData }) {
         sx={{
           p: { xs: 2, sm: 3 },
           mx: "auto",
-          mb: 1,
           width: "60%",
         }}
       >
-        <TableContainer>
-          <Table
-            sx={{
-              [`& .${tableCellClasses.root}`]: {
-                borderBottom: "none",
-              },
-            }}
-          >
-            <TableHead>
-              <StyledTableRow>
-                <StyledTableCell>Field</StyledTableCell>
-                <StyledTableCell align="right">Value</StyledTableCell>
-              </StyledTableRow>
-            </TableHead>
-
-            <TableBody>
-              <StyledTableRow>
-                <StyledTableCell>
-                  <b>Device</b> Created At
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {unixInMillisecondsToDateString(deviceData.CreatedAtDevice)} (
-                  {deviceData.CreatedAtDevice})
-                </StyledTableCell>
-              </StyledTableRow>
-              <StyledTableRow>
-                <StyledTableCell>
-                  <b>Device</b> ID
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {deviceData.DeviceId}
-                </StyledTableCell>
-              </StyledTableRow>
-              <StyledTableRow>
-                <StyledTableCell>
-                  <b>Device</b> IDevID
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {deviceData.Idevid}
-                </StyledTableCell>
-              </StyledTableRow>
-              <StyledTableRow>
-                <StyledTableCell>
-                  <b>Device</b> Name
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {deviceData.Name}
-                </StyledTableCell>
-              </StyledTableRow>
-              <StyledTableRow>
-                <StyledTableCell>
-                  <b>Device Type</b> Created At
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {unixInMillisecondsToDateString(
-                    deviceData.CreatedAtDeviceType
-                  )}{" "}
-                  ({deviceData.CreatedAtDeviceType})
-                </StyledTableCell>
-              </StyledTableRow>
-              <StyledTableRow>
-                <StyledTableCell>
-                  <b>Device Type</b> ID
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {deviceData.DeviceTypeId}
-                </StyledTableCell>
-              </StyledTableRow>
-              <StyledTableRow>
-                <StyledTableCell>
-                  <b>Device Type</b> Name
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {deviceData.DeviceType}
-                </StyledTableCell>
-              </StyledTableRow>
-              <StyledTableRow>
-                <StyledTableCell>
-                  <b>Manufacturer</b> ID
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {deviceData.ManufacturerId}
-                </StyledTableCell>
-              </StyledTableRow>
-              <StyledTableRow>
-                <StyledTableCell>
-                  <b>Manufacturer</b> Name
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {deviceData.Manufacturer}
-                </StyledTableCell>
-              </StyledTableRow>
-              <StyledTableRow
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+        <Stack divider={<Divider />} spacing={2}>
+          <>
+            <Typography
+              variant="h4"
+              sx={{
+                color: "primary.main",
+              }}
+            >
+              Device Information
+            </Typography>
+            <TableContainer>
+              <Table
+                sx={{
+                  [`& .${tableCellClasses.root}`]: {
+                    borderBottom: "none",
+                  },
+                }}
               >
-                <StyledTableCell>Can Connect</StyledTableCell>
-                <StyledTableCell align="right">
-                  <Chip
-                    icon={
-                      deviceData.CanConnect ? <CheckIcon /> : <DoDisturbIcon />
-                    }
-                    label={deviceData.CanConnect.toString()}
-                    color={deviceData.CanConnect ? "success" : "error"}
-                  />
-                </StyledTableCell>
-              </StyledTableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+                <TableHead>
+                  <StyledTableRow>
+                    <StyledTableCell>Device Attribute</StyledTableCell>
+                    <StyledTableCell align="right">Value</StyledTableCell>
+                  </StyledTableRow>
+                </TableHead>
+
+                <TableBody>
+                  <StyledTableRow>
+                    <StyledTableCell>Created At</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {unixInMillisecondsToDateString(
+                        deviceData.CreatedAtDevice
+                      )}{" "}
+                      ({deviceData.CreatedAtDevice})
+                    </StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledTableCell>ID</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {deviceData.DeviceId}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledTableCell>IDevID</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {deviceData.Idevid}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledTableCell>Name</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {deviceData.Name}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledTableCell>Can Connect</StyledTableCell>
+                    <StyledTableCell align="right">
+                      <Chip
+                        icon={
+                          deviceData.CanConnect ? (
+                            <CheckIcon />
+                          ) : (
+                            <DoDisturbIcon />
+                          )
+                        }
+                        label={deviceData.CanConnect.toString()}
+                        color={deviceData.CanConnect ? "success" : "error"}
+                      />
+                    </StyledTableCell>
+                  </StyledTableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
+          {/* Device type */}
+          <>
+            {" "}
+            <Typography
+              variant="h4"
+              sx={{
+                color: "primary.main",
+              }}
+            >
+              Device Type Information
+            </Typography>
+            <TableContainer>
+              <Table
+                sx={{
+                  [`& .${tableCellClasses.root}`]: {
+                    borderBottom: "none",
+                  },
+                }}
+              >
+                <TableHead>
+                  <StyledTableRow>
+                    <StyledTableCell>Device Type Attribute</StyledTableCell>
+                    <StyledTableCell align="right">Value</StyledTableCell>
+                  </StyledTableRow>
+                </TableHead>
+
+                <TableBody>
+                  <StyledTableRow>
+                    <StyledTableCell>Created At</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {unixInMillisecondsToDateString(
+                        deviceData.CreatedAtDeviceType
+                      )}{" "}
+                      ({deviceData.CreatedAtDeviceType})
+                    </StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledTableCell>ID</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {deviceData.DeviceTypeId}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledTableCell>Name</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {deviceData.DeviceType}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
+          <>
+            {/* Manufacturer */}
+            <Typography
+              variant="h4"
+              sx={{
+                color: "primary.main",
+              }}
+            >
+              Manufacturer Information
+            </Typography>
+            <TableContainer>
+              <Table
+                sx={{
+                  [`& .${tableCellClasses.root}`]: {
+                    borderBottom: "none",
+                  },
+                }}
+              >
+                <TableHead>
+                  <StyledTableRow>
+                    <StyledTableCell>Manufacturer Attribute</StyledTableCell>
+                    <StyledTableCell align="right">Value</StyledTableCell>
+                  </StyledTableRow>
+                </TableHead>
+
+                <TableBody>
+                  <StyledTableRow>
+                    <StyledTableCell>ID</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {deviceData.ManufacturerId}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledTableCell>Name</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {deviceData.Manufacturer}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
+        </Stack>
       </Paper>
     </Paper>
   );
