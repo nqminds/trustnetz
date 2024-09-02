@@ -14,6 +14,8 @@ import {
 } from "@mui/material";
 import { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
+import DoDisturbIcon from "@mui/icons-material/DoDisturb";
+import CheckIcon from "@mui/icons-material/Check";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(even)": {
@@ -121,6 +123,26 @@ export default function DeviceTypeInfoTable({ deviceTypeData }) {
                       </StyledTableCell>
                       <StyledTableCell align="right">
                         {deviceTypeData.DeviceType}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                    <StyledTableRow
+                      sx={{
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                    >
+                      <StyledTableCell>Has Trust From Users</StyledTableCell>
+                      <StyledTableCell align="right">
+                        <Chip
+                          icon={
+                            deviceTypeData.HasTrust ? (
+                              <CheckIcon />
+                            ) : (
+                              <DoDisturbIcon />
+                            )
+                          }
+                          label={deviceTypeData.HasTrust.toString()}
+                          color={deviceTypeData.HasTrust ? "success" : "error"}
+                        />
                       </StyledTableCell>
                     </StyledTableRow>
                   </TableBody>

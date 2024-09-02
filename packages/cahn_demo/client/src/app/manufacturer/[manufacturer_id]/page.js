@@ -7,6 +7,7 @@ import {
   Stack,
   Card,
   CardContent,
+  Chip,
   CardActions,
 } from "@mui/material";
 import { useState, useEffect } from "react";
@@ -15,6 +16,8 @@ import ManufacturerInfoTable from "../../components/ManufacturerInfoTable";
 import withAuth from "@/app/utils/withAuth";
 import AppBar from "../../components/AppBar";
 import { v4 as uuidv4 } from "uuid";
+import CheckIcon from "@mui/icons-material/Check";
+import DoDisturbIcon from "@mui/icons-material/DoDisturb";
 const Page = ({ params }) => {
   const [manufacturerData, setManufacturerData] = useState({
     CreatedAtManufacturer: "",
@@ -30,6 +33,8 @@ const Page = ({ params }) => {
 
     CanIssueManufacturerTrust: false,
   });
+
+  const [permissionedUsers, setPermissionedUsers] = useState([]);
 
   const privateKey = localStorage.getItem("privateKey");
   const emailAddress = localStorage.getItem("emailAddress");
@@ -86,6 +91,10 @@ const Page = ({ params }) => {
     // TODO: Extract initializeWasm to a separate file
 
     if (!window.gen_keys || !window.VerifiableCredential) initializeWasm();
+
+    axios.get("http://localhost:3001/permissions/manufacturer").then((res) => {
+      setPermissionedUsers(res.data);
+    });
   }, []);
   const handleCreateTrust = () => {
     const data = {
@@ -278,14 +287,35 @@ const Page = ({ params }) => {
             {trustVCs.map((vc, index) => (
               <Card raised key={index} sx={{ maxWidth: 345, marginBottom: 2 }}>
                 <CardContent>
-                  <Stack spacing={0.4}>
-                    <Typography variant="body2" color="textSecondary">
-                      {new Date(Number(vc.timestamp)).toLocaleString("en-GB")}
-                    </Typography>
-                    <Typography variant="h6" color="primary">
-                      {vc.userId}
-                    </Typography>
-                  </Stack>
+                  <Typography
+                    variant="body2"
+                    color="textSecondary"
+                    gutterBottom
+                  >
+                    {new Date(Number(vc.timestamp)).toLocaleString("en-GB")}
+                  </Typography>
+                  <Typography variant="h6" color="primary" gutterBottom>
+                    {vc.userId}
+                  </Typography>
+                  <Chip
+                    icon={
+                      permissionedUsers.includes(vc.userId) ? (
+                        <CheckIcon />
+                      ) : (
+                        <DoDisturbIcon />
+                      )
+                    }
+                    label={
+                      permissionedUsers.includes(vc.userId)
+                        ? "Can issue trust"
+                        : "Cannot issue trust"
+                    }
+                    color={
+                      permissionedUsers.includes(vc.userId)
+                        ? "success"
+                        : "error"
+                    }
+                  />
                 </CardContent>
                 {vc.userId === emailAddress && (
                   <CardActions>

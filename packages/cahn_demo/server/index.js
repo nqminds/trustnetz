@@ -50,6 +50,47 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Save a VC for a user
+const saveVCForUser = (email) => {
+  // Create a VC for the user
+  const vc = {
+    "@context": ["https://www.w3.org/ns/credentials/v2"],
+    id: `urn:uuid:${uuidv4()}`,
+    type: ["VerifiableCredential", "UserCredential"],
+    name: null,
+    description: null,
+    issuer: "urn:uuid:585df7b5-8891-4630-9f5d-a5659f3abe04",
+    validFrom: "2024-08-28T14:15:50.307579Z",
+    validUntil: null,
+    credentialStatus: null,
+    credentialSchema: {
+      id: "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/user.yaml",
+      type: "JsonSchema",
+    },
+    credentialSubject: {
+      type: "fact",
+      schemaName: "user",
+      id: uuidv4(),
+      timestamp: 1716287268891,
+      fact: {
+        id: email,
+        username: `${email.split("@")[0]}-user`,
+        created_at: Date.now(),
+        can_issue_device_trust: false,
+        can_issue_manufacturer_trust: false,
+      },
+    },
+  };
+
+  // Save the VC to a file
+  const fileName = `./uploads/vcs/custom/verifiable_credentials_${Date.now()}.json`;
+  fs.appendFile(fileName, JSON.stringify(vc) + "\n", (err) => {
+    if (err) {
+      console.error(err);
+    }
+  });
+};
+
 // Middleware
 app.use(morgan("tiny"));
 app.use(cors());
@@ -109,7 +150,7 @@ app.get("/claim_cascade", async (_req, res) => {
           clearInterval(interval);
           resolve();
         }
-      }, 1000);
+      }, 100);
     });
   }
 
@@ -172,6 +213,12 @@ app.get("/sign_in/verify/:token", (req, res) => {
   try {
     // Save the public key to the email address
     // TODO: change to VC saving
+
+    // If the user doesn't exist in the emailToPublicKeys.json file, create a VC for the user
+    if (!emailToPublicKeys[email]) {
+      console.log("doing this");
+      saveVCForUser(email);
+    }
     addPublicKeyToEmail(email, publicKey);
     updateEmailToPublicKeys();
   } catch (err) {
@@ -182,12 +229,26 @@ app.get("/sign_in/verify/:token", (req, res) => {
   return res.send("Sign in successful").status(200);
 });
 
-app.get("/all_devices_data", (req, res) => {
+app.get("/all_devices_data", async (req, res) => {
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  claimCascadeInProgress = true;
+
   // Command to run Prolog query and retrieve data for all devices
   const command = `
     swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_all_device_data(DeviceDataList), write(current_output, DeviceDataList), halt."`;
 
   exec(command, (error, stdout, stderr) => {
+    claimCascadeInProgress = false;
     if (error) {
       console.error(`Execution error: ${error}`);
       return res.status(500).json({ error: "Internal server error" });
@@ -245,9 +306,22 @@ app.get("/all_devices_data", (req, res) => {
   });
 });
 
-app.get("/device/:deviceId", (req, res) => {
+app.get("/device/:deviceId", async (req, res) => {
   // Device specific data
   const deviceId = req.params.deviceId;
+
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  claimCascadeInProgress = true;
 
   // Command to run Prolog query and retrieve data for a specific device
   const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_device_data(\\"${deviceId}\\", DeviceData), write(current_output, DeviceData), halt."`;
@@ -255,8 +329,10 @@ app.get("/device/:deviceId", (req, res) => {
   console.log("command :>> ", command);
 
   exec(command, (error, stdout, stderr) => {
+    claimCascadeInProgress = false;
     if (error) {
       console.error(`Execution error: ${error}`);
+      claimCascadeInProgress = false;
       return res.status(500).json({ error: "Internal server error" });
     }
 
@@ -303,15 +379,29 @@ app.get("/device/:deviceId", (req, res) => {
   });
 });
 
-app.get("/manufacturer/:manufacturerId", (req, res) => {
+app.get("/manufacturer/:manufacturerId", async (req, res) => {
   // Device specific data
   const manufacturerId = req.params.manufacturerId;
 
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  claimCascadeInProgress = true;
+
   // Command to run Prolog query and retrieve data for a specific device
   const command = `
-    swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_manufacturer_data(\\"${manufacturerId}\\", ManufacturerData), write(current_output, ManufacturerData), halt."`;
+swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_manufacturer_data(\\"${manufacturerId}\\", ManufacturerData), write(current_output, ManufacturerData), halt."`;
 
   exec(command, (error, stdout, stderr) => {
+    claimCascadeInProgress = false;
     if (error) {
       console.error(`Execution error: ${error}`);
       return res.status(500).json({ error: "Internal server error" });
@@ -326,15 +416,28 @@ app.get("/manufacturer/:manufacturerId", (req, res) => {
   });
 });
 
-app.get("/deviceType/:deviceTypeId", (req, res) => {
+app.get("/deviceType/:deviceTypeId", async (req, res) => {
   // Device type specific data
   const deviceTypeId = req.params.deviceTypeId;
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  claimCascadeInProgress = true;
 
   // Command to run Prolog query and retrieve data for a specific device
   const command = `
     swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_device_type_data(\\"${deviceTypeId}\\", DeviceTypeData), write(current_output, DeviceTypeData), halt."`;
 
   exec(command, (error, stdout, stderr) => {
+    claimCascadeInProgress = false;
     if (error) {
       console.error(`Execution error: ${error}`);
       return res.status(500).json({ error: "Internal server error" });
@@ -361,7 +464,7 @@ app.get("/trust_vc/device/:deviceId", async (req, res) => {
           clearInterval(interval);
           resolve();
         }
-      }, 1000);
+      }, 100);
     });
   }
 
@@ -603,7 +706,7 @@ app.get("/trust_vc/device_type/:deviceTypeId", async (req, res) => {
           clearInterval(interval);
           resolve();
         }
-      }, 1000);
+      }, 100);
     });
   }
 
@@ -691,7 +794,7 @@ app.get("/trust_vc/manufacturer/:manufacturerId", async (req, res) => {
           clearInterval(interval);
           resolve();
         }
-      }, 1000);
+      }, 100);
     });
   }
 
@@ -843,6 +946,399 @@ app.get("/VC_ID/manufacturer_trust", (req, res) => {
       }
     })
     .catch((error) => res.status(500).json({ error: "Internal server error" }));
+});
+
+app.get("/user_settings/:emailAddress", async (req, res) => {
+  // Trigger claim cascade
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  claimCascadeInProgress = true;
+
+  // Run claim cascade
+  exec("sh run_claim_cascade.sh", (err) => {
+    claimCascadeInProgress = false;
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error running claim cascade");
+    }
+
+    const emailAddress = req.params.emailAddress;
+
+    // Path to output_db.pl
+    const filePath = path.join(__dirname, "output", "output_db.pl");
+
+    // Read the file
+    fs.readFile(filePath, "utf-8", (err, data) => {
+      if (err) {
+        return res.status(500).send("Unable to read the file");
+      }
+
+      // Split the file contents into lines
+      const lines = data.split("\n");
+
+      let userInfo = null;
+
+      // Loop through each line to find the matching user assertion
+      for (const line of lines) {
+        // Match lines that start with "assert(user("
+        const userMatch = line.match(/assert\(user\((.+)\)\)\./);
+        if (userMatch) {
+          // Split the contents of the user assertion
+          const userFields = userMatch[1].split(",");
+
+          // Extract the email field and remove quotes
+          const userEmail = userFields[4].replace(/['"]+/g, "");
+
+          // Check if the email matches
+          if (userEmail === emailAddress) {
+            // Found the user, parse the information
+            userInfo = {
+              canIssueDeviceTrust: userFields[0].trim() === "true",
+              canIssueDeviceTypeTrust: userFields[1].trim() === "true",
+              canIssueManufacturerTrust: userFields[2].trim() === "true",
+              created_at: parseFloat(userFields[3].trim()),
+              email: userEmail,
+              username: userFields[5].replace(/['"]+/g, "").trim(),
+            };
+            break;
+          }
+        }
+      }
+
+      if (userInfo) {
+        return res.json(userInfo);
+      } else {
+        return res.status(404).send("User not found");
+      }
+    });
+  });
+});
+
+app.post("/user_settings", async (req, res) => {
+  const {
+    emailAddress,
+    canIssueDeviceTrust,
+    canIssueManufacturerTrust,
+    canIssueDeviceTypeTrust,
+  } = req.body;
+
+  // Find every VC in the filesystem with the credentialSubject.fact.id matching the emailAddress and credentialSubject.schemaName is "user"
+  const customVCPath = path.join(__dirname, "uploads", "vcs", "custom");
+
+  const searchVCs = (dirPath) => {
+    return new Promise((resolve, reject) => {
+      fs.readdir(dirPath, (err, files) => {
+        if (err) {
+          console.error(`File read error: ${err}`);
+          reject(err);
+          return;
+        }
+
+        const vcFiles = files.filter((file) => file.endsWith(".json"));
+        const filePromises = vcFiles.map((file) => {
+          return new Promise((resolveFile) => {
+            fs.readFile(path.join(dirPath, file), "utf8", (err, data) => {
+              if (err) {
+                console.error(`File read error: ${err}`);
+                resolveFile(null);
+                return;
+              }
+
+              try {
+                const vc = JSON.parse(data);
+                if (
+                  vc.credentialSubject &&
+                  vc.credentialSubject.schemaName === "user" &&
+                  vc.credentialSubject.fact.id === emailAddress
+                ) {
+                  resolveFile(vc.credentialSubject.id);
+                } else {
+                  resolveFile(null);
+                }
+              } catch (parseError) {
+                console.error(`JSON parse error: ${parseError}`);
+                resolveFile(null);
+              }
+            });
+          });
+        });
+
+        Promise.all(filePromises).then((results) => {
+          const foundIds = results.filter((id) => id !== null);
+          resolve(foundIds);
+        });
+      });
+    });
+  };
+
+  const vcIds = await searchVCs(customVCPath);
+
+  // For every VC that we have, search the /uploads/vcs/custom folder for a retraction VC
+  const retractionVCs = [];
+  const searchRetractionVCs = (dirPath, vcIds) => {
+    return new Promise((resolve, reject) => {
+      fs.readdir(dirPath, (err, files) => {
+        if (err) {
+          console.error(`File read error: ${err}`);
+          reject(err);
+          return;
+        }
+
+        const vcFiles = files.filter((file) => file.endsWith(".json"));
+        const filePromises = vcFiles.map((file) => {
+          return new Promise((resolveFile) => {
+            fs.readFile(path.join(dirPath, file), "utf8", (err, data) => {
+              if (err) {
+                console.error(`File read error: ${err}`);
+                resolveFile(null);
+                return;
+              }
+
+              try {
+                const vc = JSON.parse(data);
+                if (
+                  vc.credentialSubject &&
+                  vc.credentialSubject.type === "retraction" &&
+                  vc.credentialSubject.claim_id &&
+                  vcIds.includes(vc.credentialSubject.claim_id)
+                ) {
+                  retractionVCs.push(vc);
+                }
+                resolveFile(null);
+              } catch (parseError) {
+                console.error(`JSON parse error: ${parseError}`);
+                resolveFile(null);
+              }
+            });
+          });
+        });
+
+        Promise.all(filePromises).then(() => {
+          resolve();
+        });
+      });
+    });
+  };
+
+  await searchRetractionVCs(customVCPath, vcIds);
+
+  // Make a retraction VC for every unretracted VC and save it to the /uploads/vcs/custom folder
+  const unretractedVCs = vcIds.filter(
+    (vcId) =>
+      !retractionVCs.some(
+        (retraction) => retraction.credentialSubject.claim_id === vcId
+      )
+  );
+
+  const createRetractionVC = (vcId) => {
+    return {
+      "@context": ["https://www.w3.org/ns/credentials/v2"],
+      id: `urn:uuid:${uuidv4()}`,
+      type: ["VerifiableCredential", "RetractionCredential"],
+      issuer: `urn:uuid:${uuidv4()}`,
+      credentialSubject: {
+        type: "retraction",
+        claim_id: vcId,
+        timestamp: Date.now(),
+      },
+    };
+  };
+
+  for (const unretractedVCId of unretractedVCs) {
+    const retractionVC = createRetractionVC(unretractedVCId);
+    const retractionVCPath = path.join(
+      customVCPath,
+      `User_retraction_${Date.now()}.json`
+    );
+    fs.writeFileSync(retractionVCPath, JSON.stringify(retractionVC, null, 2));
+  }
+
+  // Generate new user VC and save it to the /uploads/vcs/custom folder
+  const newVC = {
+    "@context": ["https://www.w3.org/ns/credentials/v2"],
+    id: `urn:uuid:${uuidv4()}`,
+    type: ["VerifiableCredential", "UserCredential"],
+    name: null,
+    description: null,
+    issuer: `urn:uuid:${uuidv4()}`,
+    validFrom: new Date().toISOString(),
+    validUntil: null,
+    credentialStatus: null,
+    credentialSchema: {
+      id: "test",
+      type: "JsonSchema",
+    },
+    credentialSubject: {
+      type: "fact",
+      schemaName: "user",
+      id: uuidv4(),
+      timestamp: Date.now(),
+      fact: {
+        can_issue_device_trust: canIssueDeviceTrust,
+        can_issue_manufacturer_trust: canIssueManufacturerTrust,
+        can_issue_device_type_trust: canIssueDeviceTypeTrust,
+        created_at: Date.now(),
+        id: emailAddress,
+        username: `${emailAddress.split("@")[0]}-user`,
+      },
+    },
+  };
+
+  const newVCPath = path.join(customVCPath, `User_VC_${Date.now()}.json`);
+  fs.writeFileSync(newVCPath, JSON.stringify(newVC, null, 2));
+
+  // Run claim cascade
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  claimCascadeInProgress = true;
+
+  exec("sh run_claim_cascade.sh", (err) => {
+    claimCascadeInProgress = false;
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error running claim cascade");
+    }
+  });
+
+  res
+    .status(200)
+    .json({ message: "User settings updated and VCs generated successfully." });
+});
+
+// Get the users that can issue device trust
+app.get("/permissions/device", async (req, res) => {
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+  claimCascadeInProgress = true;
+  const filePath = path.join(__dirname, "output", "output_db.pl");
+  // A user that can issue device trust appears as assert(user(true, _, _, _, _, _). where underscores are placeholders
+  const deviceTrustIssuers = [];
+  fs.readFile(filePath, "utf-8", (err, data) => {
+    claimCascadeInProgress = false;
+    if (err) {
+      return res.status(500).send("Unable to read the file");
+    }
+
+    const lines = data.split("\n");
+
+    for (const line of lines) {
+      // Regex to match the user assertion with placeholders
+      const regex = /user\(true,([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)\)/g;
+      let match;
+
+      // Find all matches in the line
+      while ((match = regex.exec(line)) !== null) {
+        // The fifth item in the brackets is at index 5 in the match array
+        deviceTrustIssuers.push(match[4].replace(/['"]+/g, ""));
+      }
+    }
+    res.json(deviceTrustIssuers);
+  });
+});
+
+// Get the users that can issue manufacturer trust
+app.get("/permissions/manufacturer", async (req, res) => {
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  const filePath = path.join(__dirname, "output", "output_db.pl");
+  // A user that can issue manufacturer trust appears as assert(user(_, true, _, _, _, _). where underscores are placeholders
+  const manufacturerTrustIssuers = [];
+  fs.readFile(filePath, "utf-8", (err, data) => {
+    claimCascadeInProgress = false;
+    if (err) {
+      return res.status(500).send("Unable to read the file");
+    }
+
+    const lines = data.split("\n");
+
+    for (const line of lines) {
+      // Regex to match the user assertion with placeholders
+      const regex = /user\(([^,]*),true,([^,]*),([^,]*),([^,]*),([^,]*)\)/g;
+      let match;
+
+      // Find all matches in the line
+      while ((match = regex.exec(line)) !== null) {
+        // The fifth item in the brackets is at index 5 in the match array
+        manufacturerTrustIssuers.push(match[4].replace(/['"]+/g, ""));
+      }
+    }
+    res.json(manufacturerTrustIssuers);
+  });
+});
+
+// Get the users that can issue device type trust
+app.get("/permissions/device_type", async (req, res) => {
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  claimCascadeInProgress = true;
+  const filePath = path.join(__dirname, "output", "output_db.pl");
+  // A user that can issue device type trust appears as assert(user(_, _, true, _, _, _). where underscores are placeholders
+  const deviceTypeTrustIssuers = [];
+  fs.readFile(filePath, "utf-8", (err, data) => {
+    claimCascadeInProgress = false;
+    if (err) {
+      return res.status(500).send("Unable to read the file");
+    }
+
+    const lines = data.split("\n");
+
+    for (const line of lines) {
+      // Regex to match the user assertion with placeholders
+      const regex = /user\(([^,]*),([^,]*),true,([^,]*),([^,]*),([^,]*)\)/g;
+      let match;
+
+      // Find all matches in the line
+      while ((match = regex.exec(line)) !== null) {
+        // The fifth item in the brackets is at index 5 in the match array
+        deviceTypeTrustIssuers.push(match[4].replace(/['"]+/g, ""));
+      }
+    }
+    res.json(deviceTypeTrustIssuers);
+  });
 });
 
 app.get("/", (req, res) => {

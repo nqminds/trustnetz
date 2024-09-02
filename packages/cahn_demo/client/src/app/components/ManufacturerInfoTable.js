@@ -41,8 +41,6 @@ function unixInMillisecondsToDateString(unixInMilliseconds) {
 }
 
 export default function ManufacturerInfoTable({ manufacturerData }) {
-  useEffect(() => {}, [manufacturerData]);
-
   return (
     <Paper
       sx={{
