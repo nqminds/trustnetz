@@ -74,7 +74,7 @@ const saveVCForUser = (email) => {
       timestamp: 1716287268891,
       fact: {
         id: email,
-        username: email.split("@")[0],
+        username: `${email.split("@")[0]}-user`,
         created_at: Date.now(),
         can_issue_device_trust: false,
         can_issue_manufacturer_trust: false,
@@ -150,7 +150,7 @@ app.get("/claim_cascade", async (_req, res) => {
           clearInterval(interval);
           resolve();
         }
-      }, 1000);
+      }, 100);
     });
   }
 
@@ -229,12 +229,26 @@ app.get("/sign_in/verify/:token", (req, res) => {
   return res.send("Sign in successful").status(200);
 });
 
-app.get("/all_devices_data", (req, res) => {
+app.get("/all_devices_data", async (req, res) => {
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  claimCascadeInProgress = true;
+
   // Command to run Prolog query and retrieve data for all devices
   const command = `
     swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_all_device_data(DeviceDataList), write(current_output, DeviceDataList), halt."`;
 
   exec(command, (error, stdout, stderr) => {
+    claimCascadeInProgress = false;
     if (error) {
       console.error(`Execution error: ${error}`);
       return res.status(500).json({ error: "Internal server error" });
@@ -292,9 +306,22 @@ app.get("/all_devices_data", (req, res) => {
   });
 });
 
-app.get("/device/:deviceId", (req, res) => {
+app.get("/device/:deviceId", async (req, res) => {
   // Device specific data
   const deviceId = req.params.deviceId;
+
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  claimCascadeInProgress = true;
 
   // Command to run Prolog query and retrieve data for a specific device
   const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_device_data(\\"${deviceId}\\", DeviceData), write(current_output, DeviceData), halt."`;
@@ -302,8 +329,10 @@ app.get("/device/:deviceId", (req, res) => {
   console.log("command :>> ", command);
 
   exec(command, (error, stdout, stderr) => {
+    claimCascadeInProgress = false;
     if (error) {
       console.error(`Execution error: ${error}`);
+      claimCascadeInProgress = false;
       return res.status(500).json({ error: "Internal server error" });
     }
 
@@ -350,15 +379,29 @@ app.get("/device/:deviceId", (req, res) => {
   });
 });
 
-app.get("/manufacturer/:manufacturerId", (req, res) => {
+app.get("/manufacturer/:manufacturerId", async (req, res) => {
   // Device specific data
   const manufacturerId = req.params.manufacturerId;
 
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  claimCascadeInProgress = true;
+
   // Command to run Prolog query and retrieve data for a specific device
   const command = `
-    swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_manufacturer_data(\\"${manufacturerId}\\", ManufacturerData), write(current_output, ManufacturerData), halt."`;
+swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_manufacturer_data(\\"${manufacturerId}\\", ManufacturerData), write(current_output, ManufacturerData), halt."`;
 
   exec(command, (error, stdout, stderr) => {
+    claimCascadeInProgress = false;
     if (error) {
       console.error(`Execution error: ${error}`);
       return res.status(500).json({ error: "Internal server error" });
@@ -373,15 +416,28 @@ app.get("/manufacturer/:manufacturerId", (req, res) => {
   });
 });
 
-app.get("/deviceType/:deviceTypeId", (req, res) => {
+app.get("/deviceType/:deviceTypeId", async (req, res) => {
   // Device type specific data
   const deviceTypeId = req.params.deviceTypeId;
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  claimCascadeInProgress = true;
 
   // Command to run Prolog query and retrieve data for a specific device
   const command = `
     swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_device_type_data(\\"${deviceTypeId}\\", DeviceTypeData), write(current_output, DeviceTypeData), halt."`;
 
   exec(command, (error, stdout, stderr) => {
+    claimCascadeInProgress = false;
     if (error) {
       console.error(`Execution error: ${error}`);
       return res.status(500).json({ error: "Internal server error" });
@@ -408,7 +464,7 @@ app.get("/trust_vc/device/:deviceId", async (req, res) => {
           clearInterval(interval);
           resolve();
         }
-      }, 1000);
+      }, 100);
     });
   }
 
@@ -650,7 +706,7 @@ app.get("/trust_vc/device_type/:deviceTypeId", async (req, res) => {
           clearInterval(interval);
           resolve();
         }
-      }, 1000);
+      }, 100);
     });
   }
 
@@ -738,7 +794,7 @@ app.get("/trust_vc/manufacturer/:manufacturerId", async (req, res) => {
           clearInterval(interval);
           resolve();
         }
-      }, 1000);
+      }, 100);
     });
   }
 
@@ -890,6 +946,82 @@ app.get("/VC_ID/manufacturer_trust", (req, res) => {
       }
     })
     .catch((error) => res.status(500).json({ error: "Internal server error" }));
+});
+
+app.get("/user_settings/:emailAddress", async (req, res) => {
+  // Trigger claim cascade
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  claimCascadeInProgress = true;
+
+  // Run claim cascade
+  exec("sh run_claim_cascade.sh", (err) => {
+    claimCascadeInProgress = false;
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error running claim cascade");
+    }
+
+    const emailAddress = req.params.emailAddress;
+
+    // Path to output_db.pl
+    const filePath = path.join(__dirname, "output", "output_db.pl");
+
+    // Read the file
+    fs.readFile(filePath, "utf-8", (err, data) => {
+      if (err) {
+        return res.status(500).send("Unable to read the file");
+      }
+
+      // Split the file contents into lines
+      const lines = data.split("\n");
+
+      let userInfo = null;
+
+      // Loop through each line to find the matching user assertion
+      for (const line of lines) {
+        // Match lines that start with "assert(user("
+        const userMatch = line.match(/assert\(user\((.+)\)\)\./);
+        if (userMatch) {
+          // Split the contents of the user assertion
+          const userFields = userMatch[1].split(",");
+
+          // Extract the email field and remove quotes
+          const userEmail = userFields[3].replace(/['"]+/g, "");
+
+          // Check if the email matches
+          if (userEmail === emailAddress) {
+            // Found the user, parse the information
+            userInfo = {
+              canIssueDeviceTrust: userFields[0] === "true",
+              canIssueManufacturerTrust: userFields[1] === "true",
+              // TODO: Add device type trust
+              canIssueDeviceTypeTrust: false,
+              created_at: parseFloat(userFields[2]),
+              email: userEmail,
+              username: userFields[4].replace(/['"]+/g, ""),
+            };
+            break;
+          }
+        }
+      }
+
+      if (userInfo) {
+        return res.json(userInfo);
+      } else {
+        return res.status(404).send("User not found");
+      }
+    });
+  });
 });
 
 app.get("/", (req, res) => {

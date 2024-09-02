@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Paper,
   Typography,
@@ -7,8 +8,40 @@ import {
   Stack,
   Button,
 } from "@mui/material";
+import axios from "axios";
 
 const UserSettings = () => {
+  const emailAddress = localStorage.getItem("emailAddress");
+
+  const [formData, setFormData] = useState({
+    canIssueDeviceTrust: false,
+    canIssueManufacturerTrust: false,
+    canIssueDeviceTypeTrust: false,
+  });
+
+  const handleFormChange = (event) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [event.target.name]: event.target.checked,
+    }));
+  };
+
+  const handleSubmit = () => {
+    // Handle form submission here
+    console.log(formData);
+  };
+
+  useEffect(() => {
+    // Fetch user settings here
+    // setFormData(response.data);
+
+    axios
+      .get(`http://localhost:3001/user_settings/${emailAddress}`)
+      .then((res) => {
+        setFormData(res.data);
+      });
+  }, []);
+
   return (
     <Paper
       sx={{
@@ -36,18 +69,41 @@ const UserSettings = () => {
       >
         <Stack>
           <FormControlLabel
-            control={<Switch />}
+            control={
+              <Switch
+                checked={formData.canIssueDeviceTrust}
+                onChange={handleFormChange}
+                name="canIssueDeviceTrust"
+              />
+            }
             label="Can issue device trust?"
-          />{" "}
+          />
           <FormControlLabel
-            control={<Switch />}
+            control={
+              <Switch
+                checked={formData.canIssueManufacturerTrust}
+                onChange={handleFormChange}
+                name="canIssueManufacturerTrust"
+              />
+            }
             label="Can issue manufacturer trust"
-          />{" "}
+          />
           <FormControlLabel
-            control={<Switch />}
+            control={
+              <Switch
+                checked={formData.canIssueDeviceTypeTrust}
+                onChange={handleFormChange}
+                name="canIssueDeviceTypeTrust"
+              />
+            }
             label="Can issue device type trust"
           />
-          <Button variant="contained" color="primary" sx={{ mt: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2 }}
+            onClick={handleSubmit}
+          >
             Submit
           </Button>
         </Stack>
