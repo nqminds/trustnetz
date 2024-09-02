@@ -178,6 +178,7 @@ const Page = ({ params }) => {
       .then((res) => {
         console.log(res.data);
         refreshTrustVCs();
+        refreshData();
       });
   };
 
@@ -230,6 +231,7 @@ const Page = ({ params }) => {
 
       console.log(uploadResponse.data);
       refreshTrustVCs();
+      refreshData();
     } catch (error) {
       console.error("Error in handleRemoveTrust:", error);
       // Handle the error appropriately
@@ -247,6 +249,18 @@ const Page = ({ params }) => {
         console.log(err);
       });
   };
+
+  const refreshData = () => {
+    axios
+      .get("http://localhost:3001/manufacturer/" + params.manufacturer_id)
+      .then((res) => {
+        setManufacturerData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <AppBar />
