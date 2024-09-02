@@ -1024,6 +1024,184 @@ app.get("/user_settings/:emailAddress", async (req, res) => {
   });
 });
 
+app.post("/user_settings", async (req, res) => {
+  const {
+    emailAddress,
+    canIssueDeviceTrust,
+    canIssueManufacturerTrust,
+    canIssueDeviceTypeTrust,
+  } = req.body;
+
+  // Find every VC in the filesystem with the credentialSubject.fact.id matching the emailAddress and credentialSubject.schemaName is "user"
+  const customVCPath = path.join(__dirname, "uploads", "vcs", "custom");
+
+  const searchVCs = (dirPath) => {
+    return new Promise((resolve, reject) => {
+      fs.readdir(dirPath, (err, files) => {
+        if (err) {
+          console.error(`File read error: ${err}`);
+          reject(err);
+          return;
+        }
+
+        const vcFiles = files.filter((file) => file.endsWith(".json"));
+        const filePromises = vcFiles.map((file) => {
+          return new Promise((resolveFile) => {
+            fs.readFile(path.join(dirPath, file), "utf8", (err, data) => {
+              if (err) {
+                console.error(`File read error: ${err}`);
+                resolveFile(null);
+                return;
+              }
+
+              try {
+                const vc = JSON.parse(data);
+                if (
+                  vc.credentialSubject &&
+                  vc.credentialSubject.schemaName === "user" &&
+                  vc.credentialSubject.fact.id === emailAddress
+                ) {
+                  resolveFile(vc.credentialSubject.id);
+                } else {
+                  resolveFile(null);
+                }
+              } catch (parseError) {
+                console.error(`JSON parse error: ${parseError}`);
+                resolveFile(null);
+              }
+            });
+          });
+        });
+
+        Promise.all(filePromises).then((results) => {
+          const foundIds = results.filter((id) => id !== null);
+          resolve(foundIds);
+        });
+      });
+    });
+  };
+
+  const vcIds = await searchVCs(customVCPath);
+
+  // For every VC that we have, search the /uploads/vcs/custom folder for a retraction VC
+  const retractionVCs = [];
+  const searchRetractionVCs = (dirPath, vcIds) => {
+    return new Promise((resolve, reject) => {
+      fs.readdir(dirPath, (err, files) => {
+        if (err) {
+          console.error(`File read error: ${err}`);
+          reject(err);
+          return;
+        }
+
+        const vcFiles = files.filter((file) => file.endsWith(".json"));
+        const filePromises = vcFiles.map((file) => {
+          return new Promise((resolveFile) => {
+            fs.readFile(path.join(dirPath, file), "utf8", (err, data) => {
+              if (err) {
+                console.error(`File read error: ${err}`);
+                resolveFile(null);
+                return;
+              }
+
+              try {
+                const vc = JSON.parse(data);
+                if (
+                  vc.credentialSubject &&
+                  vc.credentialSubject.type === "retraction" &&
+                  vc.credentialSubject.claim_id &&
+                  vcIds.includes(vc.credentialSubject.claim_id)
+                ) {
+                  retractionVCs.push(vc);
+                }
+                resolveFile(null);
+              } catch (parseError) {
+                console.error(`JSON parse error: ${parseError}`);
+                resolveFile(null);
+              }
+            });
+          });
+        });
+
+        Promise.all(filePromises).then(() => {
+          resolve();
+        });
+      });
+    });
+  };
+
+  await searchRetractionVCs(customVCPath, vcIds);
+
+  // Make a retraction VC for every unretracted VC and save it to the /uploads/vcs/custom folder
+  const unretractedVCs = vcIds.filter(
+    (vcId) =>
+      !retractionVCs.some(
+        (retraction) => retraction.credentialSubject.claim_id === vcId
+      )
+  );
+
+  const createRetractionVC = (vcId) => {
+    return {
+      "@context": ["https://www.w3.org/ns/credentials/v2"],
+      id: `urn:uuid:${uuidv4()}`,
+      type: ["VerifiableCredential", "RetractionCredential"],
+      issuer: `urn:uuid:${uuidv4()}`,
+      credentialSubject: {
+        type: "retraction",
+        claim_id: vcId,
+        timestamp: Date.now(),
+      },
+    };
+  };
+
+  for (const unretractedVCId of unretractedVCs) {
+    const retractionVC = createRetractionVC(unretractedVCId);
+    const retractionVCPath = path.join(
+      customVCPath,
+      `User_retraction_${Date.now()}.json`
+    );
+    fs.writeFileSync(retractionVCPath, JSON.stringify(retractionVC, null, 2));
+  }
+
+  // Generate new user VC and save it to the /uploads/vcs/custom folder
+  const newVC = {
+    "@context": ["https://www.w3.org/ns/credentials/v2"],
+    id: `urn:uuid:${uuidv4()}`,
+    type: ["VerifiableCredential", "UserCredential"],
+    name: null,
+    description: null,
+    issuer: `urn:uuid:${uuidv4()}`,
+    validFrom: new Date().toISOString(),
+    validUntil: null,
+    credentialStatus: null,
+    credentialSchema: {
+      id: "test",
+      type: "JsonSchema",
+    },
+    credentialSubject: {
+      type: "fact",
+      schemaName: "user",
+      id: uuidv4(),
+      timestamp: Date.now(),
+      fact: {
+        can_issue_device_trust: canIssueDeviceTrust,
+        can_issue_manufacturer_trust: canIssueManufacturerTrust,
+        can_issue_device_type_trust: canIssueDeviceTypeTrust,
+        created_at: Date.now(),
+        id: emailAddress,
+        username: `${emailAddress.split("@")[0]}-user`,
+      },
+    },
+  };
+
+  const newVCPath = path.join(customVCPath, `User_VC_${Date.now()}.json`);
+  fs.writeFileSync(newVCPath, JSON.stringify(newVC, null, 2));
+
+  res
+    .status(200)
+    .json({ message: "User settings updated and VCs generated successfully." });
+});
+
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });

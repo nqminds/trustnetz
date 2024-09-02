@@ -27,14 +27,17 @@ const UserSettings = () => {
   };
 
   const handleSubmit = () => {
-    // Handle form submission here
-    console.log(formData);
+    axios
+      .post(`http://localhost:3001/user_settings`, {
+        ...formData,
+        emailAddress,
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   useEffect(() => {
-    // Fetch user settings here
-    // setFormData(response.data);
-
     axios
       .get(`http://localhost:3001/user_settings/${emailAddress}`)
       .then((res) => {
