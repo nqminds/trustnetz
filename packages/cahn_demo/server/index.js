@@ -1223,6 +1223,124 @@ app.post("/user_settings", async (req, res) => {
     .json({ message: "User settings updated and VCs generated successfully." });
 });
 
+// Get the users that can issue device trust
+app.get("/permissions/device", async (req, res) => {
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+  claimCascadeInProgress = true;
+  const filePath = path.join(__dirname, "output", "output_db.pl");
+  // A user that can issue device trust appears as assert(user(true, _, _, _, _, _). where underscores are placeholders
+  const deviceTrustIssuers = [];
+  fs.readFile(filePath, "utf-8", (err, data) => {
+    claimCascadeInProgress = false;
+    if (err) {
+      return res.status(500).send("Unable to read the file");
+    }
+
+    const lines = data.split("\n");
+
+    for (const line of lines) {
+      // Regex to match the user assertion with placeholders
+      const regex = /user\(true,([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)\)/g;
+      let match;
+
+      // Find all matches in the line
+      while ((match = regex.exec(line)) !== null) {
+        // The fifth item in the brackets is at index 5 in the match array
+        deviceTrustIssuers.push(match[4].replace(/['"]+/g, ""));
+      }
+    }
+    res.json(deviceTrustIssuers);
+  });
+});
+
+// Get the users that can issue manufacturer trust
+app.get("/permissions/manufacturer", async (req, res) => {
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  const filePath = path.join(__dirname, "output", "output_db.pl");
+  // A user that can issue manufacturer trust appears as assert(user(_, true, _, _, _, _). where underscores are placeholders
+  const manufacturerTrustIssuers = [];
+  fs.readFile(filePath, "utf-8", (err, data) => {
+    claimCascadeInProgress = false;
+    if (err) {
+      return res.status(500).send("Unable to read the file");
+    }
+
+    const lines = data.split("\n");
+
+    for (const line of lines) {
+      // Regex to match the user assertion with placeholders
+      const regex = /user\(([^,]*),true,([^,]*),([^,]*),([^,]*),([^,]*)\)/g;
+      let match;
+
+      // Find all matches in the line
+      while ((match = regex.exec(line)) !== null) {
+        // The fifth item in the brackets is at index 5 in the match array
+        manufacturerTrustIssuers.push(match[4].replace(/['"]+/g, ""));
+      }
+    }
+    res.json(manufacturerTrustIssuers);
+  });
+});
+
+// Get the users that can issue device type trust
+app.get("/permissions/device_type", async (req, res) => {
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  claimCascadeInProgress = true;
+  const filePath = path.join(__dirname, "output", "output_db.pl");
+  // A user that can issue device type trust appears as assert(user(_, _, true, _, _, _). where underscores are placeholders
+  const deviceTypeTrustIssuers = [];
+  fs.readFile(filePath, "utf-8", (err, data) => {
+    claimCascadeInProgress = false;
+    if (err) {
+      return res.status(500).send("Unable to read the file");
+    }
+
+    const lines = data.split("\n");
+
+    for (const line of lines) {
+      // Regex to match the user assertion with placeholders
+      const regex = /user\(([^,]*),([^,]*),true,([^,]*),([^,]*),([^,]*)\)/g;
+      let match;
+
+      // Find all matches in the line
+      while ((match = regex.exec(line)) !== null) {
+        // The fifth item in the brackets is at index 5 in the match array
+        deviceTypeTrustIssuers.push(match[4].replace(/['"]+/g, ""));
+      }
+    }
+    res.json(deviceTypeTrustIssuers);
+  });
+});
+
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
