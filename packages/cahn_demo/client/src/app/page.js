@@ -8,6 +8,7 @@ import defaultData from "./defaultData";
 import axios from "axios";
 import withAuth from "./utils/withAuth";
 import AppBar from "./components/AppBar";
+import UserSettings from "./components/UserSettings";
 
 const Home = () => {
   const [data, setData] = useState(defaultData);
@@ -46,6 +47,8 @@ const Home = () => {
           selectedDevice={selectedDevice}
           isLoading={isLoading}
         />
+
+        <UserSettings />
       </Box>
     </>
   );

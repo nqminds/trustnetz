@@ -50,6 +50,47 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// Save a VC for a user
+const saveVCForUser = (email) => {
+  // Create a VC for the user
+  const vc = {
+    "@context": ["https://www.w3.org/ns/credentials/v2"],
+    id: `urn:uuid:${uuidv4()}`,
+    type: ["VerifiableCredential", "UserCredential"],
+    name: null,
+    description: null,
+    issuer: "urn:uuid:585df7b5-8891-4630-9f5d-a5659f3abe04",
+    validFrom: "2024-08-28T14:15:50.307579Z",
+    validUntil: null,
+    credentialStatus: null,
+    credentialSchema: {
+      id: "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/user.yaml",
+      type: "JsonSchema",
+    },
+    credentialSubject: {
+      type: "fact",
+      schemaName: "user",
+      id: uuidv4(),
+      timestamp: 1716287268891,
+      fact: {
+        id: email,
+        username: email.split("@")[0],
+        created_at: Date.now(),
+        can_issue_device_trust: false,
+        can_issue_manufacturer_trust: false,
+      },
+    },
+  };
+
+  // Save the VC to a file
+  const fileName = `./uploads/vcs/custom/verifiable_credentials_${Date.now()}.json`;
+  fs.appendFile(fileName, JSON.stringify(vc) + "\n", (err) => {
+    if (err) {
+      console.error(err);
+    }
+  });
+};
+
 // Middleware
 app.use(morgan("tiny"));
 app.use(cors());
@@ -172,6 +213,12 @@ app.get("/sign_in/verify/:token", (req, res) => {
   try {
     // Save the public key to the email address
     // TODO: change to VC saving
+
+    // If the user doesn't exist in the emailToPublicKeys.json file, create a VC for the user
+    if (!emailToPublicKeys[email]) {
+      console.log("doing this");
+      saveVCForUser(email);
+    }
     addPublicKeyToEmail(email, publicKey);
     updateEmailToPublicKeys();
   } catch (err) {
