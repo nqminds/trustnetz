@@ -267,30 +267,7 @@ const Page = ({ params }) => {
             gutterBottom
           >
             {"> "}
-            {manufacturerData.Name} Trust
-          </Typography>
-          <Box
-            component="pre"
-            sx={{
-              padding: "16px",
-              borderRadius: "4px",
-              overflowX: "auto",
-              fontFamily: "Monaco, monospace",
-              fontSize: "14px",
-              backgroundColor: "rgba(0, 0, 0, 0.2)",
-            }}
-          >
-            <Typography component="code">
-              {`Some stuff here from the Prolog environment about who trusts this device.
-
-assert(device_trust("Henry-id",1723716151033,"HenryTrustPhone-id")).
-assert(device_trust("Henry-id",1723716151033,"HenryVulnerableCamera-id")).
-assert(device_trust("Ash-id",1723716151033,"AshEvilPhone-id")).
-`}
-            </Typography>
-          </Box>
-          <Typography variant="h4" color="primary" gutterBottom>
-            Trust submissions
+            {manufacturerData.Manufacturer} Trust Submissions
           </Typography>
           <Stack
             spacing={{ xs: 1, sm: 2 }}
