@@ -326,8 +326,6 @@ app.get("/device/:deviceId", async (req, res) => {
   // Command to run Prolog query and retrieve data for a specific device
   const command = `swipl -s ./output/output.pl -g "attach_db('./output/output_db.pl'), db:output_device_data(\\"${deviceId}\\", DeviceData), write(current_output, DeviceData), halt."`;
 
-  console.log("command :>> ", command);
-
   exec(command, (error, stdout, stderr) => {
     claimCascadeInProgress = false;
     if (error) {
