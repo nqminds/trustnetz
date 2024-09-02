@@ -135,36 +135,38 @@ remove_sbom_vulnerability(CreatedAt, SbomId, VulnerabilityScore) :-
   )).
 
 :- persistent
-  db:user(_CanIssueDeviceTrust, _CanIssueManufacturerTrust, _CreatedAt, _Id, _Username).
+  db:user(_CanIssueDeviceTrust, _CanIssueDeviceTypeTrust, _CanIssueManufacturerTrust, _CreatedAt, _Id, _Username).
 
-get_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username) :-
-  with_mutex(db, user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username)).
+get_user(CanIssueDeviceTrust, CanIssueDeviceTypeTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username) :-
+  with_mutex(db, user(CanIssueDeviceTrust, CanIssueDeviceTypeTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username)).
 
-get_all_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username, Matches) :- 
+get_all_user(CanIssueDeviceTrust, CanIssueDeviceTypeTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username, Matches) :- 
  with_mutex(db, 
-    findall(user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username),
-            user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username),
+    findall(user(CanIssueDeviceTrust, CanIssueDeviceTypeTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username),
+            user(CanIssueDeviceTrust, CanIssueDeviceTypeTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username),
             Matches)
 ).
 
-add_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username) :-
+add_user(CanIssueDeviceTrust, CanIssueDeviceTypeTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username) :-
   % Validate required fields
   validate_required(Id, "Id"),
   validate_required(Username, "Username"),
   validate_required(CreatedAt, "CreatedAt"),
   % Check unique fields are unique
-  (user(_,_,_,Id,_) ->
+  (user(_,_,_,_,Id,_) ->
     format(atom(Msg), 'found existing user with Id "~w"', [Id]),
     !,
     throw(error(Msg))
   ; true),
-  (user(_,_,_,_,Username) ->
+  (user(_,_,_,_,_,Username) ->
     format(atom(Msg), 'found existing user with Username "~w"', [Username]),
     !,
     throw(error(Msg))
   ; true),
   % Validate and assert CanIssueDeviceTrust
   validate_type_boolean(CanIssueDeviceTrust, ValidCanIssueDeviceTrust, "CanIssueDeviceTrust"),
+  % Validate and assert CanIssueDeviceTypeTrust
+  validate_type_boolean(CanIssueDeviceTypeTrust, ValidCanIssueDeviceTypeTrust, "CanIssueDeviceTypeTrust"),
   % Validate and assert CanIssueManufacturerTrust
   validate_type_boolean(CanIssueManufacturerTrust, ValidCanIssueManufacturerTrust, "CanIssueManufacturerTrust"),
   % Validate and assert CreatedAt
@@ -173,12 +175,12 @@ add_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username
   validate_type_string(Id, ValidId, "Id"),
   % Validate and assert Username
   validate_type_string(Username, ValidUsername, "Username"),
-  assert_user(ValidCanIssueDeviceTrust, ValidCanIssueManufacturerTrust, ValidCreatedAt, ValidId, ValidUsername).
+  assert_user(ValidCanIssueDeviceTrust, ValidCanIssueDeviceTypeTrust, ValidCanIssueManufacturerTrust, ValidCreatedAt, ValidId, ValidUsername).
 
-remove_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username) :-
-  user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username),
+remove_user(CanIssueDeviceTrust, CanIssueDeviceTypeTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username) :-
+  user(CanIssueDeviceTrust, CanIssueDeviceTypeTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username),
   with_mutex(db, (
-    retractall_user(CanIssueDeviceTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username)
+    retractall_user(CanIssueDeviceTrust, CanIssueDeviceTypeTrust, CanIssueManufacturerTrust, CreatedAt, Id, Username)
   )).
 
 :- persistent
@@ -561,23 +563,29 @@ remove_is_of_device_type(CreatedAt, DeviceId, DeviceTypeId) :-
 
 % rules from rule claims
 
-allowed_to_connect(DeviceId) :- 
-    % Check if the device type is trusted by the user
+allowed_to_connect(DeviceId) :-
+    % Check if the device is valid
     device(_, DeviceId, _, _),  
+    
+    % Check if the device type and manufacturer are trusted
     is_of_device_type(_, DeviceId, DeviceTypeId),
     manufactured(_, DeviceTypeId, ManufacturerId),
-    manufacturer_trust(_, ManufacturerId, UserId),
+    manufacturer_trust(_, ManufacturerId, UserIdMT),
     
     % Check if the device type is trusted by the user
-    device_type_trust(UserId, _, DeviceTypeId),
-
-    % Check if the user has the permissions to issue device trust
-    user(true, true, _, UserId, _),
+    device_type_trust(UserIdDTT, _, DeviceTypeId),
+    device_trust(UserIdDT, _, DeviceId),
     
-    % Check if the device has any vulnerabilities
-    \+ (has_sbom(_, DeviceTypeId, VulnerabilityId),
-        sbom_vulnerability(_, VulnerabilityId, Severity),
-        Severity > 5).
+    % Check if the user has the permissions to issue device trust
+    user(true, _, _, _, UserIdDT, _),
+    user(_, true, _, _, UserIdDTT, _),
+    user(_, _, true,_, UserIdMT, _),
+    
+    % Check if the device has any vulnerabilities and if its type matches
+    has_sbom(_, DeviceTypeId, VulnerabilityId),
+    sbom_vulnerability(_, VulnerabilityId, Severity),
+    Severity > 5,
+    is_of_device_type(_, DeviceId, DeviceTypeId).
 
 
 output_device_type_data(DeviceTypeId, DeviceTypeData) :-
@@ -612,10 +620,18 @@ output_device_type_data(DeviceTypeId, DeviceTypeData) :-
   ;
     SbomData = '{}'
   ),
-  
+
+  % Device Type is trusted by a user that can issue device type trust
+  (device_type_trust(UserIdDTT, _, DeviceTypeId),
+   user(_, true, _, _, UserIdDTT, _) ->
+    HasTrust = true
+  ; HasTrust = false
+  ),
+    
+
   % Format the output for the device type
-  format(atom(DeviceTypeData), '{"CreatedAtDeviceType": "~w", "DeviceTypeId": "~w", "DeviceType": "~w", "SBOM": ~w, "Devices": ~w}', 
-       [CreatedAtDeviceType, DeviceTypeId, DeviceType, SbomData, DeviceDataList]).
+  format(atom(DeviceTypeData), '{"CreatedAtDeviceType": "~w", "DeviceTypeId": "~w", "DeviceType": "~w", "SBOM": ~w, "Devices": ~w, "HasTrust": ~w}', 
+       [CreatedAtDeviceType, DeviceTypeId, DeviceType, SbomData, DeviceDataList, HasTrust]).
 
 
 output_all_device_data(DeviceDataList) :- 
@@ -674,7 +690,7 @@ output_manufacturer_data(ManufacturerId, ManufacturerData) :-
 
   % Check if there is a user that can issue manufacturer trust
   (   
-    once((manufacturer_trust(_, ManufacturerId, UserId), user(true, true, _, UserId, _))) ->
+    once((manufacturer_trust(_, ManufacturerId, UserId), user(_, true, _, UserId, _))) ->
     CanIssueManufacturerTrust = true
   ;   
     CanIssueManufacturerTrust = false

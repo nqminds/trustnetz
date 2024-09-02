@@ -996,19 +996,18 @@ app.get("/user_settings/:emailAddress", async (req, res) => {
           const userFields = userMatch[1].split(",");
 
           // Extract the email field and remove quotes
-          const userEmail = userFields[3].replace(/['"]+/g, "");
+          const userEmail = userFields[4].replace(/['"]+/g, "");
 
           // Check if the email matches
           if (userEmail === emailAddress) {
             // Found the user, parse the information
             userInfo = {
-              canIssueDeviceTrust: userFields[0] === "true",
-              canIssueManufacturerTrust: userFields[1] === "true",
-              // TODO: Add device type trust
-              canIssueDeviceTypeTrust: false,
-              created_at: parseFloat(userFields[2]),
+              canIssueDeviceTrust: userFields[0].trim() === "true",
+              canIssueDeviceTypeTrust: userFields[1].trim() === "true",
+              canIssueManufacturerTrust: userFields[2].trim() === "true",
+              created_at: parseFloat(userFields[3].trim()),
               email: userEmail,
-              username: userFields[4].replace(/['"]+/g, ""),
+              username: userFields[5].replace(/['"]+/g, "").trim(),
             };
             break;
           }
@@ -1196,6 +1195,28 @@ app.post("/user_settings", async (req, res) => {
 
   const newVCPath = path.join(customVCPath, `User_VC_${Date.now()}.json`);
   fs.writeFileSync(newVCPath, JSON.stringify(newVC, null, 2));
+
+  // Run claim cascade
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  claimCascadeInProgress = true;
+
+  exec("sh run_claim_cascade.sh", (err) => {
+    claimCascadeInProgress = false;
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error running claim cascade");
+    }
+  });
 
   res
     .status(200)

@@ -1,12 +1,7 @@
 {
-  "@context": [
-    "https://www.w3.org/ns/credentials/v2"
-  ],
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
   "id": "urn:uuid:642167e7-5cd1-4219-bf20-b74067a1533d",
-  "type": [
-    "VerifiableCredential",
-    "UserCredential"
-  ],
+  "type": ["VerifiableCredential", "UserCredential"],
   "issuer": "urn:uuid:958f60ae-b93e-44a0-9c8e-d22c0dfe2b58",
   "validFrom": "2024-08-28T14:15:50.311957Z",
   "credentialSchema": {
@@ -44,17 +39,14 @@
         "can_issue_manufacturer_trust": {
           "description": "If user can issue trust to manufacturers",
           "type": "bool"
+        },
+        "can_issue_device_type_trust": {
+          "description": "If user can issue trust to device types",
+          "type": "bool"
         }
       },
-      "required": [
-        "id",
-        "username",
-        "created_at"
-      ],
-      "uniqueKeys": [
-        "id",
-        "username"
-      ]
+      "required": ["id", "username", "created_at"],
+      "uniqueKeys": ["id", "username"]
     }
   }
 }

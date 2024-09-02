@@ -1,12 +1,7 @@
 {
-  "@context": [
-    "https://www.w3.org/ns/credentials/v2"
-  ],
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
   "id": "urn:uuid:a0e4a548-ad6e-4328-9cff-53c0844d5b1c",
-  "type": [
-    "VerifiableCredential",
-    "UserCredential"
-  ],
+  "type": ["VerifiableCredential", "UserCredential"],
   "name": null,
   "description": null,
   "issuer": "urn:uuid:585df7b5-8891-4630-9f5d-a5659f3abe04",
@@ -27,7 +22,8 @@
       "username": "ash",
       "created_at": 1723716151033,
       "can_issue_device_trust": false,
-      "can_issue_manufacturer_trust": false
+      "can_issue_manufacturer_trust": false,
+      "can_issue_device_type_trust": false
     }
   },
   "proof": {

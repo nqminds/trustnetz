@@ -33,6 +33,7 @@ const Page = ({ params }) => {
         },
       ],
     ],
+    HasTrust: false,
   });
 
   const [trustVCs, setTrustVCs] = useState([
