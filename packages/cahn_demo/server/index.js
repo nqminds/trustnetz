@@ -125,6 +125,53 @@ const createTrustVCRouteHandler = (filterFn, mapFn) => {
   };
 };
 
+// Function to parse device string into an object
+const parseDeviceString = (str) => {
+  const obj = {};
+  const pairs = str.split(", ");
+  pairs.forEach((pair) => {
+    const [key, value] = pair.split(": ");
+    obj[key] = value;
+  });
+  return obj;
+};
+
+// Function to transform device data into the desired structure
+const transformDeviceData = (device) => {
+  return {
+    deviceInfo: {
+      ID: device.DeviceId,
+      Name: device.Name,
+      IDevID: device.Idevid,
+      "Created At": device.CreatedAtDevice,
+    },
+    manufacturerInfo: {
+      ID: device.ManufacturerId,
+      Name: device.Manufacturer,
+      "Created At": device.CreatedAtManufactured,
+    },
+    deviceTypeInfo: {
+      ID: device.DeviceTypeId,
+      Name: device.DeviceType,
+      "Created At": device.CreatedAtDeviceType,
+    },
+  };
+};
+
+// Function to wait for claimCascadeInProgress to be false
+const waitForClaimCascade = async () => {
+  if (claimCascadeInProgress) {
+    await new Promise((resolve) => {
+      const interval = setInterval(() => {
+        if (!claimCascadeInProgress) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+};
+
 // Middleware
 app.use(morgan("tiny"));
 app.use(cors());
@@ -223,53 +270,6 @@ app.get("/sign_in/verify/:token", (req, res) => {
 
   return res.send("Sign in successful").status(200);
 });
-
-// Function to parse device string into an object
-function parseDeviceString(str) {
-  const obj = {};
-  const pairs = str.split(", ");
-  pairs.forEach((pair) => {
-    const [key, value] = pair.split(": ");
-    obj[key] = value;
-  });
-  return obj;
-}
-
-// Function to transform device data into the desired structure
-function transformDeviceData(device) {
-  return {
-    deviceInfo: {
-      ID: device.DeviceId,
-      Name: device.Name,
-      IDevID: device.Idevid,
-      "Created At": device.CreatedAtDevice,
-    },
-    manufacturerInfo: {
-      ID: device.ManufacturerId,
-      Name: device.Manufacturer,
-      "Created At": device.CreatedAtManufactured,
-    },
-    deviceTypeInfo: {
-      ID: device.DeviceTypeId,
-      Name: device.DeviceType,
-      "Created At": device.CreatedAtDeviceType,
-    },
-  };
-}
-
-// Function to wait for claimCascadeInProgress to be false
-async function waitForClaimCascade() {
-  if (claimCascadeInProgress) {
-    await new Promise((resolve) => {
-      const interval = setInterval(() => {
-        if (!claimCascadeInProgress) {
-          clearInterval(interval);
-          resolve();
-        }
-      }, 100);
-    });
-  }
-}
 
 // Route to get all devices data
 app.get("/all_devices_data", async (req, res) => {

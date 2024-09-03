@@ -1,14 +1,10 @@
-const express = require("express");
 const { exec } = require("child_process");
 const morgan = require("morgan");
 const nodemailer = require("nodemailer");
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 require("dotenv").config();
-const cors = require("cors");
 const path = require("path");
-const { match } = require("assert");
-const { get } = require("http");
 
 // Update emailToPublicKeys.json
 const updateEmailToPublicKeysJson = (emailToPublicKeys) => {
