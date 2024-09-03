@@ -17,7 +17,13 @@ const Home = () => {
 
   useEffect(() => {
     axios.get("http://localhost:3001/all_devices_data").then((res) => {
+      if (res.data.length === 0) {
+        console.log("No data found");
+        return;
+      }
+      console.log("res.data :>> ", res.data);
       setData(res.data);
+      console.log("res.data[0] :>> ", res.data[0]);
       setSelectedDevice(res.data[0]);
       setIsLoading(false);
     });
