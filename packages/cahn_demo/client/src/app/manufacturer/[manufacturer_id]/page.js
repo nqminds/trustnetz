@@ -64,7 +64,6 @@ const Page = ({ params }) => {
           );
         })
         .then((res) => {
-          console.log("res.data :>> ", res.data);
           setTrustVCs(res.data);
         })
         .catch((err) => {

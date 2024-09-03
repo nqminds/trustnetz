@@ -1,0 +1,34 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:1c5ee6c2-ebc3-4e65-9aa1-ae474b23f2dd",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "name": null,
+  "description": null,
+  "issuer": "urn:uuid:6a7a92db-01b2-4298-888a-e6dedae1e0d0",
+  "validFrom": "2024-09-03T09:05:36.369Z",
+  "validUntil": null,
+  "credentialStatus": null,
+  "credentialSchema": {
+    "id": "test",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "fact",
+    "schemaName": "user",
+    "id": "c945cef7-25c0-42ee-9337-a7a33da67aab",
+    "timestamp": 1725354336369,
+    "fact": {
+      "can_issue_device_trust": true,
+      "can_issue_manufacturer_trust": false,
+      "can_issue_device_type_trust": false,
+      "created_at": 1725354336369,
+      "id": "henry@nquiringminds.com",
+      "username": "henry-user"
+    }
+  }
+}

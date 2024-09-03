@@ -1,5 +1,4 @@
-created(1725353260.132359).
-assert(device_trust("henry@nquiringminds.com",1725352273522,"AshEvilPhone-id")).
+created(1725354338.3537927).
 assert(device_type(1723716151033,"TrustPhone-id","TrustPhone")).
 assert(device_type(1723716151033,"VulnerableCamera-id","VulnerableCamera")).
 assert(device_type(1723716151033,"EvilPhone-id","EvilPhone")).
@@ -29,4 +28,4 @@ assert(device(1723716151033,"HenryVulnerableCamera-id","HenryVulnerableCamera-id
 assert(sbom(1723716151033,"VulnerableCameraSBOM-id","VulnerableCamera SBOM information")).
 assert(manufacturer(1723716151033,"EvilInc-id","EvilInc")).
 assert(manufacturer(1723716151033,"TrustCorp-id","TrustCorp")).
-assert(user(true,false,true,1725351858719,"henry@nquiringminds.com","henry-user")).
+assert(user(true,false,false,1725354336369,"henry@nquiringminds.com","henry-user")).

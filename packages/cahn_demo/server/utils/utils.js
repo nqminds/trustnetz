@@ -59,13 +59,23 @@ const saveVCForUser = (email) => {
   };
 
   // Save the VC to a file
-  const fileName = `./uploads/vcs/custom/verifiable_credentials_${Date.now()}.json`;
+  const fileName = path.join(
+    __dirname,
+    "..",
+    "uploads",
+    "vcs",
+    "custom",
+    `verifiable_credentials_${Date.now()}.json`
+  );
+  console.log("doingthis");
   fs.appendFile(fileName, JSON.stringify(vc) + "\n", (err) => {
     if (err) {
       console.error(err);
     }
   });
-}; // Utility function to search VCs in a directory
+};
+
+// Utility function to search VCs in a directory
 const searchVCs = (dirPath, matchCriteria) => {
   return new Promise((resolve, reject) => {
     fs.readdir(dirPath, (err, files) => {

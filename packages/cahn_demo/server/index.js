@@ -436,12 +436,16 @@ app.get(
 
 app.get("/user_settings/:emailAddress", async (req, res) => {
   try {
+    await waitForClaimCascade(); // Wait if claimCascadeInProgress is true
+    claimCascadeInProgress = true;
     await runClaimCascade();
 
     const emailAddress = req.params.emailAddress;
     const filePath = path.join(__dirname, "output", "output_db.pl");
 
     fs.readFile(filePath, "utf-8", (err, data) => {
+      claimCascadeInProgress = false;
+
       if (err) {
         return res.status(500).send("Unable to read the file");
       }
