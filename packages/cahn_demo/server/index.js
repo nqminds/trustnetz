@@ -680,43 +680,33 @@ async function getUsersByPattern(filePath, regexPattern) {
   });
 }
 
-// Route to get users that can issue device trust
-app.get("/permissions/device", async (req, res) => {
+// Function to handle the response based on regex pattern
+const handlePermissionRequest = async (regexPattern, req, res) => {
   try {
     const filePath = path.join(__dirname, "output", "output_db.pl");
-    const regexPattern =
-      /user\(true,([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)\)/g;
     const users = await getUsersByPattern(filePath, regexPattern);
     res.json(users);
   } catch (error) {
     res.status(500).send(error);
   }
+};
+
+// Route to get users that can issue device trust
+app.get("/permissions/device", (req, res) => {
+  const regexPattern = /user\(true,([^,]*),([^,]*),([^,]*),([^,]*),([^,]*)\)/g;
+  handlePermissionRequest(regexPattern, req, res);
 });
 
 // Route to get users that can issue manufacturer trust
-app.get("/permissions/manufacturer", async (req, res) => {
-  try {
-    const filePath = path.join(__dirname, "output", "output_db.pl");
-    const regexPattern =
-      /user\(([^,]*),true,([^,]*),([^,]*),([^,]*),([^,]*)\)/g;
-    const users = await getUsersByPattern(filePath, regexPattern);
-    res.json(users);
-  } catch (error) {
-    res.status(500).send(error);
-  }
+app.get("/permissions/manufacturer", (req, res) => {
+  const regexPattern = /user\(([^,]*),true,([^,]*),([^,]*),([^,]*),([^,]*)\)/g;
+  handlePermissionRequest(regexPattern, req, res);
 });
 
 // Route to get users that can issue device type trust
-app.get("/permissions/device_type", async (req, res) => {
-  try {
-    const filePath = path.join(__dirname, "output", "output_db.pl");
-    const regexPattern =
-      /user\(([^,]*),([^,]*),true,([^,]*),([^,]*),([^,]*)\)/g;
-    const users = await getUsersByPattern(filePath, regexPattern);
-    res.json(users);
-  } catch (error) {
-    res.status(500).send(error);
-  }
+app.get("/permissions/device_type", (req, res) => {
+  const regexPattern = /user\(([^,]*),([^,]*),true,([^,]*),([^,]*),([^,]*)\)/g;
+  handlePermissionRequest(regexPattern, req, res);
 });
 
 app.get("/", (req, res) => {
