@@ -31,7 +31,7 @@ const Page = ({ params }) => {
       },
     ],
 
-    CanIssueManufacturerTrust: false,
+    HasTrust: false,
   });
 
   const [permissionedUsers, setPermissionedUsers] = useState([]);

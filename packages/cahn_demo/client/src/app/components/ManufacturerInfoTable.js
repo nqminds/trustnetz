@@ -16,7 +16,6 @@ import { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
 import DoDisturbIcon from "@mui/icons-material/DoDisturb";
 import CheckIcon from "@mui/icons-material/Check";
-import { useEffect } from "react";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(even)": {
@@ -126,18 +125,14 @@ export default function ManufacturerInfoTable({ manufacturerData }) {
                     <StyledTableCell align="right">
                       <Chip
                         icon={
-                          manufacturerData.CanIssueManufacturerTrust ? (
+                          manufacturerData.HasTrust ? (
                             <CheckIcon />
                           ) : (
                             <DoDisturbIcon />
                           )
                         }
-                        label={manufacturerData.CanIssueManufacturerTrust.toString()}
-                        color={
-                          manufacturerData.CanIssueManufacturerTrust
-                            ? "success"
-                            : "error"
-                        }
+                        label={manufacturerData.HasTrust.toString()}
+                        color={manufacturerData.HasTrust ? "success" : "error"}
                       />
                     </StyledTableCell>
                   </StyledTableRow>

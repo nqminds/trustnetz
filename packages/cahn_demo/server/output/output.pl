@@ -701,6 +701,6 @@ output_manufacturer_data(ManufacturerId, ManufacturerData) :-
   ),
 
   % Format the output
-  format(atom(ManufacturerData), '{"CreatedAtManufacturer": "~w", "ManufacturerId": "~w", "Manufacturer": "~w", "DeviceTypes": ~w, "CanIssueManufacturerTrust": ~w}', 
+  format(atom(ManufacturerData), '{"CreatedAtManufacturer": "~w", "ManufacturerId": "~w", "Manufacturer": "~w", "DeviceTypes": ~w, "HasTrust": ~w}', 
        [CreatedAtManufacturer, ManufacturerId, Manufacturer, DeviceTypeDataList, CanIssueManufacturerTrust]).
 
