@@ -203,7 +203,6 @@ const Page = ({ params }) => {
         "http://localhost:3001/trust_vc/device_type/" + params.device_type_id
       )
       .then((res) => {
-        console.log("res.data :>> ", res.data);
         setTrustVCs(res.data);
       })
       .catch((err) => {
