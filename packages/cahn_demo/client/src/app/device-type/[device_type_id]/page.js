@@ -8,6 +8,7 @@ import AppBar from "../../components/AppBar";
 import { v4 as uuidv4 } from "uuid";
 import { device_type_trust } from "@/schemas";
 import TrustSubmissions from "@/app/components/TrustSubmissions";
+import initializeWasm from "@/app/utils/initialiseWasm";
 
 const Page = ({ params }) => {
   const [deviceTypeData, setDeviceTypeData] = useState({
@@ -188,23 +189,7 @@ const Page = ({ params }) => {
   }, [params.device_id, deviceTypeData.DeviceTypeId]);
 
   useEffect(() => {
-    async function initializeWasm() {
-      const {
-        default: init,
-        gen_keys,
-        VerifiableCredential,
-      } = await import("../../wasm/vc_signing");
-      await init();
-      console.log("WASM Module initialized");
-      // Store functions for later use
-
-      window.gen_keys = gen_keys;
-      window.VerifiableCredential = VerifiableCredential;
-    }
-    // If functions aren't already stored on the window object, initialize them
-    // TODO: Extract initializeWasm to a separate file
-
-    if (!window.gen_keys || !window.VerifiableCredential) initializeWasm();
+    initializeWasm();
 
     axios.get("http://localhost:3001/permissions/device_type").then((res) => {
       setPermissionedUsers(res.data);

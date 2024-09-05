@@ -12,6 +12,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import CheckIcon from "@mui/icons-material/Check";
 import { useEffect, useState } from "react";
+import initializeWasm from "../utils/initialiseWasm";
 
 const Page = () => {
   const [email, setEmail] = useState("");
@@ -28,23 +29,7 @@ const Page = () => {
       router.push("/");
     }
 
-    async function initializeWasm() {
-      const {
-        default: init,
-        gen_keys,
-        VerifiableCredential,
-      } = await import("../wasm/vc_signing");
-      await init();
-      console.log("WASM Module initialized");
-
-      // Store functions for later use
-      window.gen_keys = gen_keys;
-      window.VerifiableCredential = VerifiableCredential;
-    }
-
-    // If functions aren't already stored on the window object, initialize them
-    // TODO: Extract initializeWasm to a separate file
-    if (!window.genkeys || !window.sign || !window.verify) initializeWasm();
+    initializeWasm();
   }, []);
 
   const handleLogin = () => {

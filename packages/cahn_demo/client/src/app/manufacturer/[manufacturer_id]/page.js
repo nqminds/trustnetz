@@ -64,23 +64,7 @@ const Page = ({ params }) => {
   }, [params.manufacturer_id, manufacturerData.ManufacturerId]);
 
   useEffect(() => {
-    async function initializeWasm() {
-      const {
-        default: init,
-        gen_keys,
-        VerifiableCredential,
-      } = await import("../../wasm/vc_signing");
-      await init();
-      console.log("WASM Module initialized");
-      // Store functions for later use
-
-      window.gen_keys = gen_keys;
-      window.VerifiableCredential = VerifiableCredential;
-    }
-    // If functions aren't already stored on the window object, initialize them
-    // TODO: Extract initializeWasm to a separate file
-
-    if (!window.gen_keys || !window.VerifiableCredential) initializeWasm();
+    initializeWasm();
 
     axios.get("http://localhost:3001/permissions/manufacturer").then((res) => {
       setPermissionedUsers(res.data);
