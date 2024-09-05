@@ -1,12 +1,7 @@
 {
-  "@context": [
-    "https://www.w3.org/ns/credentials/v2"
-  ],
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
   "id": "urn:uuid:5d5b937c-9011-486a-a0a9-50677706cfda",
-  "type": [
-    "VerifiableCredential",
-    "UserCredential"
-  ],
+  "type": ["VerifiableCredential", "UserCredential"],
   "issuer": "urn:uuid:0368d2e7-d376-40de-9e61-a59ce3ee067c",
   "validFrom": "2024-08-28T14:15:50.312460Z",
   "credentialSchema": {
@@ -25,7 +20,7 @@
       "description": "A trust relationship between a user and manufacturer",
       "type": "object",
       "properties": {
-        "user_id": {
+        "authoriser_id": {
           "description": "id of the trusting user",
           "type": "string"
         },
@@ -38,11 +33,7 @@
           "type": "integer"
         }
       },
-      "required": [
-        "user_id",
-        "manufacturer_id",
-        "created_at"
-      ]
+      "required": ["authoriser_id", "manufacturer_id", "created_at"]
     }
   }
 }
