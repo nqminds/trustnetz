@@ -5,39 +5,15 @@ import {
   Divider,
   Table,
   TableBody,
-  TableCell,
   TableContainer,
-  Box,
   TableHead,
-  TableRow,
   Chip,
 } from "@mui/material";
 import { tableCellClasses } from "@mui/material/TableCell";
-import { styled } from "@mui/material/styles";
 import DoDisturbIcon from "@mui/icons-material/DoDisturb";
 import CheckIcon from "@mui/icons-material/Check";
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(even)": {
-    backgroundColor: theme.palette.background.paper,
-  },
-}));
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.background.default,
-    color: theme.palette.common.white,
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-function unixInMillisecondsToDateString(unixInMilliseconds) {
-  return new Date(Number(unixInMilliseconds)).toDateString();
-}
+import { StyledTableRow, StyledTableCell } from "./StyledTable";
+import unixInMillisecondsToDateString from "@/utils/unixMillisecondsToDateString";
 
 export default function DeviceTypeInfoTable({ deviceTypeData }) {
   return (
