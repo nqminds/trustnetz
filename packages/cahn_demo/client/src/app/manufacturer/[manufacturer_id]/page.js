@@ -45,7 +45,7 @@ const Page = ({ params }) => {
       credentialSubject: {
         fact: {
           manufacturer_id: "",
-          userId: "",
+          authoriserId: "",
           created_at: 0,
         },
       },
@@ -308,29 +308,29 @@ const Page = ({ params }) => {
                     {new Date(Number(vc.timestamp)).toLocaleString("en-GB")}
                   </Typography>
                   <Typography variant="h6" color="primary" gutterBottom>
-                    {vc.userId}
+                    {vc.authoriserId}
                   </Typography>
                   <Chip
                     icon={
-                      permissionedUsers.includes(vc.userId) ? (
+                      permissionedUsers.includes(vc.authoriserId) ? (
                         <CheckIcon />
                       ) : (
                         <DoDisturbIcon />
                       )
                     }
                     label={
-                      permissionedUsers.includes(vc.userId)
+                      permissionedUsers.includes(vc.authoriserId)
                         ? "Can issue trust"
                         : "Cannot issue trust"
                     }
                     color={
-                      permissionedUsers.includes(vc.userId)
+                      permissionedUsers.includes(vc.authoriserId)
                         ? "success"
                         : "error"
                     }
                   />
                 </CardContent>
-                {vc.userId === emailAddress && (
+                {vc.authoriserId === emailAddress && (
                   <CardActions>
                     <Button
                       variant="contained"

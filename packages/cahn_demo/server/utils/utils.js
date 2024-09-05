@@ -179,13 +179,13 @@ const filterManufacturerTrust = (req) => (line) =>
     .includes(req.params.manufacturerId);
 
 const mapManufacturerTrust = (line) => {
-  const [timestamp, manufacturerId, userId] = line
+  const [timestamp, manufacturerId, authoriserId] = line
     .replace("assert(manufacturer_trust(", "")
     .replace(")).", "")
     .split(",");
 
   return {
-    userId: userId.trim().replace(/['"]/g, ""),
+    authoriserId: authoriserId.trim().replace(/['"]/g, ""),
     timestamp: timestamp.trim().replace(/['"]/g, ""),
     manufacturerId: manufacturerId.trim().replace(/['"]/g, "").replace(")", ""),
   };

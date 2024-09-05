@@ -77,30 +77,23 @@ const readAndProcessFile = (filePath, filterFn, mapFn) => {
         return;
       }
 
-      const trustVCs = data.split("\n").filter(filterFn).map(mapFn);
-
-      // Ensure each object in trustVCs is unique based on specific criteria
-      const uniqueTrustVCs = trustVCs.reduce((acc, vc) => {
-        if (
-          !acc.find(
-            (existing) =>
-              existing.username === vc.username &&
-              existing.timestamp === vc.timestamp
-          )
-        ) {
-          acc.push(vc);
-        }
-        return acc;
-      }, []);
+      let trustVCs = data.split("\n").filter(filterFn).map(mapFn);
 
       // Sort by username, then timestamp
-      uniqueTrustVCs.sort((a, b) => {
-        if (a.username < b.username) return -1;
-        if (a.username > b.username) return 1;
-        return a.timestamp - b.timestamp;
+
+      trustVCs.sort((a, b) => {
+        if (a.authoriserId < b.authoriserId) {
+          return -1;
+        }
+        if (a.authoriserId > b.authoriserId) {
+          return 1;
+        }
+        return b.timestamp - a.timestamp;
       });
 
-      resolve(uniqueTrustVCs);
+      console.log("trustVCs :>> ", trustVCs);
+
+      resolve(trustVCs);
     });
   });
 };
