@@ -662,7 +662,6 @@ async function getUsersByPattern(filePath, regexPattern) {
       for (const line of lines) {
         let match;
         while ((match = regexPattern.exec(line)) !== null) {
-          console.log("match :>> ", match);
           users.push(match[4].replace(/['"]+/g, ""));
         }
       }
