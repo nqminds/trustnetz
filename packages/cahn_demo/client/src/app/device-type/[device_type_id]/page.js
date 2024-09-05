@@ -1,24 +1,13 @@
 "use client";
-import {
-  Typography,
-  Box,
-  Button,
-  Paper,
-  Stack,
-  Card,
-  CardContent,
-  CardActions,
-  Chip,
-} from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import DeviceTypeInfoTable from "../../components/DeviceTypeInfoTable";
 import withAuth from "@/app/utils/withAuth";
 import AppBar from "../../components/AppBar";
-import CheckIcon from "@mui/icons-material/Check";
-import DoDisturbIcon from "@mui/icons-material/DoDisturb";
 import { v4 as uuidv4 } from "uuid";
 import { device_type_trust } from "@/schemas";
+import TrustSubmissions from "@/app/components/TrustSubmissions";
 
 const Page = ({ params }) => {
   const [deviceTypeData, setDeviceTypeData] = useState({
@@ -238,81 +227,13 @@ const Page = ({ params }) => {
         </Typography>
         <DeviceTypeInfoTable deviceTypeData={deviceTypeData} />
 
-        <Paper
-          sx={{
-            p: { xs: 2, sm: 3 },
-            m: { xs: 1, sm: 3 },
-          }}
-        >
-          <Typography
-            variant="h3"
-            sx={{
-              color: "primary.main",
-            }}
-            gutterBottom
-          >
-            {"> "}
-            {deviceTypeData.DeviceType} Trust Submissions
-          </Typography>
-
-          <Stack
-            spacing={{ xs: 1, sm: 2 }}
-            direction="row"
-            useFlexGap
-            sx={{ flexWrap: "wrap" }}
-          >
-            {trustVCs.map((vc, index) => (
-              <Card raised key={index} sx={{ maxWidth: 345, marginBottom: 2 }}>
-                <CardContent>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    gutterBottom
-                  >
-                    {new Date(Number(vc.timestamp)).toLocaleString("en-GB")}
-                  </Typography>
-                  <Typography variant="h6" color="primary" gutterBottom>
-                    {vc.authoriserId}
-                  </Typography>
-                  <Chip
-                    icon={
-                      permissionedUsers.includes(vc.authoriserId) ? (
-                        <CheckIcon />
-                      ) : (
-                        <DoDisturbIcon />
-                      )
-                    }
-                    label={
-                      permissionedUsers.includes(vc.authoriserId)
-                        ? "Can issue trust"
-                        : "Cannot issue trust"
-                    }
-                    color={
-                      permissionedUsers.includes(vc.authoriserId)
-                        ? "success"
-                        : "error"
-                    }
-                  />
-                </CardContent>
-                {vc.authoriserId === emailAddress && (
-                  <CardActions>
-                    <Button
-                      variant="contained"
-                      onClick={() => handleRemoveTrust(vc)}
-                    >
-                      Submit retraction
-                    </Button>
-                  </CardActions>
-                )}
-              </Card>
-            ))}
-          </Stack>
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
-            <Button variant="contained" onClick={handleCreateTrust}>
-              Add trust
-            </Button>
-          </Box>
-        </Paper>
+        <TrustSubmissions
+          trustVCs={trustVCs}
+          permissionedUsers={permissionedUsers}
+          emailAddress={emailAddress}
+          handleCreateTrust={handleCreateTrust}
+          handleRemoveTrust={handleRemoveTrust}
+        />
       </Box>
     </>
   );
