@@ -3,6 +3,7 @@
 const device_trust = require("./device_trust.json");
 const device = require("./device.json");
 const device_type = require("./device_type.json");
+const device_type_trust = require("./device_type_trust.json");
 const has_sbom = require("./has_sbom.json");
 const is_of_device_type = require("./is_of_device_type.json");
 const manufactured = require("./manufactured.json");
@@ -16,6 +17,7 @@ module.exports = {
   device_trust,
   device,
   device_type,
+  device_type_trust,
   has_sbom,
   is_of_device_type,
   manufactured,

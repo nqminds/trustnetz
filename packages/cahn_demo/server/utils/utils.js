@@ -179,7 +179,7 @@ const filterManufacturerTrust = (req) => (line) =>
     .includes(req.params.manufacturerId);
 
 const mapManufacturerTrust = (line) => {
-  const [timestamp, manufacturerId, authoriserId] = line
+  const [authoriserId, timestamp, manufacturerId] = line
     .replace("assert(manufacturer_trust(", "")
     .replace(")).", "")
     .split(",");
@@ -230,7 +230,7 @@ const matchDeviceTypeTrust = (vc, query) =>
   vc.credentialSubject?.fact?.device_type_id === query.deviceTypeId;
 
 const matchManufacturerTrust = (vc, query) =>
-  vc.credentialSubject?.fact?.user_id === query.userId &&
+  vc.credentialSubject?.fact?.authoriser_id === query.authoriserId &&
   vc.credentialSubject?.fact?.created_at === Number(query.timestamp) &&
   vc.credentialSubject?.fact?.manufacturer_id === query.manufacturerId;
 

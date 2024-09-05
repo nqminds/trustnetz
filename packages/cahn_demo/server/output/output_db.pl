@@ -1,11 +1,11 @@
-created(1725538916.1876307).
-assert(device_trust("henry@nquiringminds.com",1725538914174,"AshEvilPhone-id")).
+created(1725542006.4788601).
+assert(device_type_trust("henry@nquiringminds.com",1725541664677,"EvilPhone-id")).
 assert(device_type(1723716151033,"TrustPhone-id","TrustPhone")).
 assert(device_type(1723716151033,"VulnerableCamera-id","VulnerableCamera")).
 assert(device_type(1723716151033,"EvilPhone-id","EvilPhone")).
-assert(manufacturer_trust(1723716151033,"TrustCorp-id","Henry-id")).
-assert(manufacturer_trust(1723716151033,"TrustCorp-id","Ash-id")).
-assert(manufacturer_trust(1723716151033,"EvilInc-id","Ash-id")).
+assert(manufacturer_trust("Henry-id",1723716151033,"TrustCorp-id")).
+assert(manufacturer_trust("Ash-id",1723716151033,"TrustCorp-id")).
+assert(manufacturer_trust("Ash-id",1723716151033,"EvilInc-id")).
 assert(device_type_trust("Henry-id",1723716151033,"TrustPhone-id")).
 assert(device_type_trust("Ash-id",1723716151033,"EvilPhone-id")).
 assert(device_type_trust("Henry-id",1723716151033,"VulnerableCamera-id")).
@@ -29,4 +29,4 @@ assert(device(1723716151033,"HenryVulnerableCamera-id","HenryVulnerableCamera-id
 assert(sbom(1723716151033,"VulnerableCameraSBOM-id","VulnerableCamera SBOM information")).
 assert(manufacturer(1723716151033,"EvilInc-id","EvilInc")).
 assert(manufacturer(1723716151033,"TrustCorp-id","TrustCorp")).
-assert(user(true,false,false,1725354336369,"henry@nquiringminds.com","henry-user")).
+assert(user(false,true,true,1725541960614,"henry@nquiringminds.com","henry-user")).

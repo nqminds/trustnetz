@@ -58,31 +58,26 @@ const Page = ({ params }) => {
   const emailAddress = localStorage.getItem("emailAddress");
 
   const handleCreateTrust = () => {
-    const data = {
-      "@context": ["https://www.w3.org/ns/credentials/v2"],
-      id: "urn:uuid:91cf3009-28ee-488e-8ae8-a751a289c8cb",
-      type: ["VerifiableCredential", "UserCredential"],
-      issuer: "urn:uuid:8bbabf61-758b-4bcb-8dab-4a4d1d493e25",
-      validFrom: "2024-07-25T19:23:24Z",
-      credentialSchema: {
-        id: "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/user.yaml",
-        type: "JsonSchema",
-      },
-      credentialSubject: {
-        type: "fact",
-        schemaName: "device_type_trust",
-        id: uuidv4(),
-        timestamp: 1716287268891,
-        fact: {
-          device_type_id: params.device_type_id,
-          authoriser_id: emailAddress,
-          created_at: Date.now(),
-        },
+    const credentialSubject = {
+      type: "fact",
+      schemaName: "device_type_trust",
+      id: uuidv4(),
+      timestamp: 1716287268891,
+      fact: {
+        device_type_id: params.device_type_id,
+        authoriser_id: emailAddress,
+        created_at: Date.now(),
       },
     };
 
+    // Deep copy device_type_trust
+    const vc_data = JSON.parse(JSON.stringify(device_type_trust));
+    // Set the credentialSubject fields of VC
+    vc_data.credentialSubject = credentialSubject;
+    vc_data.credentialSchema.id =
+      "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/device_type_trust.v.1.0.0.schema.yaml";
     const vc = new window.VerifiableCredential(
-      data,
+      vc_data,
       JSON.stringify(device_type_trust)
     );
 

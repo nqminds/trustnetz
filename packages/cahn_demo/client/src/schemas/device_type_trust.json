@@ -1,12 +1,7 @@
 {
-  "@context": [
-    "https://www.w3.org/ns/credentials/v2"
-  ],
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
   "id": "urn:uuid:ebd8f0a2-c683-443c-9a8c-2b860a59f244",
-  "type": [
-    "VerifiableCredential",
-    "UserCredential"
-  ],
+  "type": ["VerifiableCredential", "UserCredential"],
   "issuer": "urn:uuid:983e57d1-1d42-45b4-878a-575ddbdfabb2",
   "validFrom": "2024-08-28T14:15:50.311484Z",
   "credentialSchema": {
@@ -38,11 +33,7 @@
           "type": "integer"
         }
       },
-      "required": [
-        "device_type_id",
-        "authoriser_id",
-        "created_at"
-      ]
+      "required": ["device_type_id", "authoriser_id", "created_at"]
     }
   }
 }

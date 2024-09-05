@@ -662,6 +662,7 @@ async function getUsersByPattern(filePath, regexPattern) {
       for (const line of lines) {
         let match;
         while ((match = regexPattern.exec(line)) !== null) {
+          console.log("match :>> ", match);
           users.push(match[4].replace(/['"]+/g, ""));
         }
       }
@@ -689,13 +690,13 @@ app.get("/permissions/device", (req, res) => {
 });
 
 // Route to get users that can issue manufacturer trust
-app.get("/permissions/manufacturer", (req, res) => {
+app.get("/permissions/device_type", (req, res) => {
   const regexPattern = /user\(([^,]*),true,([^,]*),([^,]*),([^,]*),([^,]*)\)/g;
   handlePermissionRequest(regexPattern, req, res);
 });
 
 // Route to get users that can issue device type trust
-app.get("/permissions/device_type", (req, res) => {
+app.get("/permissions/manufacturer", (req, res) => {
   const regexPattern = /user\(([^,]*),([^,]*),true,([^,]*),([^,]*),([^,]*)\)/g;
   handlePermissionRequest(regexPattern, req, res);
 });

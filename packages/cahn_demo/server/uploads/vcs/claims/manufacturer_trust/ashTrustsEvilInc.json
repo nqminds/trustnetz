@@ -1,12 +1,7 @@
 {
-  "@context": [
-    "https://www.w3.org/ns/credentials/v2"
-  ],
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
   "id": "urn:uuid:1f67b637-ef5d-4ece-9774-f7297460dba2",
-  "type": [
-    "VerifiableCredential",
-    "UserCredential"
-  ],
+  "type": ["VerifiableCredential", "UserCredential"],
   "name": null,
   "description": null,
   "issuer": "urn:uuid:62569d25-5f09-4187-9fc1-2eef1e645980",
@@ -23,7 +18,7 @@
     "id": "29a0a5f3-d684-47f5-a574-a791506aa9a7",
     "timestamp": 1716287268891,
     "fact": {
-      "user_id": "Ash-id",
+      "authoriser_id": "Ash-id",
       "manufacturer_id": "EvilInc-id",
       "created_at": 1723716151033
     }

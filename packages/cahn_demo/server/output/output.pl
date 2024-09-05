@@ -268,36 +268,36 @@ remove_manufactured(CreatedAt, DeviceId, ManufacturerId) :-
   )).
 
 :- persistent
-  db:manufacturer_trust(_CreatedAt, _ManufacturerId, _UserId).
+  db:manufacturer_trust(_AuthoriserId, _CreatedAt, _ManufacturerId).
 
-get_manufacturer_trust(CreatedAt, ManufacturerId, UserId) :-
-  with_mutex(db, manufacturer_trust(CreatedAt, ManufacturerId, UserId)).
+get_manufacturer_trust(AuthoriserId, CreatedAt, ManufacturerId) :-
+  with_mutex(db, manufacturer_trust(AuthoriserId, CreatedAt, ManufacturerId)).
 
-get_all_manufacturer_trust(CreatedAt, ManufacturerId, UserId, Matches) :- 
+get_all_manufacturer_trust(AuthoriserId, CreatedAt, ManufacturerId, Matches) :- 
  with_mutex(db, 
-    findall(manufacturer_trust(CreatedAt, ManufacturerId, UserId),
-            manufacturer_trust(CreatedAt, ManufacturerId, UserId),
+    findall(manufacturer_trust(AuthoriserId, CreatedAt, ManufacturerId),
+            manufacturer_trust(AuthoriserId, CreatedAt, ManufacturerId),
             Matches)
 ).
 
-add_manufacturer_trust(CreatedAt, ManufacturerId, UserId) :-
+add_manufacturer_trust(AuthoriserId, CreatedAt, ManufacturerId) :-
   % Validate required fields
-  validate_required(UserId, "UserId"),
+  validate_required(AuthoriserId, "AuthoriserId"),
   validate_required(ManufacturerId, "ManufacturerId"),
   validate_required(CreatedAt, "CreatedAt"),
   % Check unique fields are unique
+  % Validate and assert AuthoriserId
+  validate_type_string(AuthoriserId, ValidAuthoriserId, "AuthoriserId"),
   % Validate and assert CreatedAt
   validate_type_integer(CreatedAt, ValidCreatedAt, "CreatedAt"),
   % Validate and assert ManufacturerId
   validate_type_string(ManufacturerId, ValidManufacturerId, "ManufacturerId"),
-  % Validate and assert UserId
-  validate_type_string(UserId, ValidUserId, "UserId"),
-  assert_manufacturer_trust(ValidCreatedAt, ValidManufacturerId, ValidUserId).
+  assert_manufacturer_trust(ValidAuthoriserId, ValidCreatedAt, ValidManufacturerId).
 
-remove_manufacturer_trust(CreatedAt, ManufacturerId, UserId) :-
-  manufacturer_trust(CreatedAt, ManufacturerId, UserId),
+remove_manufacturer_trust(AuthoriserId, CreatedAt, ManufacturerId) :-
+  manufacturer_trust(AuthoriserId, CreatedAt, ManufacturerId),
   with_mutex(db, (
-    retractall_manufacturer_trust(CreatedAt, ManufacturerId, UserId)
+    retractall_manufacturer_trust(AuthoriserId, CreatedAt, ManufacturerId)
   )).
 
 :- persistent

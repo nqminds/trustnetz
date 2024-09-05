@@ -98,31 +98,28 @@ const Page = ({ params }) => {
     });
   }, []);
   const handleCreateTrust = () => {
-    const data = {
-      "@context": ["https://www.w3.org/ns/credentials/v2"],
-      id: "urn:uuid:91cf3009-28ee-488e-8ae8-a751a289c8cb",
-      type: ["VerifiableCredential", "UserCredential"],
-      issuer: "urn:uuid:8bbabf61-758b-4bcb-8dab-4a4d1d493e25",
-      validFrom: "2024-07-25T19:23:24Z",
-      credentialSchema: {
-        id: "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/user.yaml",
-        type: "JsonSchema",
-      },
-      credentialSubject: {
-        type: "fact",
-        schemaName: "manufacturer_trust",
-        id: uuidv4(),
-        timestamp: 1716287268891,
-        fact: {
-          manufacturer_id: params.manufacturer_id,
-          user_id: emailAddress,
-          created_at: Date.now(),
-        },
+    const credentialSubject = {
+      type: "fact",
+      schemaName: "manufacturer_trust",
+      id: uuidv4(),
+      timestamp: 1716287268891,
+      fact: {
+        manufacturer_id: params.manufacturer_id,
+        authoriser_id: emailAddress,
+        created_at: Date.now(),
       },
     };
 
+    // Deep copy manufacturer_trust
+    const vc_data = JSON.parse(JSON.stringify(manufacturer_trust));
+    console.log("vc_data :>> ", vc_data);
+    // Set the credentialSubject fields of VC
+    vc_data.credentialSubject = credentialSubject;
+    vc_data.credentialSchema.id =
+      "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/user.yaml";
+
     const vc = new window.VerifiableCredential(
-      data,
+      vc_data,
       JSON.stringify(manufacturer_trust)
     );
 
@@ -297,7 +294,10 @@ const Page = ({ params }) => {
                   <CardActions>
                     <Button
                       variant="contained"
-                      onClick={() => handleRemoveTrust(vc)}
+                      onClick={() => {
+                        console.log("vc :>> ", vc);
+                        handleRemoveTrust(vc);
+                      }}
                     >
                       Submit retraction
                     </Button>
