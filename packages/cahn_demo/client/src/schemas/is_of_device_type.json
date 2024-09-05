@@ -1,0 +1,48 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:b2261fe9-181b-4a64-9e13-7c22f938b918",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "issuer": "urn:uuid:7c3319ab-a07a-448c-a073-3e398694df56",
+  "validFrom": "2024-08-28T14:15:50.313525Z",
+  "credentialSchema": {
+    "id": "89b8deb0-2ba7-4aff-9b38-398a421daab0",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "schema",
+    "id": "9836acc3-dacb-4e03-bb3f-1ea914423175",
+    "timestamp": 1716131759000,
+    "schemaName": "is_of_device_type",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/is_of_device_type.v.1.0.0.schema.yaml",
+      "title": "is_of_device_type",
+      "description": "Binds a device instance to a device type",
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "description": "id of the device",
+          "type": "string"
+        },
+        "device_type_id": {
+          "description": "id of the device type of the device",
+          "type": "string"
+        },
+        "created_at": {
+          "description": "timestamp at which device type binding was created in milliseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "device_id",
+        "device_type_id",
+        "created_at"
+      ]
+    }
+  }
+}

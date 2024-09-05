@@ -1,0 +1,52 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:8d00a142-2021-4554-8036-df1ec445f5e5",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "issuer": "urn:uuid:95dbf35b-e821-4bca-a9a9-3b4d0c6556e2",
+  "validFrom": "2024-08-28T14:15:50.312769Z",
+  "credentialSchema": {
+    "id": "729c64f3-f8b3-470a-be42-7729b035f304",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "schema",
+    "id": "570b55db-5f35-4e14-b7b6-57ff3c67521c",
+    "timestamp": 1716131759000,
+    "schemaName": "manufacturer",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/manufacturer.v.1.0.0.schema.yaml",
+      "title": "manufacturer",
+      "description": "A manufacturer",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id of the manufacturer",
+          "type": "string"
+        },
+        "name": {
+          "description": "name of the manufacturer",
+          "type": "string"
+        },
+        "created_at": {
+          "description": "timestamp at which manufacturer was created in milliseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "created_at"
+      ],
+      "uniqueKeys": [
+        "id",
+        "name"
+      ]
+    }
+  }
+}

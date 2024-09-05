@@ -91,8 +91,6 @@ const readAndProcessFile = (filePath, filterFn, mapFn) => {
         return b.timestamp - a.timestamp;
       });
 
-      console.log("trustVCs :>> ", trustVCs);
-
       resolve(trustVCs);
     });
   });

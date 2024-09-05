@@ -1,4 +1,5 @@
-created(1725528675.4019732).
+created(1725538916.1876307).
+assert(device_trust("henry@nquiringminds.com",1725538914174,"AshEvilPhone-id")).
 assert(device_type(1723716151033,"TrustPhone-id","TrustPhone")).
 assert(device_type(1723716151033,"VulnerableCamera-id","VulnerableCamera")).
 assert(device_type(1723716151033,"EvilPhone-id","EvilPhone")).

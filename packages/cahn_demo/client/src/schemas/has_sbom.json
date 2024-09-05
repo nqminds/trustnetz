@@ -1,0 +1,48 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:eb97a547-a542-409d-85eb-deb548adb6b5",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "issuer": "urn:uuid:a42eeab9-e22f-4a40-adaa-9e8952bf5c36",
+  "validFrom": "2024-08-28T14:15:50.313250Z",
+  "credentialSchema": {
+    "id": "96d621c7-c377-4cd9-ae9b-8d07fcfdaf9f",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "schema",
+    "id": "e4e0ec6c-de9d-430f-b943-f5595a0d0d57",
+    "timestamp": 1716131759000,
+    "schemaName": "has_sbom",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/has_sbom.v.1.0.0.schema.yaml",
+      "title": "has_sbom",
+      "description": "Binding between a device type and SBOM (Software Bill Of Materials)",
+      "type": "object",
+      "properties": {
+        "sbom_id": {
+          "description": "id of the sbom",
+          "type": "string"
+        },
+        "device_type_id": {
+          "description": "id of the device type to which the sbom applies",
+          "type": "string"
+        },
+        "created_at": {
+          "description": "timestamp at which sbom-device binding was created in milliseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "sbom_id",
+        "device_type_id",
+        "created_at"
+      ]
+    }
+  }
+}
