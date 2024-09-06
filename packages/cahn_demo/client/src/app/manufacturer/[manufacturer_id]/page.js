@@ -6,8 +6,10 @@ import ManufacturerInfoTable from "../../components/ManufacturerInfoTable";
 import withAuth from "@/app/utils/withAuth";
 import AppBar from "../../components/AppBar";
 import { v4 as uuidv4 } from "uuid";
-import { manufacturer_trust } from "@/schemas";
+import { manufacturer_trust, retraction } from "@/schemas";
 import TrustSubmissions from "@/app/components/TrustSubmissions";
+import initializeWasm from "@/app/utils/initialiseWasm";
+import createUnsignedRetractionVC from "@/app/utils/createUnsignedRetractionVC";
 
 const Page = ({ params }) => {
   const [manufacturerData, setManufacturerData] = useState({
@@ -123,36 +125,13 @@ const Page = ({ params }) => {
       );
       const idToRevoke = response.data.id; // Assuming the API returns an object with an 'id' field
 
-      const retractionClaim = {
-        type: "retraction",
-        id: `urn:uuid:${uuidv4()}`,
-        timestamp: Date.now(),
-        claim_id: idToRevoke,
-      };
-
-      const retractionVC = {
-        "@context": ["https://www.w3.org/ns/credentials/v2"],
-        id: `urn:uuid:${uuidv4()}`,
-        type: ["VerifiableCredential", "UserCredential"],
-        issuer: `urn:uuid:${uuidv4()}`, // TODO: Use an actual issuer ID?
-        validFrom: new Date().toISOString(),
-        credentialSchema: {
-          id: "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/user.yaml",
-          type: "JsonSchema",
-        },
-        credentialSubject: retractionClaim,
-      };
-
-      const VC = new window.VerifiableCredential(
-        retractionVC,
-        "retraction_schema"
-      );
+      const vcToUpload = createUnsignedRetractionVC(idToRevoke);
 
       const privateKeyAsUint8Array = new Uint8Array(
         Buffer.from(privateKey, "base64")
       );
 
-      const signedVc = VC.sign(privateKeyAsUint8Array).to_object();
+      const signedVc = vcToUpload.sign(privateKeyAsUint8Array).to_object();
 
       const uploadResponse = await axios.post(
         "http://localhost:3001/upload/verifiable_credential",

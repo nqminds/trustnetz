@@ -12,6 +12,7 @@ const manufacturer_trust = require("./manufacturer_trust.json");
 const sbom_vulnerability = require("./sbom_vulnerability.json");
 const sbom = require("./sbom.json");
 const user = require("./user.json");
+const retraction = require("./retraction.json");
 
 module.exports = {
   device_trust,
@@ -26,4 +27,5 @@ module.exports = {
   sbom_vulnerability,
   sbom,
   user,
+  retraction,
 };

@@ -48,6 +48,7 @@ const saveVCForUser = (email) => {
         id: email,
         username: `${email.split("@")[0]}-user`,
         created_at: Date.now(),
+        can_issue_device_type_trust: false,
         can_issue_device_trust: false,
         can_issue_manufacturer_trust: false,
       },
