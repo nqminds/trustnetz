@@ -606,7 +606,7 @@ allowed_to_connect(DeviceId) :-
     % Check if the device type and manufacturer are trusted
     is_of_device_type(_, DeviceId, DeviceTypeId),
     manufactured(_, DeviceTypeId, ManufacturerId),
-    manufacturer_trust(_, ManufacturerId, UserIdMT),
+    manufacturer_trust(UserIdMT, _, ManufacturerId),
     
     % Check if the device type is trusted by the user
     device_type_trust(UserIdDTT, _, DeviceTypeId),
