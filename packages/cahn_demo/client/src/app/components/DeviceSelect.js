@@ -52,8 +52,8 @@ const DeviceSelect = ({
               autoWidth
               variant="outlined"
             >
-              {devices.map((device) => (
-                <MenuItem key={device} value={device}>
+              {devices.map((device, index) => (
+                <MenuItem key={index} value={device}>
                   {device.deviceInfo.Name}
                 </MenuItem>
               ))}
