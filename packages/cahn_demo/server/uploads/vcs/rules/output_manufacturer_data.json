@@ -1,0 +1,17 @@
+{
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
+  "id": "urn:uuid:91cf3009-28ee-488e-8ae8-a751a289c8cb",
+  "type": ["VerifiableCredential", "UserCredential"],
+  "issuer": "urn:uuid:8bbabf61-758b-4bcb-8dab-4a4d1d493e25",
+  "validFrom": "2024-07-25T19:23:24Z",
+  "credentialSchema": {
+    "id": "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/user.yaml",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "rule",
+    "id": "b1c3d5e4-f5g6-7h89-i0j1-2k3l4m5n6o7p",
+    "timestamp": 1724315344564,
+    "rule": "output_manufacturer_data(ManufacturerId, ManufacturerData) :-\n  manufacturer(CreatedAtManufacturer, ManufacturerId, Manufacturer),\n\n  % Retrieve device type data for devices manufactured by this manufacturer\n  findall(DeviceTypeData, (\n    manufactured(_CreatedAtManufactured, DeviceTypeId, ManufacturerId),\n\n    % Retrieve device type information\n    (device_type(CreatedAtDeviceType, DeviceTypeId, DeviceType) ->\n      true\n    ;\n      (CreatedAtDeviceType = unknown, DeviceType = unknown)\n    ),\n\n    format(atom(DeviceTypeData), '{\"DeviceTypeId\": \"~w\", \"CreatedAtDeviceType\": \"~w\", \"DeviceType\": \"~w\"}', \n         [DeviceTypeId, CreatedAtDeviceType, DeviceType])\n  ), DeviceTypeDataList),\n\n  % Check if there is a user that can issue manufacturer trust\n  (   \n    once((manufacturer_trust(UserId, _, ManufacturerId), user(_, _, true, _, UserId, _))) ->\n    CanIssueManufacturerTrust = true\n  ;   \n    CanIssueManufacturerTrust = false\n  ),\n\n  % Format the output\n  format(atom(ManufacturerData), '{\"CreatedAtManufacturer\": \"~w\", \"ManufacturerId\": \"~w\", \"Manufacturer\": \"~w\", \"DeviceTypes\": ~w, \"HasTrust\": ~w}', \n       [CreatedAtManufacturer, ManufacturerId, Manufacturer, DeviceTypeDataList, CanIssueManufacturerTrust])."
+  }
+}

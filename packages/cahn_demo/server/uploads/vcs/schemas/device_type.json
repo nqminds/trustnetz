@@ -1,0 +1,52 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:ddf57335-49f5-4c90-901f-59284cee3a11",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "issuer": "urn:uuid:2a4b949b-9440-4b06-b5f0-3ea2dceb2639",
+  "validFrom": "2024-08-28T14:15:50.313387Z",
+  "credentialSchema": {
+    "id": "6b398ad4-72a5-49c2-9c0e-63cc63560ddf",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "schema",
+    "id": "f0bf8968-df07-467a-84f9-c5ef3467f7d3",
+    "timestamp": 1716131759000,
+    "schemaName": "device_type",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/device_type.v.1.0.0.schema.yaml",
+      "title": "device_type",
+      "description": "A device type",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id of the device type",
+          "type": "string"
+        },
+        "name": {
+          "description": "user friendly name of the device type",
+          "type": "string"
+        },
+        "created_at": {
+          "description": "timestamp at which device type was created in milliseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "created_at"
+      ],
+      "uniqueKeys": [
+        "id",
+        "name"
+      ]
+    }
+  }
+}

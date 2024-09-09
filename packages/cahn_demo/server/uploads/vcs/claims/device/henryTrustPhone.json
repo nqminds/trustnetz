@@ -1,0 +1,38 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:9a3e3c0e-2db0-412a-95c7-cf5520ba78df",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "name": null,
+  "description": null,
+  "issuer": "urn:uuid:a1b9e976-02d2-46cf-a747-82bc8af0ca50",
+  "validFrom": "2024-08-28T14:15:50.310394Z",
+  "validUntil": null,
+  "credentialStatus": null,
+  "credentialSchema": {
+    "id": "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/device.yaml",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "fact",
+    "schemaName": "device",
+    "id": "344f588c-5905-4ac8-8c70-ddcf61bf0bbe",
+    "timestamp": 1716287268891,
+    "fact": {
+      "id": "HenryTrustPhone-id",
+      "name": "HenryTrustPhone",
+      "idevid": "HenryTrustPhone-idevid",
+      "created_at": 1723716151033
+    }
+  },
+  "proof": {
+    "type": "JsonWebSignature2020",
+    "jws": "fh9eOth+LK85k0W2Y/YBxrOHV2ftVIuXowsWZktW4GHIx9VU+b2qEI7coiXS1F+JkEHQzg52Tm21JaZlmn3iAw==",
+    "proofPurpose": "assertionMethod",
+    "created": "2024-08-28T14:15:50.310402Z"
+  }
+}

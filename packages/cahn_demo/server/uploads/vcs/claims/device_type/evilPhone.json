@@ -1,0 +1,38 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:8472b43a-b835-4aaa-9c46-57d0fa6a5f60",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "name": null,
+  "description": null,
+  "issuer": "urn:uuid:f3f752e0-b411-4ac2-9c09-a983b4747ec3",
+  "validFrom": "2024-08-28T14:15:50.306218Z",
+  "validUntil": null,
+  "credentialStatus": null,
+  "credentialSchema": {
+    "id": "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/device_type.yaml",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "fact",
+    "schemaName": "device_type",
+    "id": "ebff3c1d-b499-4ee3-a5d6-65eadc9def2a",
+    "timestamp": 1716287268891,
+    "fact": {
+      "id": "EvilPhone-id",
+      "name": "EvilPhone",
+      "idevid": "EvilPhone-idevid",
+      "created_at": 1723716151033
+    }
+  },
+  "proof": {
+    "type": "JsonWebSignature2020",
+    "jws": "fh9eOth+LK85k0W2Y/YBxrOHV2ftVIuXowsWZktW4GHIx9VU+b2qEI7coiXS1F+JkEHQzg52Tm21JaZlmn3iAw==",
+    "proofPurpose": "assertionMethod",
+    "created": "2024-08-28T14:15:50.306222Z"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:31f876f7-6209-406b-b956-4e6d557812d9",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "name": null,
+  "description": null,
+  "issuer": "urn:uuid:bbc2ff2d-ea43-4903-b652-0bd46414cb07",
+  "validFrom": "2024-08-28T14:15:50.305628Z",
+  "validUntil": null,
+  "credentialStatus": null,
+  "credentialSchema": {
+    "id": "https://github.com/nqminds/ClaimCascade/blob/claim_verifier/packages/claim_verifier/device_type.yaml",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "fact",
+    "schemaName": "device_type",
+    "id": "4d8935d7-d423-48e8-a2d2-1480e7636bfb",
+    "timestamp": 1716287268891,
+    "fact": {
+      "id": "TrustPhone-id",
+      "name": "TrustPhone",
+      "idevid": "TrustPhone-idevid",
+      "created_at": 1723716151033
+    }
+  },
+  "proof": {
+    "type": "JsonWebSignature2020",
+    "jws": "fh9eOth+LK85k0W2Y/YBxrOHV2ftVIuXowsWZktW4GHIx9VU+b2qEI7coiXS1F+JkEHQzg52Tm21JaZlmn3iAw==",
+    "proofPurpose": "assertionMethod",
+    "created": "2024-08-28T14:15:50.305649Z"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
+  "id": "urn:uuid:1cb63635-d3d1-47c1-b653-11e9948ea223",
+  "type": ["VerifiableCredential", "UserCredential"],
+  "issuer": "urn:uuid:4e3c2a77-beb1-4ad9-aa8a-c93be6004a7b",
+  "validFrom": "2024-08-28T14:15:50.312133Z",
+  "credentialSchema": {
+    "id": "6924ca71-3c53-4e44-ae03-efb15889f3b5",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "schema",
+    "id": "f29ba91e-509f-4c87-a239-b1e81afa941c",
+    "timestamp": 1716131759000,
+    "schemaName": "retraction",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/device.v.1.0.0.schema.yaml",
+      "title": "retraction",
+      "description": "retraction",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "id of the device",
+          "type": "string"
+        },
+        "claim_id": {
+          "description": "id of the claim that is being retracted",
+          "type": "string"
+        },
+        "timestamp": {
+          "description": "timestamp at which the retraction was made in milliseconds",
+          "type": "string"
+        },
+        "type": {
+          "description": "which type of claim is being made",
+          "type": "string",
+          "const": "retraction"
+        }
+      },
+      "required": ["id", "claim_id", "timestamp", "type"]
+    }
+  }
+}

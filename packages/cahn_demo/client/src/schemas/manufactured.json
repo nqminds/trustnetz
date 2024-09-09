@@ -1,0 +1,48 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "urn:uuid:da1ff353-1dbe-4cf0-883b-0484d9757d16",
+  "type": [
+    "VerifiableCredential",
+    "UserCredential"
+  ],
+  "issuer": "urn:uuid:b1e1ec19-ef35-4d2d-a350-db4585f608d3",
+  "validFrom": "2024-08-28T14:15:50.312300Z",
+  "credentialSchema": {
+    "id": "03c6416a-32a5-4caa-a1f2-dac623124ac5",
+    "type": "JsonSchema"
+  },
+  "credentialSubject": {
+    "type": "schema",
+    "id": "853ddcd4-03f5-4c59-b8e6-f441602aac2b",
+    "timestamp": 1716131759000,
+    "schemaName": "manufactured",
+    "schema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "https://github.com/nqminds/CAHN/blob/main/packages/schemas/src/manufactured.v.1.0.0.schema.yaml",
+      "title": "manufactured",
+      "description": "A manufactured relationship between a device and a manufacturer",
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "description": "id of the device manufactured by the manufacturer",
+          "type": "string"
+        },
+        "manufacturer_id": {
+          "description": "id of the manufacturer of the device",
+          "type": "string"
+        },
+        "created_at": {
+          "description": "timestamp at which manufactured relationship was created in milliseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "device_id",
+        "manufacturer_id",
+        "created_at"
+      ]
+    }
+  }
+}
