@@ -17,3 +17,19 @@ If custom installation is needed then copy the `payload` folder on the target ma
 $ cd payload
 $ ./install
 ```
+# Usage
+
+* A device can be added to the Certificate Revocation List (CRL) list by calling the following command
+
+```sh
+sudo ./etc/hostapd/CA/local_revoke_serial_multiple_args.sh 0xd8d5be97 46fc6d2a1fbfcf48 
+```
+In the command above:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;0xd8d5be97 = LdevId certificate's serial number<br>
+&nbsp;&nbsp;&nbsp;&nbsp;46fc6d2a1fbfcf48 = LdevId Subject SerialNumber<br>
+
+* A device an be assign to one of the four available vlans id's(10, 20, 30, 40) by calling the following command:
+
+```sh
+sudo ./opt/demo-server/assign_client_to_vlan.sh 46fc6d2a1fbfcf48 10
+```
