@@ -16,15 +16,35 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/all_devices_data").then((res) => {
-      if (res.data.length === 0) {
-        console.log("No data found");
-        return;
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3001/all_devices_data"
+        );
+        if (response.data.length === 0) {
+          console.log("No data found");
+          return;
+        }
+
+        const fetchedData = response.data;
+        setData(fetchedData);
+
+        const storedDeviceName = localStorage.getItem("selectedDevice");
+        const foundDevice = storedDeviceName
+          ? fetchedData.find(
+              (device) => device.deviceInfo.Name === storedDeviceName
+            )
+          : fetchedData[0];
+
+        setSelectedDevice(foundDevice || fetchedData[0]);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      } finally {
+        setIsLoading(false);
       }
-      setData(res.data);
-      setSelectedDevice(res.data[0]);
-      setIsLoading(false);
-    });
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -51,7 +71,6 @@ const Home = () => {
           selectedDevice={selectedDevice}
           isLoading={isLoading}
         />
-
         <UserSettings />
       </Box>
     </>

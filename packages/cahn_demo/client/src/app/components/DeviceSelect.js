@@ -9,6 +9,7 @@ import {
   FormHelperText,
 } from "@mui/material";
 import Skeleton from "@mui/material/Skeleton";
+import { useCallback } from "react";
 
 const DeviceSelect = ({
   devices,
@@ -16,9 +17,14 @@ const DeviceSelect = ({
   setSelectedDevice,
   isLoading,
 }) => {
-  const handleChange = (event) => {
-    setSelectedDevice(event.target.value);
-  };
+  const handleChange = useCallback(
+    (event) => {
+      const selectedDevice = event.target.value;
+      setSelectedDevice(selectedDevice);
+      localStorage.setItem("selectedDevice", selectedDevice.deviceInfo.Name);
+    },
+    [setSelectedDevice]
+  );
 
   return (
     <Paper
@@ -40,27 +46,25 @@ const DeviceSelect = ({
       {isLoading ? (
         <Skeleton variant="rectangular" width="100%" height={118} />
       ) : (
-        <>
-          <FormControl sx={{ m: 1, minWidth: 150 }}>
-            <InputLabel id="demo-simple-select-label">Device</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={selectedDevice}
-              label="Device"
-              onChange={handleChange}
-              autoWidth
-              variant="outlined"
-            >
-              {devices.map((device, index) => (
-                <MenuItem key={index} value={device}>
-                  {device.deviceInfo.Name}
-                </MenuItem>
-              ))}
-            </Select>
-            <FormHelperText>Select the device you wish to view</FormHelperText>
-          </FormControl>
-        </>
+        <FormControl sx={{ m: 1, minWidth: 150 }}>
+          <InputLabel id="device-select-label">Device</InputLabel>
+          <Select
+            labelId="device-select-label"
+            id="device-select"
+            value={selectedDevice}
+            label="Device"
+            onChange={handleChange}
+            autoWidth
+            variant="outlined"
+          >
+            {devices.map((device, index) => (
+              <MenuItem key={index} value={device}>
+                {device.deviceInfo.Name}
+              </MenuItem>
+            ))}
+          </Select>
+          <FormHelperText>Select the device you wish to view</FormHelperText>
+        </FormControl>
       )}
     </Paper>
   );
