@@ -1,7 +1,7 @@
 
 {
-  "TITLE": "NIST Trusted Onboarding",
-  "TAGLINE": "Build-5",
+  "TITLE": "TrustNetZ",
+  "TAGLINE": "Zero Trust framework or network onboarding and life cyle management",
   "DOCUSAURUS_URL": "http://office.nqm.ai",
   "PROJECT_NAME": "@nqminds/nist-brski",
   "HEDGEDOC_SERVER": "https://hedgedoc.nqminds.com/",
