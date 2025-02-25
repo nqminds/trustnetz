@@ -15,7 +15,7 @@ If custom installation is needed then copy the `payload` folder on the target ma
 
 ```bash
 $ cd payload
-$ ./install
+$ sudo ./install
 ```
 # Usage
 

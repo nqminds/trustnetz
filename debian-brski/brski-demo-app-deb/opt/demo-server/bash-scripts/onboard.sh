@@ -91,7 +91,7 @@ nmcli c add type wifi ifname $WLAN con-name $EAP_NAME \
       802-11-wireless.ssid $EAP_NAME \
       802-11-wireless-security.key-mgmt wpa-eap \
       802-1x.eap tls \
-      802-1x.identity brski@pledge \
+      802-1x.identity brski_pledge \
       802-1x.ca-cert /opt/demo-server/certs/pinned-domain-ca.crt \
       802-1x.client-cert /opt/demo-server/certs/eap-tls-client.crt \
       802-1x.private-key /opt/demo-server/certs/eap-tls-client.key \

@@ -2,6 +2,7 @@
 
 IF0="wlan0"
 IF1="wlan1"
+MAIN_NETWORK_INTERFACE="eth0"
 
 CA_DIR="/etc/hostapd/CA"
 CA_CONF="$CA_DIR/ca.conf"
@@ -61,6 +62,7 @@ cp registrar.service /etc/avahi/services
 
 service hostapd stop
 service dnsmasq stop
+systemctl disable dnsmasq
 
 systemctl stop wpa_supplicant
 systemctl disable wpa_supplicant
@@ -120,6 +122,27 @@ cp local_revoke.sh "$CA_DIR/"
 
 sudo systemctl disable dnsmasq@$IF0.service
 sudo systemctl disable dnsmasq@$IF1.service
+
+# Enable IP forwarding
+echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
+# Configure NAT and routing
+sudo iptables -t nat -A POSTROUTING -o $MAIN_NETWORK_INTERFACE -j MASQUERADE
+sudo iptables -A FORWARD -i $MAIN_NETWORK_INTERFACE -o $IF1 -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -A FORWARD -i $IF1 -o $MAIN_NETWORK_INTERFACE -j ACCEPT
+
+# Save iptables rules
+sudo iptables-save | sudo tee /etc/iptables/rules.v4
+
+# Add routes for subnets
+sudo ip route add 192.168.16.0/24 dev $IF1
+
+# Uncomment to add more if needed, currently no internet access for 10, 20, 30, 40
+# sudo ip route add 192.168.34.0/24 dev brvlan10
+# sudo ip route add 192.168.35.0/24 dev brvlan20
+# sudo ip route add 192.168.36.0/24 dev brvlan30
+# sudo ip route add 192.168.37.0/24 dev brvlan40
 
 # Restart the avahi service
 systemctl restart avahi-daemon.service
