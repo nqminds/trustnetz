@@ -33,7 +33,7 @@ jobs:
         run: aarch64-linux-gnu-gcc -o server_arm64 debian-brski/brski-demo-app-deb/opt/demo-server/server.c -L/libmicrohttpd/src/microhttpd/.libs -L/zlib -lmicrohttpd -lz -static
 
       - name: Upload server binary as an artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: server-arm64-binary
           path: server_arm64
@@ -68,7 +68,7 @@ jobs:
         run: mv server_x86_64 brski-demo-app-deb/opt/demo-server/server_x86_64
       
       - name: Upload x86_64 server binary as an artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: server-x86_64-binary
           path: brski-demo-app-deb/opt/demo-server/server_x86_64
@@ -82,7 +82,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download ARM64 server binary
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: server-arm64-binary
           path: debian-brski/brski-demo-app-deb/opt/demo-server/
@@ -97,7 +97,7 @@ jobs:
         run: rm debian-brski/brski-demo-app-deb/opt/demo-server/server_arm64
 
       - name: Download x86_64 server binary
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: server-x86_64-binary
           path: debian-brski/brski-demo-app-deb/opt/demo-server/
@@ -109,17 +109,17 @@ jobs:
         run: dpkg-deb --build debian-brski/brski-demo-app-deb brski-demo-app-deb-x86_64.deb
 
       - name: Upload ARM64 .deb Package to Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: brski-demo-app-deb-arm64
           path: brski-demo-app-deb_arm64.deb
 
       - name: Upload x86_64 .deb Package to Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: brski-demo-app-deb-x86_64
           path: brski-demo-app-deb-x86_64.deb
-  # changed to only update the assets of current release instead of creating a new release
+          
   release-debs:
     name: Update Release Assets for Debian Packages
     runs-on: ubuntu-latest
@@ -153,14 +153,14 @@ jobs:
 
       - name: Download ARM64 Debian Package
         if: env.exists == 'true'
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: brski-demo-app-deb-arm64
           path: .
           
       - name: Download AMD64 Debian Package
         if: env.exists == 'true'
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: brski-demo-app-deb-x86_64
           path: .
