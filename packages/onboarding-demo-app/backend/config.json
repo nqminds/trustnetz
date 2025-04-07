@@ -1,0 +1,9 @@
+{
+    "port": 8082,
+    "onboardingScriptPath": "./bash-scripts/onboard.sh",
+    "offboardingScriptPath": "./bash-scripts/offboard.sh",
+    "onboardingLogFilePath": "./onboarding_log_file.txt",
+    "offboardingLogFilePath": "./offboarding_log_file.txt",
+    "interface": "wlp170s0"
+  }
+  

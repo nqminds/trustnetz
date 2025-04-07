@@ -1,0 +1,13 @@
+{
+  "apps": [{
+    "name": "demo-server",
+    "script": "index.js",
+    "watch": false,
+    "auto_restart": true,
+    "env": {
+      "NODE_ENV": "production",
+      "PORT": 8082
+    }
+  }]
+}
+  

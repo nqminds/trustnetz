@@ -1,0 +1,13 @@
+{
+    "apps": [{
+      "name": "frontend",
+      "script": "node_modules/serve/bin/serve.js",
+      "args": "-s build -l 3000",
+      "watch": false,
+      "autorestart": true,
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }]
+  }
+  
