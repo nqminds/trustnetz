@@ -1,70 +1,142 @@
-# Getting Started with Create React App
+# NQM BRSKI Demo System – Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the frontend application for the NQM BRSKI Demo System. Built using Create React App, this React app provides a modern, cyberpunk-inspired interface for interacting with the backend API. It allows you to initiate device onboarding/offboarding, perform network diagnostics, and view WLAN status in real time.
 
-## Available Scripts
+## Table of Contents
 
-In the project directory, you can run:
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Development](#development)
+- [Production Build](#production-build)
+- [Serving with PM2](#serving-with-pm2)
+- [Project Structure](#project-structure)
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Device Onboarding/Offboarding:**  
+  Trigger processes with real-time streamed logs.
+  
+- **Network Diagnostics (Ping):**  
+  Enter an IP address and run ping tests.
+  
+- **WLAN Status Monitoring:**  
+  Periodically fetch WLAN status to display current connectivity.
+  
+- **Customizable Port:**  
+  Set a custom development port using a `.env` file or the `cross-env` package.
+  
+- **Modern UI:**  
+  A sleek, responsive interface built with React.
 
-### `npm test`
+## Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Node.js (v12 or later)** and **npm**  
+- Optionally, **nvm** (Node Version Manager) for managing Node.js versions
+- **PM2** for process management (for production)
 
-### `npm run build`
+## Installation
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**Clone the Repository:**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+git clone git@github.com:nqminds/trustnetz.git
+cd trustnetz/packages/onboarding-demo-app/frontend
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**Install Dependencies:**
 
-### `npm run eject`
+```bash
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+**Configure the Port (Optional):**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The `package.json start script` is already set up with `cross-env` to use port 4000:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```json
+"start": "cross-env PORT=4000 react-scripts start"
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Development
 
-## Learn More
+To start the development server, run:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The app will be available on `http://localhost:4000`. Changes made to the source code will be hot-reloaded automatically.
 
-### Code Splitting
+## Production Build
+To create an optimized production build:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+npm run build
+```
+This will generate a `build/` directory containing static files optimized for production.
 
-### Analyzing the Bundle Size
+## Serving with PM2
+To serve your production build using the `serve` package and manage it with PM2, follow these steps:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**Install `serve` Globally** (if not already installed):
 
-### Making a Progressive Web App
+```bash
+npm install -g serve
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+**Ensure a Production Build Exists:**
 
-### Advanced Configuration
+```bash
+npm run build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+**Create a PM2 Ecosystem Configuration File:**
 
-### Deployment
+Create a file named `ecosystem.config.json` with the following content:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```json
+{
+  "apps": [{
+    "name": "frontend",
+    "script": "node_modules/serve/bin/serve.js",
+    "args": "-s build -l 4000",
+    "watch": false,
+    "autorestart": true,
+    "max_memory_restart": "1G",
+    "env": {
+      "NODE_ENV": "production"
+    }
+  }]
+}
+```
 
-### `npm run build` fails to minify
+**Start the Frontend Using PM2:**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+pm2 start ecosystem.config.json
+```
+
+**Configure PM2 to Restart on Reboot:**
+
+```bash
+pm2 startup
+pm2 save
+```
+
+This will serve your production build on port `4000` (or adjust the port by modifying the `-l` flag in the configuration).
+
+## Project Structure
+```pgsql
+frontend/
+├── assets/
+├── public/
+│   └── index.html
+├── src/
+│   ├── App.css
+│   ├── App.js
+│   └── nquiringminds.svg
+├── package.json
+└── README.md
+```
