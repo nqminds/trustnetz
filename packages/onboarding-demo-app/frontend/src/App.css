@@ -97,6 +97,11 @@
   border-color: #e74c3c;
 }
 
+.status-partial {
+  color: #f39c12;
+  border-color: #f39c12;
+}
+
 /* Cyber Button Styles */
 .cyber-button {
   position: relative;
