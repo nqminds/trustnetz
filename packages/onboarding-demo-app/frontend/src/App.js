@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import logo from './nquiringminds.svg';
 
+
 function App() {
   const [onboardStatus, setOnboardStatus] = useState("Status: Unknown");
   const [offboardStatus, setOffboardStatus] = useState("Status: Unknown");
@@ -90,7 +91,7 @@ function App() {
       return;
     }
     try {
-      const res = await fetch(`/api/ping?ip=${pingIP}&interface=wlp170s0`);
+      const res = await fetch(`/api/ping?ip=${pingIP}&interface=wlan0`);
       if (!res.ok) throw new Error("Ping request failed");
       const text = await res.text();
       setPingStatus("Ping Result:");

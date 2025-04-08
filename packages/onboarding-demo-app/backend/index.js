@@ -11,7 +11,7 @@ const {
  } = require('./config.json');
 
 const app = express();
-const PORT = port|| 8082;
+const PORT = port|| 8085;
 
 
 // Middleware
@@ -20,7 +20,7 @@ app.use(express.json());
 
 // API Endpoints
 app.get('/api/wlan0-status', (req, res) => {
-  exec(`nmcli -t -f GENERAL,IP4 dev show ${interface}`, (error, stdout, stderr) => {
+  exec(`iw ${interface} link`, (error, stdout, stderr) => {
     if (error) {
       console.error('WLAN Status Error:', error);
       return res.status(500).json({ error: 'Failed to get WLAN status' });
@@ -53,7 +53,7 @@ app.post('/api/onboard', (req, res) => {
     'Transfer-Encoding': 'chunked'
   });
 
-  const child = spawn('bash', [onboardingScriptPath], {
+  const child = spawn('sudo', ['bash', onboardingScriptPath], {
     stdio: ['ignore', 'pipe', 'pipe'] // Capture stdout and stderr
   });
 
@@ -85,7 +85,7 @@ app.post('/api/offboard', (req, res) => {
     'Transfer-Encoding': 'chunked'
   });
 
-  const child = spawn('bash', [offboardingScriptPath], {
+  const child = spawn('sudo', ['bash', offboardingScriptPath], {
     stdio: ['ignore', 'pipe', 'pipe']
   });
 

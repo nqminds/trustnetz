@@ -1,3 +1,4 @@
 {
-    "interface": "wlp170s0"
+    "interface": "wlan0",
+    "BACKEND_PORT": "4002"
 }
