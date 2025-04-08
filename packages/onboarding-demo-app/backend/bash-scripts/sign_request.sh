@@ -9,6 +9,7 @@ PROVIDER_TPM="tpm2"
 PROVIDER_DEF="default"
 EAP_TLS_CLIENT_CERT="$CERTS_PATH/eap-tls-client.crt"
 EAP_TLS_CLIENT_KEY="$CERTS_PATH/eap-tls-client.key"
+EAP_TLS_REQ_CLIENT_CERT="$CERTS_PATH/eap-tls-req-client.crt"
 
 
 generate_serial_number() {
@@ -46,4 +47,4 @@ CERTIFICATE=`echo -e "$HTTP_REQUEST" | openssl s_client -provider $PROVIDER_TPM 
     echo "-----END CERTIFICATE-----"
 } > "${CERTS_PATH}/eap-tls-client.crt"
 
-rm -f $EAP_TLS_CLIENT_CERT
+rm -f $EAP_TLS_REQ_CLIENT_CERT

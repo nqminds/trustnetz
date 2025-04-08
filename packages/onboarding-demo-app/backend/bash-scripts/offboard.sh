@@ -5,9 +5,9 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
-EAP_TLS_CLIENT_CERT="$SCRIPT_DIR/eap-tls-client.crt"
-EAP_TLS_CLIENT_KEY="$SCRIPT_DIR/eap-tls-client.key"
-PINNED_DOMAIN_CERT="$SCRIPT_DIR/pinned-domain-ca.crt"
+EAP_TLS_CLIENT_CERT="$SCRIPT_DIR/certs/eap-tls-client.crt"
+EAP_TLS_CLIENT_KEY="$SCRIPT_DIR/certs/eap-tls-client.key"
+PINNED_DOMAIN_CERT="$SCRIPT_DIR/certs/pinned-domain-ca.crt"
 
 echo "Offboarding IoT device..."
 

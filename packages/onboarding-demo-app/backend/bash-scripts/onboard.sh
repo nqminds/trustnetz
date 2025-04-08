@@ -2,15 +2,15 @@
 
 # Get the directory where the script is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CERTS_PATH="/opt/demo-server/certs"
+CERTS_PATH="$SCRIPT_DIR/certs"
 WLAN="wlan0"
 RNAME="_registrar._tcp"
 DOMAIN="local"
 PREQ_PATH="$SCRIPT_DIR/preq-openssl.sh"
 SIGN_PATH="$SCRIPT_DIR/sign_request.sh"
-PINNED_DOMAIN_CERT="$SCRIPT_DIR/pinned-domain-ca.crt"
-EAP_TLS_CLIENT_CERT="$SCRIPT_DIR/eap-tls-client.crt"
-EAP_TLS_CLIENT_KEY="$SCRIPT_DIR/eap-tls-client.key"
+PINNED_DOMAIN_CERT="$SCRIPT_DIR/certs/pinned-domain-ca.crt"
+EAP_TLS_CLIENT_CERT="$SCRIPT_DIR/certs/eap-tls-client.crt"
+EAP_TLS_CLIENT_KEY="$SCRIPT_DIR/certs/eap-tls-client.key"
 
 echo "Starting onboarding process."
 
