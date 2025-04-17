@@ -1,0 +1,16 @@
+{
+    "apps": [{
+      "name": "frontend",
+      "script": "node_modules/.bin/react-scripts",
+      "args": "start",
+      "cwd": "/home/nqm-perfect-pi/new-demo-app/trustnetz/packages/onboarding-demo-app/frontend",
+      "watch": false,
+      "autorestart": true,
+      "max_memory_restart": "1G",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": "4000"
+      }
+    }]
+  }
+  

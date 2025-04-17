@@ -1,0 +1,4 @@
+{
+    "interface": "wlan0",
+    "BACKEND_PORT": "4002"
+}

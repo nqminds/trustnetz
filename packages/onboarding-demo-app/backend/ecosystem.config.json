@@ -1,0 +1,15 @@
+{
+  "apps": [{
+    "name": "demo-server-backend",
+    "script": "index.js",
+    "cwd": "/home/nqm-perfect-pi/new-demo-app/trustnetz/packages/onboarding-demo-app/backend",
+    "watch": false,
+    "auto_restart": true,
+    "max_memory_restart": "1G",
+    "env": {
+      "NODE_ENV": "production",
+      "PORT": 4002
+    }
+  }]
+}
+  
