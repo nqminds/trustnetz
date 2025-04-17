@@ -9,7 +9,6 @@ This is the frontend application for the NQM BRSKI Demo System. Built using Crea
 - [Installation](#installation)
 - [Development](#development)
 - [Production Build](#production-build)
-- [Serving with PM2](#serving-with-pm2)
 - [Project Structure](#project-structure)
 
 
@@ -92,40 +91,6 @@ npm install -g serve
 npm run build
 ```
 
-**Create a PM2 Ecosystem Configuration File:**
-
-Create a file named `ecosystem.config.json` with the following content:
-
-```json
-{
-  "apps": [{
-    "name": "frontend",
-    "script": "node_modules/serve/bin/serve.js",
-    "args": "-s build -l 4000",
-    "watch": false,
-    "autorestart": true,
-    "max_memory_restart": "1G",
-    "env": {
-      "NODE_ENV": "production"
-    }
-  }]
-}
-```
-
-**Start the Frontend Using PM2:**
-
-```bash
-pm2 start ecosystem.config.json
-```
-
-**Configure PM2 to Restart on Reboot:**
-
-```bash
-pm2 startup
-pm2 save
-```
-
-This will serve your production build on port `4000` (or adjust the port by modifying the `-l` flag in the configuration).
 
 ## Project Structure
 ```pgsql

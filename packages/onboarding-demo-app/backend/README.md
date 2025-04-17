@@ -9,7 +9,7 @@ This project provides a Node.js-based API for managing a BRSKI demonstration sys
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [API Endpoints](#api-endpoints)
-- [Running with PM2](#running-with-pm2)
+
 
 ## Features
 
@@ -110,43 +110,3 @@ POST /api/onboard
 * **Response**: A streamed plain text response including both STDOUT and STDERR data, followed by the process exit code.
 
 * **Usage**: Trigger this endpoint to initiate the device `offboarding` process.
-
-## Running with PM2
-
-To manage the API service and ensure it restarts on reboot, we recommend using PM2.
-
-### PM2 Ecosystem Configuration
-Create an ecosystem file (e.g., `ecosystem.config.json`) with the following content:
-
-```json
-{
-  "apps": [{
-    "name": "demo-server",
-    "script": "index.js",
-    "watch": false,
-    "auto_restart": true,
-    "max_memory_restart": "1G",
-    "env": {
-      "NODE_ENV": "production",
-      "PORT": 4002
-    }
-  }]
-}
-```
-
-### Starting the Service with PM2
-Start the API service using PM2:
-
-```bash
-pm2 start ecosystem.config.json
-Configure PM2 to Restart on Reboot
-```
-
-### Ensure that PM2 restarts your service when the system reboots by running:
-
-```bash
-pm2 startup
-pm2 save
-```
-
-This will generate and configure the appropriate startup script for your operating system.
